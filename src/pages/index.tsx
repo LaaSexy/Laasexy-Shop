@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { LeftOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
@@ -12,7 +11,7 @@ import MenuList from '@/pages/components/menu_list';
 import { Main } from '@/templates/Main';
 import { Category, Item } from '@/types/Item';
 
-const { Title } = Typography;
+// const { Title } = Typography;
 
 const Index = () => {
   const router = useRouter();
