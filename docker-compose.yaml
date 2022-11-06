@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  pointhub-web:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      container_name: pointhub-web
+      restart: unless-stopped
+      networks:
+          - nginx-network
+      ports:
+          - '3035:3035'
+
+networks:
+    nginx-network:
+        name: nginx-network
+        external: true
