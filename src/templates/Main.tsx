@@ -19,7 +19,7 @@ const Main = (props: IMainProps) => (
         <span role="img" aria-label="Love">
           ♥
         </span>{' '}
-        by <a href="https://pointhub.io">Point hub</a>
+        by <a href="https://www.pointhub.io">Point hub</a>
       </div>
     </div>
   </div>
