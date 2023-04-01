@@ -46,9 +46,10 @@ const Index = () => {
         <CategoryList onClick={onClickCategory} query={query} />
       ) : (
         <>
+ 
           <div
             onClick={() => setSelectedCategory(undefined)}
-            className="  sticky top-0 z-10 flex flex-row items-center bg-white py-1"
+            className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 "
           >
             <LeftOutlined style={{ fontSize: '26px' }} />
             <span>

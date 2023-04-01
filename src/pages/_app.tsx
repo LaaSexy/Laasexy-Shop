@@ -1,9 +1,8 @@
-import 'antd/dist/antd.css';
 import { useState } from 'react';
 
 import { AppProps } from 'next/app';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
-
+import 'antd/dist/reset.css';
 import '../styles/global.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {

@@ -3,9 +3,7 @@ import _ from 'lodash';
 
 import useCategories from '@/hooks/useCategories';
 import { Category } from '@/types/Item';
-// import useItems from '@/hooks/useItems';
-// import MenuList from './menu_list';
-// import { useState } from 'react';
+ 
 
 const CategoryList = (props: any) => {
   const { query, onClick = () => {} } = props;
