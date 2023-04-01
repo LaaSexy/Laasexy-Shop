@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 import useCategories from '@/hooks/useCategories';
 import { Category } from '@/types/Item';
- 
 
 const CategoryList = (props: any) => {
   const { query, onClick = () => {} } = props;
