@@ -25,4 +25,5 @@ export type Category = {
   _id: string;
   index: Number;
   name: string;
+  imageUrl?: string;
 };

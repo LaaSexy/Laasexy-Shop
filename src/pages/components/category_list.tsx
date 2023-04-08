@@ -15,9 +15,11 @@ const CategoryList = (props: any) => {
       loading={isFetching}
       renderItem={(item: Category) => (
         <div
-          // style={{
-          //   backgroundImage: `url("https://cdn.pixabay.com/photo/2017/01/26/02/06/platter-2009590__340.jpg")`,
-          // }}
+          style={{
+            backgroundImage: item?.imageUrl
+              ? `url("https://cdn.pixabay.com/photo/2017/01/26/02/06/platter-2009590__340.jpg")`
+              : '',
+          }}
           // className="my-2 items-center rounded-md shadow-md drop-shadow-md"
           className="my-2 items-center rounded-md bg-gradient-to-r from-blue-500 to-transparent "
         >
