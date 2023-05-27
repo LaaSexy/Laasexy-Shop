@@ -4,6 +4,7 @@ import _ from 'lodash';
 import useCategories from '@/hooks/useCategories';
 import { Category } from '@/types/Item';
 
+const imageUrl = 'https://staging.api.pointhub.io';
 const CategoryList = (props: any) => {
   const { query, onClick = () => {} } = props;
   const { data, isFetching } = useCategories(query);
@@ -16,18 +17,20 @@ const CategoryList = (props: any) => {
       renderItem={(item: Category) => (
         <div
           style={{
+            backgroundSize: 'cover',
+
+            height: 200,
             backgroundImage: item?.imageUrl
-              ? `url("https://cdn.pixabay.com/photo/2017/01/26/02/06/platter-2009590__340.jpg")`
+              ? `url(${`${imageUrl + item.imageUrl}`})`
               : '',
           }}
-          // className="my-2 items-center rounded-md shadow-md drop-shadow-md"
           className="my-2 items-center rounded-md bg-gradient-to-r from-blue-500 to-transparent "
         >
           <button
             onClick={() => onClick(item)}
-            className="h-full w-full rounded-md bg-black/20 py-8  backdrop-brightness-50"
+            className="h-full w-full rounded-md bg-black/20 py-8  backdrop-brightness-90"
           >
-            <p className="z-10 text-center font-sans text-3xl font-bold text-white">
+            <p className="z-10 text-center font-sans text-xl font-bold text-white drop-shadow-xl">
               {item.name}
             </p>
           </button>
