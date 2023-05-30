@@ -5,12 +5,13 @@ import AxiosUtil from '@/utils/Axios';
 const getShopInfo = async (props: any) => {
   const { shop } = props;
   const { data } = await AxiosUtil.get(
-    `https://staging.api.pointhub.io/user/shop/${shop}`
+    `${process.env.NEXT_PUBLIC_API_URL}/user/shop/${shop}`
   );
-  // console.log('data==>', data);
   return data.data;
 };
 
 export default function useShop(props: any) {
-  return useQuery(['shop', props], () => getShopInfo(props));
+  return useQuery(['shop', props], () => getShopInfo(props), {
+    enabled: !!props?.shop,
+  });
 }

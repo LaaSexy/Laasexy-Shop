@@ -11,13 +11,12 @@ import MenuList from '@/pages/components/menu_list';
 import { Main } from '@/templates/Main';
 import { Category, Item } from '@/types/Item';
 
-// const { Title } = Typography;
-
 const Index = () => {
   const router = useRouter();
   const { query } = router;
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const { data, isFetching } = useItems(query);
+
   const [filterItems, setFilterItems] = useState<Item[]>();
 
   const onClickCategory = (category: Category) => {
