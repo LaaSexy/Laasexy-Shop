@@ -11,7 +11,8 @@
     "clean": "rimraf .next out",
     "lint": "next lint",
     "build-types": "tsc --noEmit --pretty",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "docker:up": "docker-compose -f docker-compose.yaml up -d --build pointhub-web"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
