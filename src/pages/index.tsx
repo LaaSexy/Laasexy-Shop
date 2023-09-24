@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { LeftOutlined } from '@ant-design/icons';
+import { Content } from 'antd/es/layout/layout';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
@@ -34,29 +35,30 @@ const Index = () => {
       meta={
         <Meta
           title="Point hub"
-          description="Point hub - next generation of loyalty and pos system"
+          description="Point hub - Your bussiness in your hand."
         />
       }
     >
       {/* <ShopInfo query={query} /> */}
       {/* <ShopInfo /> */}
-
-      {!selectedCategory ? (
-        <CategoryList onClick={onClickCategory} query={query} />
-      ) : (
-        <>
-          <div
-            onClick={() => setSelectedCategory(undefined)}
-            className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 "
-          >
-            <LeftOutlined style={{ fontSize: '26px' }} />
-            <span>
-              &nbsp;<b>{selectedCategory?.name}</b>{' '}
-            </span>
-          </div>
-          <MenuList feching={isFetching} data={filterItems} />
-        </>
-      )}
+      <Content>
+        {!selectedCategory ? (
+          <CategoryList onClick={onClickCategory} query={query} />
+        ) : (
+          <>
+            <div
+              onClick={() => setSelectedCategory(undefined)}
+              className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 dark:bg-black"
+            >
+              <LeftOutlined style={{ fontSize: '26px' }} />
+              <span className="dark:text-white">
+                &nbsp;<b>{selectedCategory?.name}</b>{' '}
+              </span>
+            </div>
+            <MenuList feching={isFetching} data={filterItems} />
+          </>
+        )}
+      </Content>
     </Main>
   );
 };

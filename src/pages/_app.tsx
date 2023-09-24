@@ -1,11 +1,17 @@
 import { useState } from 'react';
 
+import { ConfigProvider, theme } from 'antd';
 import { AppProps } from 'next/app';
+import { ThemeProvider, useTheme } from 'next-themes';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+
 import 'antd/dist/reset.css';
+
 import '../styles/global.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  const { theme: nextThem } = useTheme();
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -21,9 +27,22 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <Component {...pageProps} />
-      </Hydrate>
+      <ConfigProvider
+        theme={{
+          algorithm:
+            nextThem === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
+          token: {
+            colorPrimary: '#6C01C8',
+            borderRadius: 8,
+          },
+        }}
+      >
+        <Hydrate state={pageProps.dehydratedState}>
+          <ThemeProvider attribute="class">
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </Hydrate>
+      </ConfigProvider>
     </QueryClientProvider>
   );
 };

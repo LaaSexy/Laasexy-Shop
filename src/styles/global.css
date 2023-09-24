@@ -19,3 +19,14 @@ a:hover {
 .content ul {
   @apply my-6;
 }
+
+
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5, div {
+  font-family: 'Nokora', sans-serif !important;
+}

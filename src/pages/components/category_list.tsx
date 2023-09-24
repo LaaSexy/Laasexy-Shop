@@ -54,18 +54,18 @@ const CategoryList = (props: any) => {
           <div
             style={{
               backgroundSize: 'cover',
-              height: 200,
+              height: 168,
               backgroundImage: item?.imageUrl
                 ? `url(${`${imageUrl + item.imageUrl}`})`
                 : '',
             }}
-            className="my-2 items-center rounded-md bg-gradient-to-r from-blue-500 to-transparent "
+            className="my-2 items-center rounded-md bg-gradient-to-r from-blue-500 to-transparent"
           >
             <button
               onClick={() => onClick(item)}
-              className="h-full w-full rounded-md bg-black/20 py-8  backdrop-brightness-90"
+              className="h-full w-full rounded-md bg-black/20 py-8  backdrop-brightness-75"
             >
-              <p className="z-10 text-center font-sans text-xl font-bold text-white drop-shadow-xl">
+              <p className="z-10 text-center font-sans text-2xl   font-bold text-white drop-shadow-md">
                 {item.name}
               </p>
             </button>

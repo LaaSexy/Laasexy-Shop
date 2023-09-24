@@ -1,6 +1,7 @@
 import { List, Skeleton, Image, Tag, Card } from 'antd';
 
 import { Variation, Item } from '@/types/Item';
+import { formatCurrency } from '@/utils/numeral';
 
 const imagePath = 'https://api.pointhub.io';
 const MenuList = (props: any) => {
@@ -30,9 +31,10 @@ const MenuList = (props: any) => {
                     item.itemData.variations.length > 1
                       ? `${variation.itemVariationData.name} -`
                       : ''
-                  } ${variation.itemVariationData.priceMoney.amount} ${
+                  } ${formatCurrency(
+                    variation.itemVariationData.priceMoney.amount,
                     variation.itemVariationData.priceMoney.currency
-                  }`}
+                  )}`}
                 </Tag>
               ))}
             </Card>
