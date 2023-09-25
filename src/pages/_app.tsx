@@ -1,17 +1,18 @@
 /* eslint-disable */
-import { useState } from 'react';
+import {  useState } from 'react';
 
 import { ConfigProvider, theme } from 'antd';
 import { AppProps } from 'next/app';
-import { ThemeProvider, useTheme } from 'next-themes';
+import { ThemeProvider } from 'next-themes';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 
 import 'antd/dist/reset.css';
 
 import '../styles/global.css';
+import useThemeDetector from '@/hooks/useThemeDetector';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const { theme: nextThem } = useTheme();
+  const isDarkTheme = useThemeDetector();
 
   const [queryClient] = useState(
     () =>
@@ -30,8 +31,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
         theme={{
-          algorithm:
-            nextThem === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
+          algorithm: isDarkTheme ? theme.darkAlgorithm : theme.compactAlgorithm,
           token: {
             colorPrimary: '#6C01C8',
             borderRadius: 8,
