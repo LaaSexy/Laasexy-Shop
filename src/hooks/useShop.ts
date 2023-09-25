@@ -7,6 +7,7 @@ const getShopInfo = async (props: any) => {
   const { data } = await AxiosUtil.get(
     `${process.env.NEXT_PUBLIC_API_URL}/user/shop/${shop}`
   );
+  console.log(data);
   return data.data;
 };
 

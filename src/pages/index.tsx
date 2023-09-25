@@ -12,6 +12,8 @@ import MenuList from '@/pages/components/menu_list';
 import { Main } from '@/templates/Main';
 import { Category, Item } from '@/types/Item';
 
+import ShopInfo from './components/shop_info';
+
 const Index = () => {
   const router = useRouter();
   const { query } = router;
@@ -40,25 +42,25 @@ const Index = () => {
       }
     >
       {/* <ShopInfo query={query} /> */}
-      {/* <ShopInfo /> */}
-      {/* <Content> */}
-      {!selectedCategory ? (
-        <CategoryList onClick={onClickCategory} query={query} />
-      ) : (
-        <>
-          <div
-            onClick={() => setSelectedCategory(undefined)}
-            className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 dark:bg-black"
-          >
-            <LeftOutlined style={{ fontSize: '26px' }} />
-            <span className="dark:text-white">
-              &nbsp;<b>{selectedCategory?.name}</b>{' '}
-            </span>
-          </div>
-          <MenuList feching={isFetching} data={filterItems} />
-        </>
-      )}
-      {/* </Content> */}
+      <ShopInfo query={query} />
+      <div className="px-2">
+        {!selectedCategory ? (
+          <CategoryList onClick={onClickCategory} query={query} />
+        ) : (
+          <>
+            <div
+              onClick={() => setSelectedCategory(undefined)}
+              className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 dark:bg-black"
+            >
+              <LeftOutlined style={{ fontSize: '26px' }} />
+              <span className="dark:text-white">
+                &nbsp;<b>{selectedCategory?.name}</b>{' '}
+              </span>
+            </div>
+            <MenuList feching={isFetching} data={filterItems} />
+          </>
+        )}
+      </div>
     </Main>
   );
 };

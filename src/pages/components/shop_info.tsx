@@ -1,25 +1,27 @@
 import { Col, Image } from 'antd';
 
-// import useShop from '@/hooks/useShop';
+import useShop from '@/hooks/useShop';
 
-const ShopInfo = () => {
-  // const { query } = props;
-  // const { data } = useShop(query);
+const ShopInfo = (props: any) => {
+  const { query } = props;
+  const { data } = useShop(query);
 
   return (
-    <div className=" flex flex-nowrap items-center rounded-l-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
-      <Col span={9}>
+    <div className="top-0 z-50 flex flex-nowrap items-center bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
+      <Col span={6}>
         <Image
           alt="Logo"
+          className="p-1"
           preview={false}
-          className="rounded-full "
-          src="https://api.pointhub.io/image/2022-11-02T024207.380Z-userProfile.jpg"
+          src={`https://api.pointhub.io${data?.shop?.logoUrl}`}
         />
       </Col>
 
-      <div className="pl-3">
-        <h1 className="text-2xl font-bold text-white">Kien Svay View</h1>
-        <p className="text-sm text-white">ភូមិធំ ស្រុកកៀនស្វាយ ខេត្តកណ្ដាល</p>
+      <div className="pl-5">
+        <span className="m-0 p-0 text-lg text-white">Welcome to</span>
+        <h1 className="m-0 p-0 text-2xl font-bold text-white">
+          {data?.shop?.name}
+        </h1>
       </div>
     </div>
   );
