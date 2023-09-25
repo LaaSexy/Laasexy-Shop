@@ -18,7 +18,7 @@ const MenuList = (props: any) => {
               cover={
                 <Image
                   alt={item.itemData.name}
-                  className="h-48 w-48 rounded-md"
+                  className="max-h-80  w-48 rounded-md object-contain"
                   src={imagePath + item.itemData.imageUrl}
                 />
               }
