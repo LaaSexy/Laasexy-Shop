@@ -26,4 +26,5 @@ export type Category = {
   index: Number;
   name: string;
   imageUrl?: string;
+  subName?: string;
 };

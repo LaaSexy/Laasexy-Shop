@@ -63,11 +63,17 @@ const CategoryList = (props: any) => {
           >
             <button
               onClick={() => onClick(item)}
-              className="h-full w-full rounded-md bg-black/20 py-8  backdrop-brightness-75"
+              className="h-full w-full rounded-md bg-black/20  backdrop-brightness-75"
             >
-              <p className="z-10 text-center font-sans text-2xl   font-bold text-white drop-shadow-md">
+              <span className=" z-10 m-0 p-0 text-center   text-2xl   font-bold text-white drop-shadow-md">
                 {item.name}
-              </p>
+              </span>
+              <br />
+              {item.subName && (
+                <span className="m-0 p-0  text-center text-sm  text-white drop-shadow-md">
+                  {item.subName}
+                </span>
+              )}
             </button>
           </div>
         )}
