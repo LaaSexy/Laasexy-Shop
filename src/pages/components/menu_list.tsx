@@ -9,16 +9,16 @@ const MenuList = (props: any) => {
 
   return (
     <List
-      grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 5 }}
+      grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 12 }}
       dataSource={data}
       renderItem={(item: Item) => (
         <Skeleton avatar title loading={fetching} active>
-          <List.Item>
+          <List.Item className="max-w-md drop-shadow-md">
             <Card
               cover={
                 <Image
                   alt={item.itemData.name}
-                  className="max-h-80  w-48 rounded-md object-contain"
+                  className="max-h-80 w-48 max-w-xs rounded-md object-contain"
                   src={imagePath + item.itemData.imageUrl}
                 />
               }
