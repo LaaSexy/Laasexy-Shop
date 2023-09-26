@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { LeftOutlined } from '@ant-design/icons';
 // import { Content } from 'antd/es/layout/layout';
@@ -17,19 +17,28 @@ import ShopInfo from './components/shop_info';
 const Index = () => {
   const router = useRouter();
   const { query } = router;
+  const menuRef = useRef<null | HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const { data, isFetching } = useItems(query);
 
   const [filterItems, setFilterItems] = useState<Item[]>();
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+
   const onClickCategory = (category: Category) => {
+    menuRef?.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
     setSelectedCategory(category);
+    // eslint-disable-next-line no-underscore-dangle
+    setSelectedCategoryId(category._id);
     const filterData: Item[] = _.filter(data, (item: Item) => {
       // eslint-disable-next-line no-underscore-dangle
       return item.itemData.categories.indexOf(category._id) > -1;
     });
     setFilterItems(filterData);
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
   };
 
   return (
@@ -41,11 +50,14 @@ const Index = () => {
         />
       }
     >
-      {/* <ShopInfo query={query} /> */}
       <ShopInfo query={query} />
-      <div className="px-2">
+      <div className="px-2" ref={menuRef}>
         {!selectedCategory ? (
-          <CategoryList onClick={onClickCategory} query={query} />
+          <CategoryList
+            selectedCategoryId={selectedCategoryId}
+            onClick={onClickCategory}
+            query={query}
+          />
         ) : (
           <>
             <div
