@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { LeftOutlined } from '@ant-design/icons';
 // import { Content } from 'antd/es/layout/layout';
@@ -24,12 +24,19 @@ const Index = () => {
   const [filterItems, setFilterItems] = useState<Item[]>();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (selectedCategory) {
+      setTimeout(() => {
+        menuRef?.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 20);
+    }
+  }, [selectedCategory]);
 
   const onClickCategory = (category: Category) => {
-    menuRef?.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
     setSelectedCategory(category);
     // eslint-disable-next-line no-underscore-dangle
     setSelectedCategoryId(category._id);
