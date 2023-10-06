@@ -56,7 +56,7 @@ const Index = () => {
           title={
             !shopData?.shop?.name
               ? 'Point hub'
-              : `Pointhub - ${shopData.shop.name}`
+              : `Point hub - ${shopData.shop.name}`
           }
           description="Point hub - Your bussiness in your hand."
         />
