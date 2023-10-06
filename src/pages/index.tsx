@@ -56,7 +56,7 @@ const Index = () => {
           title={
             !shopData?.shop?.name
               ? 'Point hub'
-              : `Point hub - ${shopData.shop.name}`
+              : `Point hub - ${shopData?.shop?.name}`
           }
           description="Point hub - Your bussiness in your hand."
         />
@@ -82,7 +82,7 @@ const Index = () => {
               </span>
             </div>
             <MenuList
-              currency={shopData?.currency}
+              currency={shopData?.shop?.currency}
               feching={isFetching}
               data={filterItems}
             />
