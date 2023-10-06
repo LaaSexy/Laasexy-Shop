@@ -14,7 +14,7 @@ import Script from 'next/script';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const isDarkTheme = useThemeDetector();
-
+  const GID = 'G-4REE3VBPH3';
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -43,7 +43,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <ThemeProvider attribute="class">
             <Script
               strategy="lazyOnload"
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${GID}`}
             />
 
             <Script id="google-analytics-script" strategy="lazyOnload">
@@ -51,7 +51,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+          gtag('config', '${GID}', {
           page_path: window.location.pathname,
           });
     `}
