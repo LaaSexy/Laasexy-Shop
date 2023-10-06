@@ -16,9 +16,11 @@ interface Event {
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events
 export const event = (params: Event) => {
-  window.gtag('event', params.action, {
-    event_category: params.category,
-    event_label: params.label,
-    value: params.value,
-  });
+  if (typeof window !== 'undefined') {
+    window?.gtag('event', params.action, {
+      event_category: params.category,
+      event_label: params.label,
+      value: params.value,
+    });
+  }
 };

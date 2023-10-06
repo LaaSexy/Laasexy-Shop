@@ -53,7 +53,11 @@ const Index = () => {
     <Main
       meta={
         <Meta
-          title="Point hub"
+          title={
+            !shopData?.shop?.name
+              ? 'Point hub'
+              : `Pointhub - ${shopData.shop.name}`
+          }
           description="Point hub - Your bussiness in your hand."
         />
       }

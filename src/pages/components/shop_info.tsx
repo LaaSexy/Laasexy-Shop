@@ -8,10 +8,10 @@ const ShopInfo = (props: any) => {
   const { data, isFetching } = props;
 
   useEffect(() => {
-    if (data) {
+    if (data?.shop) {
       event({
-        action: data.name,
-        label: data.currency,
+        action: data.shop.name,
+        label: data.shop.currency,
         category: 'shop',
       });
     }
