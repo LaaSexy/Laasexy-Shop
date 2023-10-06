@@ -4,11 +4,9 @@ import { Meta } from '@/layout/Meta';
 import MenuList from '@/pages/components/menu_list';
 import ShopInfo from '@/pages/components/shop_info';
 import { Main } from '@/templates/Main';
-// import useCategories from '@/hooks/useCategories';
 
 const Menu = () => {
   const router = useRouter();
-  // const { data, isFetching } = useCategories(router.query);
 
   return (
     <Main
@@ -21,8 +19,6 @@ const Menu = () => {
     >
       <ShopInfo />
       <MenuList query={router.query} />
-      {/* <ShopInfo query={router.query}/>
-      <CategoryList query={router.query} /> */}
     </Main>
   );
 };

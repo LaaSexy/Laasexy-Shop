@@ -5,7 +5,7 @@ import { formatCurrency } from '@/utils/numeral';
 
 const imagePath = 'https://api.pointhub.io';
 const MenuList = (props: any) => {
-  const { data, fetching } = props;
+  const { data, fetching, currency = 'USD' } = props;
 
   return (
     <List
@@ -18,7 +18,7 @@ const MenuList = (props: any) => {
               cover={
                 <Image
                   alt={item.itemData.name}
-                  className="max-h-80 w-48 max-w-xs rounded-md object-contain"
+                  className=" max-h-80 w-48 max-w-xs rounded-md object-contain"
                   src={imagePath + item.itemData.imageUrl}
                 />
               }
@@ -33,7 +33,7 @@ const MenuList = (props: any) => {
                       : ''
                   } ${formatCurrency(
                     variation.itemVariationData.priceMoney.amount,
-                    variation.itemVariationData.priceMoney.currency
+                    currency
                   )}`}
                 </Tag>
               ))}

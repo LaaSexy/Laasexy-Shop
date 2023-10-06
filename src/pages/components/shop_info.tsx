@@ -1,10 +1,7 @@
 import { Col, Image, Skeleton } from 'antd';
 
-import useShop from '@/hooks/useShop';
-
 const ShopInfo = (props: any) => {
-  const { query } = props;
-  const { data, isFetching } = useShop(query);
+  const { data, isFetching } = props;
 
   return (
     <Skeleton loading={isFetching} active>

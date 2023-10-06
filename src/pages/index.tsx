@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { LeftOutlined } from '@ant-design/icons';
-// import { Content } from 'antd/es/layout/layout';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
 import useItems from '@/hooks/useItems';
+import useShop from '@/hooks/useShop';
 import { Meta } from '@/layout/Meta';
 import CategoryList from '@/pages/components/category_list';
 import MenuList from '@/pages/components/menu_list';
@@ -20,6 +20,7 @@ const Index = () => {
   const menuRef = useRef<null | HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const { data, isFetching } = useItems(query);
+  const { data: shopData, isFetching: isFetchingData } = useShop(query);
 
   const [filterItems, setFilterItems] = useState<Item[]>();
 
@@ -57,7 +58,7 @@ const Index = () => {
         />
       }
     >
-      <ShopInfo query={query} />
+      <ShopInfo data={shopData} isFetching={isFetchingData} />
       <div className="px-2" ref={menuRef}>
         {!selectedCategory ? (
           <CategoryList
@@ -76,7 +77,11 @@ const Index = () => {
                 &nbsp;<b>{selectedCategory?.name}</b>{' '}
               </span>
             </div>
-            <MenuList feching={isFetching} data={filterItems} />
+            <MenuList
+              currency={shopData?.currency}
+              feching={isFetching}
+              data={filterItems}
+            />
           </>
         )}
       </div>
