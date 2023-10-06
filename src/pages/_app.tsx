@@ -11,10 +11,11 @@ import 'antd/dist/reset.css';
 import '../styles/global.css';
 import useThemeDetector from '@/hooks/useThemeDetector';
 import Script from 'next/script';
+import { GA_TRACKING_ID } from '@/utils/gtag';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const isDarkTheme = useThemeDetector();
-  const GID = 'G-4REE3VBPH3';
+  const GID = GA_TRACKING_ID;
   const [queryClient] = useState(
     () =>
       new QueryClient({

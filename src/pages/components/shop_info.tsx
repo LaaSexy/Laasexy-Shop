@@ -1,7 +1,21 @@
+import { useEffect } from 'react';
+
 import { Col, Image, Skeleton } from 'antd';
+
+import { event } from '@/utils/gtag';
 
 const ShopInfo = (props: any) => {
   const { data, isFetching } = props;
+
+  useEffect(() => {
+    if (data) {
+      event({
+        action: data.name,
+        label: data.currency,
+        category: 'shop',
+      });
+    }
+  }, [data]);
 
   return (
     <Skeleton loading={isFetching} active>
