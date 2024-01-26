@@ -9,6 +9,8 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import 'antd/dist/reset.css';
 
 import '../styles/global.css';
+import '../styles/ant.css';
+
 import useThemeDetector from '@/hooks/useThemeDetector';
 import Script from 'next/script';
 import { GA_TRACKING_ID } from '@/utils/gtag';

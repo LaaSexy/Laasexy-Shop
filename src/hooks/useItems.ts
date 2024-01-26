@@ -10,8 +10,21 @@ const getItems = async (props: any) => {
   return data.data;
 };
 
+const getV2Items = async (branch: string) => {
+  const { data } = await AxiosUtil.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/user/shop/menu/${branch}`
+  );
+  return data.data;
+};
+
 export default function useItems(props: any) {
   return useQuery(['items', props], () => getItems(props), {
     enabled: !!props?.shop,
+  });
+}
+
+export function useV2Items(branch: any) {
+  return useQuery(['itemsV2', branch], () => getV2Items(branch), {
+    enabled: !!branch,
   });
 }

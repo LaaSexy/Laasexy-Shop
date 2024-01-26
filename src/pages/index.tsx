@@ -1,52 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
-import { LeftOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
-import useItems from '@/hooks/useItems';
-import useShop from '@/hooks/useShop';
+import { useV2Items } from '@/hooks/useItems';
 import { Meta } from '@/layout/Meta';
-import CategoryList from '@/pages/components/category_list';
-import MenuList from '@/pages/components/menu_list';
 import { Main } from '@/templates/Main';
 import { Category, Item } from '@/types/Item';
 
+import { LeftCategoryList, LeftMenuList } from './components/left_menu_style';
+import MultipleSkeletons from './components/MultipleSkeletons';
 import ShopInfo from './components/shop_info';
 
 const Index = () => {
   const router = useRouter();
   const { query } = router;
-  const menuRef = useRef<null | HTMLDivElement>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const { data, isFetching } = useItems(query);
-  const { data: shopData, isFetching: isFetchingData } = useShop(query);
+  const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
 
   const [filterItems, setFilterItems] = useState<Item[]>();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    if (selectedCategory) {
-      setTimeout(() => {
-        menuRef?.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }, 20);
-    }
-  }, [selectedCategory]);
 
   const onClickCategory = (category: Category) => {
-    setSelectedCategory(category);
     // eslint-disable-next-line no-underscore-dangle
     setSelectedCategoryId(category._id);
-    const filterData: Item[] = _.filter(data, (item: Item) => {
+    const filterData: Item[] = _.filter(shopV2Data?.items, (item: Item) => {
       // eslint-disable-next-line no-underscore-dangle
       return item.itemData.categories.indexOf(category._id) > -1;
     });
     setFilterItems(filterData);
-    // window.scrollTo(0, 0);
   };
 
   return (
@@ -54,41 +36,34 @@ const Index = () => {
       meta={
         <Meta
           title={
-            !shopData?.shop?.name
+            !shopV2Data?.shop?.name
               ? 'Point hub'
-              : `Point hub - ${shopData?.shop?.name}`
+              : `Point hub - ${shopV2Data?.shop?.name}`
           }
           description="Point hub - Your bussiness in your hand."
         />
       }
     >
-      <ShopInfo data={shopData} isFetching={isFetchingData} />
-      <div className="px-2" ref={menuRef}>
-        {!selectedCategory ? (
-          <CategoryList
-            selectedCategoryId={selectedCategoryId}
-            onClick={onClickCategory}
-            query={query}
-          />
-        ) : (
-          <>
-            <div
-              onClick={() => setSelectedCategory(undefined)}
-              className="sticky top-0 z-10 flex flex-row items-center bg-white py-5 dark:bg-black"
-            >
-              <LeftOutlined style={{ fontSize: '26px' }} />
-              <span className="dark:text-white">
-                &nbsp;<b>{selectedCategory?.name}</b>{' '}
-              </span>
-            </div>
-            <MenuList
-              currency={shopData?.shop?.currency}
-              feching={isFetching}
+      <MultipleSkeletons itemCount={10} loading={isFetching}>
+        <ShopInfo data={shopV2Data?.shop} />
+        <div className="flex h-[75vh] px-1">
+          <div className="hide-scrollbar w-[130px] overflow-auto    md:w-1/5">
+            {/* Content for Row 1 */}
+            <LeftCategoryList
+              selectedCategoryId={selectedCategoryId}
+              onClick={onClickCategory}
+              data={shopV2Data?.subCategories}
+            />
+          </div>
+          <div className="hide-x-scroll flex-1 px-1 ">
+            {/* Content for Row 2 */}
+            <LeftMenuList
+              currency={shopV2Data?.shop?.currency}
               data={filterItems}
             />
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      </MultipleSkeletons>
     </Main>
   );
 };
