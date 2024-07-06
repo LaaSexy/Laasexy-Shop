@@ -53,6 +53,7 @@ const Index = () => {
               selectedCategoryId={selectedCategoryId}
               onClick={onClickCategory}
               data={shopV2Data?.subCategories}
+              lang={query?.lang}
             />
           </div>
           <div className="hide-x-scroll flex-1 px-1 ">
@@ -60,6 +61,7 @@ const Index = () => {
             <LeftMenuList
               currency={shopV2Data?.shop?.currency}
               data={filterItems}
+              lang={query?.lang}
             />
           </div>
         </div>

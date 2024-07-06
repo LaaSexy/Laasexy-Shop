@@ -1,6 +1,7 @@
 // sub-categories/shop/
 export type ItemData = {
   name: string;
+  subName: string;
   imageUrl: string;
   variations: [Variation];
   categories: [string];

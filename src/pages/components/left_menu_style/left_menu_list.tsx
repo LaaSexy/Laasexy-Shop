@@ -8,7 +8,7 @@ import { formatCurrency } from '@/utils/numeral';
 const imagePath = 'https://api.pointhub.io';
 
 const ItemRender = (props: any) => {
-  const { item, currency } = props;
+  const { item, currency, lang } = props;
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -29,7 +29,9 @@ const ItemRender = (props: any) => {
           padding: 8,
         }}
       >
-        {item.itemData.name}
+        {lang === '2'
+          ? item.itemData.subName || item.itemData.name
+          : item.itemData.name}
         <br />
         {item.itemData.variations.length > 1 ? (
           <Popover
@@ -101,13 +103,15 @@ const ItemRender = (props: any) => {
   );
 };
 const MenuList = (props: any) => {
-  const { data, fetching, currency = 'USD' } = props;
+  const { data, fetching, currency = 'USD', lang = '1' } = props;
   const listRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [data]);
+
   return (
     <div ref={listRef} className="hide-x-scroll" style={{ maxHeight: '75vh' }}>
       <List
@@ -117,7 +121,7 @@ const MenuList = (props: any) => {
         style={{ scrollBehavior: 'smooth' }}
         renderItem={(item: Item) => (
           <Skeleton avatar title loading={fetching} active>
-            <ItemRender item={item} currency={currency} />
+            <ItemRender lang={lang} item={item} currency={currency} />
           </Skeleton>
         )}
       />

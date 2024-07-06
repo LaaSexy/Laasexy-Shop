@@ -6,7 +6,7 @@ import { Category } from '@/types/Item';
 
 // const imageUrl = process.env.NEXT_PUBLIC_API_URL;
 const CategoryList = (props: any) => {
-  const { data, onClick = () => {}, selectedCategoryId, style } = props;
+  const { data, onClick = () => {}, selectedCategoryId, style, lang } = props;
 
   useEffect(() => {
     if (selectedCategoryId === '' && !!data) {
@@ -46,7 +46,7 @@ const CategoryList = (props: any) => {
                   : ' text-black dark:text-white'
               } drop-shadow-md`}
             >
-              {item.name}
+              {lang === '2' ? item.subName || item.name : item.name}
             </span>
             <br />
           </button>

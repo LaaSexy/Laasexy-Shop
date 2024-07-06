@@ -7,6 +7,7 @@ import { Main } from '@/templates/Main';
 
 const Menu = () => {
   const router = useRouter();
+  const { lang = '1' } = router.query;
 
   return (
     <Main
@@ -18,7 +19,7 @@ const Menu = () => {
       }
     >
       <ShopInfo />
-      <MenuList query={router.query} />
+      <MenuList lang={lang} query={router.query} />
     </Main>
   );
 };
