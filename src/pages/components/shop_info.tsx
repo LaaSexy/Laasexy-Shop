@@ -19,14 +19,16 @@ const ShopInfo = (props: any) => {
 
   return (
     <div className="sticky top-0   z-50 flex min-h-fit flex-nowrap items-center bg-white bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
-      <Col span={6}>
-        <Image
-          alt="Logo"
-          className="p-1"
-          preview={false}
-          src={`https://api.pointhub.io${data?.logoUrl}`}
-        />
-      </Col>
+      {data?.logoUrl && (
+        <Col span={6}>
+          <Image
+            alt="Logo"
+            className="p-1"
+            preview={false}
+            src={`https://api.pointhub.io${data?.logoUrl}`}
+          />
+        </Col>
+      )}
 
       <div className="pl-5">
         <span className="m-0 p-0 text-lg text-white">Welcome to</span>
