@@ -18,12 +18,12 @@ const ShopInfo = (props: any) => {
   }, [data]);
 
   return (
-    <div className="sticky top-0   z-50 flex min-h-fit flex-nowrap items-center bg-white bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
+    <div className="sticky top-0 z-50 flex min-h-fit flex-nowrap items-center bg-white bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
       {data?.logoUrl && (
-        <Col span={6}>
+        <Col span={3}>
           <Image
             alt="Logo"
-            className="p-1"
+            className="p-1 max-h-28"
             preview={false}
             src={`https://api.pointhub.io${data?.logoUrl}`}
           />
