@@ -18,7 +18,8 @@ const ShopInfo = (props: any) => {
   }, [data]);
 
   return (
-    <div className="sticky top-0 z-50 flex min-h-fit flex-nowrap items-center bg-white bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
+    <div className='sticky'>
+    <div className="sticky z-50 left-0 top-0 flex min-h-fit flex-nowrap items-center bg-white bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 shadow-lg shadow-indigo-500/50">
       {data?.logoUrl && (
         <Col span={3}>
           <Image
@@ -34,6 +35,7 @@ const ShopInfo = (props: any) => {
         <span className="m-0 p-0 text-lg text-white">Welcome to</span>
         <h1 className="m-0 p-0 text-2xl font-bold text-white">{data?.name}</h1>
       </div>
+    </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { List, Skeleton, Image, Tag, Card } from 'antd';
 import { Variation, Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
 
-const imagePath = 'https://api.pointhub.io';
+export const IMAGE_PATH = 'https://api.pointhub.io';
 const MenuList = (props: any) => {
   const { data, fetching, currency = 'USD' } = props;
 
@@ -19,7 +19,7 @@ const MenuList = (props: any) => {
                 <Image
                   alt={item.itemData.name}
                   className=" max-h-80 w-48 max-w-xs rounded-md object-contain"
-                  src={imagePath + item.itemData.imageUrl}
+                  src={IMAGE_PATH + item.itemData.imageUrl}
                 />
               }
             >
