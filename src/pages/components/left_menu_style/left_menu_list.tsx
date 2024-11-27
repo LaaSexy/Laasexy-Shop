@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { List, Skeleton, Image, Tag, Card, Badge, Popover } from "antd";
+import { List, Skeleton, Image, Tag, Card } from 'antd';
 
-import { Item, Variation } from "@/types/Item";
-import { formatCurrency } from "@/utils/numeral";
-import ItemDetailModal from "../ItemDetailModal";
-import { Option } from "antd/es/mentions";
+import { Item } from '@/types/Item';
+import { formatCurrency } from '@/utils/numeral';
 
-const imagePath = "https://api.pointhub.io";
+import ItemDetailModal from '../ItemDetailModal';
+
+const imagePath = 'https://api.pointhub.io';
 
 const ItemRender = (props: any) => {
   const { item, currency, lang, onClick } = props;
@@ -32,7 +32,7 @@ const ItemRender = (props: any) => {
           padding: 8,
         }}
       >
-        {lang === "2"
+        {lang === '2'
           ? item.itemData.subName || item.itemData.name
           : item.itemData.name}
         <br />
@@ -53,12 +53,12 @@ const ItemRender = (props: any) => {
   );
 };
 const MenuList = (props: any) => {
-  const { data, fetching, currency = "USD", lang = "1" } = props;
+  const { data, fetching, currency = 'USD', lang = '1' } = props;
   const listRef = useRef<HTMLDivElement>(null);
   const [seletedItem, setSelectedItem] = useState(null);
   useEffect(() => {
     if (listRef.current) {
-      listRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      listRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [data]);
 
@@ -75,13 +75,13 @@ const MenuList = (props: any) => {
       <div
         ref={listRef}
         className="hide-x-scroll"
-        style={{ maxHeight: "75vh" }}
+        style={{ maxHeight: '75vh' }}
       >
         <List
           grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 10 }}
           dataSource={data}
           className="py-3"
-          style={{ scrollBehavior: "smooth" }}
+          style={{ scrollBehavior: 'smooth' }}
           renderItem={(item: Item) => (
             <Skeleton avatar title loading={fetching} active>
               <ItemRender
