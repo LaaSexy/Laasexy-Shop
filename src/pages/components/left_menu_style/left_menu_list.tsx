@@ -11,12 +11,6 @@ const imagePath = 'https://api.pointhub.io';
 
 const ItemRender = (props: any) => {
   const { item, currency, lang, onClick } = props;
-  const [open, setOpen] = useState(false);
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
-  };
-
   return (
     <List.Item className="max-w-md " onClick={onClick}>
       <Card
@@ -72,11 +66,7 @@ const MenuList = (props: any) => {
 
   return (
     <div>
-      <div
-        ref={listRef}
-        className="hide-x-scroll"
-        style={{ maxHeight: '75vh' }}
-      >
+      <div ref={listRef} className="hide-x-scroll max-h-[75vh]">
         <List
           grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 10 }}
           dataSource={data}

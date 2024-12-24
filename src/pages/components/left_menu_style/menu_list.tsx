@@ -3,6 +3,8 @@ import { List, Skeleton, Image, Tag, Card } from 'antd';
 import { Variation, Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
 
+export {};
+
 export const IMAGE_PATH = 'https://api.pointhub.io';
 const MenuList = (props: any) => {
   const { data, fetching, currency = 'USD' } = props;

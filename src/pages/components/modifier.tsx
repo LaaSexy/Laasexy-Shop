@@ -1,16 +1,16 @@
-import { Button } from "antd";
-import { add } from "lodash";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+
+import { Button } from 'antd';
 
 // Define types for Modifier and props
-interface Modifier {
+export interface Modifier {
   _id: string;
   uniqId: string;
   name: string;
   price: number;
 }
 
-interface ModifierGroup {
+export interface ModifierGroup {
   modifiers: Modifier[];
   _id: string;
   type: string;
@@ -34,8 +34,8 @@ const Modifiers: React.FC<ModifiersProps> = ({
 
   useEffect(() => {
     if (!selectedVariation) return;
-    const tempModifiers = new Map(
-      selectedVariation?.modifiers?.map((modifier) => [
+    const tempModifiers: any = new Map(
+      selectedVariation?.modifiers?.map((modifier: any) => [
         modifier.uniqId,
         modifier,
       ])
@@ -51,7 +51,7 @@ const Modifiers: React.FC<ModifiersProps> = ({
   ) => {
     const uniqId = isMultiple ? groupId + modifier._id : groupId;
 
-    const updatedModifiers = new Map(addedModifiers);
+    const updatedModifiers: any = new Map(addedModifiers);
     updatedModifiers.set(uniqId, { ...modifier, groupId, type, uniqId });
 
     setAddedModifiers(updatedModifiers);
@@ -80,7 +80,7 @@ const Modifiers: React.FC<ModifiersProps> = ({
     return (
       <div key={_id}>
         <div className="max-h-80 overflow-y-auto md:max-h-96">
-          <div className="bg-white py-3">
+          <div className="bg-white py-3 dark:bg-slate-700">
             <h3 className="ml-4 text-lg font-semibold">
               {isMultiple ? `${type}` : type}
             </h3>
@@ -89,11 +89,11 @@ const Modifiers: React.FC<ModifiersProps> = ({
                 const uniqId = isMultiple ? _id + item._id : _id;
                 const isSelected = isSelectModifier(uniqId, item);
                 const handleOnPressItem = () => {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                   isSelected
                     ? onRemoveModifier(uniqId)
                     : onPressItem(item, _id, type, isMultiple);
                 };
-                // console.log("Item price: " + item.price);
                 return (
                   <Button
                     key={item._id}
@@ -101,11 +101,11 @@ const Modifiers: React.FC<ModifiersProps> = ({
                     size="large"
                     className={`${
                       isSelected
-                        ? "border-violet-800 text-violet-800 border-2 !font-semibold"
-                        : "border-gray-400 text-gray-800"
-                    } bg-white hover:border-violet-800 hover:text-violet-800 sm:px-6 border !rounded-md`}
+                        ? ' border-violet-800  !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
+                        : 'border-gray-400 text-gray-800 dark:border-gray-700'
+                    } !rounded-md border bg-white hover:border-violet-700 hover:text-violet-800 dark:border dark:bg-slate-700 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
                   >
-                    {item.name} {item.price > 0 ? `(+${item.price})` : ""}
+                    {item.name} {item.price > 0 ? `(+${item.price})` : ''}
                   </Button>
                 );
               })}

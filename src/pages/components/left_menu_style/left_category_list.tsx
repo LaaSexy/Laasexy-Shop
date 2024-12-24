@@ -36,7 +36,7 @@ const CategoryList = (props: any) => {
         >
           <button
             onClick={() => onClickCategory(item)}
-            className="h-full w-full rounded-md  border border-violet-100 py-2 px-1 dark:border-gray-900"
+            className="size-full rounded-md border  border-violet-100 px-1 py-2 dark:border-gray-900"
           >
             <span
               className={`z-10 m-0 p-0 text-left text-sm ${

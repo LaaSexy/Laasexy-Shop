@@ -1,28 +1,74 @@
 import React, { useEffect, useState } from 'react';
 
-import { LeftOutlined } from '@ant-design/icons';
+import {
+  LeftOutlined,
+  SendOutlined,
+  ShoppingCartOutlined,
+} from '@ant-design/icons';
 import { Alert, Button } from 'antd';
 import { useAtom } from 'jotai';
+import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from 'uuid';
+
+import useAuthications from '@/hooks/useAuth';
+import { useV2Items } from '@/hooks/useItems';
+import useOrder from '@/hooks/useOrder';
+import useSession, { sessionAtom } from '@/hooks/useSession';
+import { formatCurrency } from '@/utils/numeral';
 
 import { cartAtom } from './components/ItemDetailModal';
 import { IMAGE_PATH } from './components/left_menu_style/menu_list';
+import MultipleSkeletons from './components/MultipleSkeletons';
+
+interface AddIn {
+  name: string;
+  type: string;
+  price?: number;
+}
+interface CartItem {
+  id: string;
+  itemData: {
+    name: string;
+    imageUrl: string;
+    categories?: string[];
+  };
+  _id: string;
+  variation?: { _id: string };
+  modifiers?: any;
+  price: number;
+  quantity: number;
+  total: number;
+  selectedAddIns?: AddIn[];
+}
 
 const Review = () => {
-  const [cart, setCart] = useAtom(cartAtom);
+  const [cart, setCart] = useAtom<CartItem[]>(cartAtom);
+  const [orderId, setOrderId] = useState(uuidv4());
   const [alertVisible, setAlertVisible] = useState(false);
-  const [quantities, setQuantities] = useState<number[]>([]);
-  const [prices, setPrices] = useState<number[]>([]);
+  const [session] = useAtom(sessionAtom);
+  const [, setQuantities] = useState<number[]>([]);
+  const [, setPrices] = useState<number[]>([]);
+  const { mutate: isSuccess } = useAuthications();
+  const router = useRouter();
+  const { query } = router;
+  const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
+  const { mutate: createOrder } = useOrder();
+  const { mutate: createSession } = useSession();
+
   useEffect(() => {
-    console.log({ cart });
-  }, [cart]);
-  const increaseQuantity = (index) => {
-    setCart((prevCart) => {
-      const updatedCart = [...prevCart];
-      const item = updatedCart[index];
+    if (!isSuccess) {
+      createSession();
+    }
+  }, [isSuccess]);
+
+  const increaseQuantity = (index: number) => {
+    setCart((prevCart: any) => {
+      const updatedCart: CartItem[] = [...prevCart];
+      const item: any = updatedCart[index];
       const modifierCost =
         item?.selectedAddIns
-          ?.map(({ price }) => price)
-          .reduce((sum, price) => sum + (price || 0), 0) || 0;
+          ?.map((value: any) => value.price)
+          .reduce((sum: any, price: any) => sum + (price || 0), 0) || 0;
       const basePrice = item.price + modifierCost;
       if (!item) return updatedCart;
       item.quantity = (item.quantity || 0) + 1;
@@ -30,14 +76,14 @@ const Review = () => {
       return updatedCart;
     });
   };
-  const decreaseQuantity = (index) => {
-    setCart((prevCart) => {
-      const updatedCart = [...prevCart];
-      const item = updatedCart[index];
+  const decreaseQuantity = (index: number) => {
+    setCart((prevCart: any) => {
+      const updatedCart: CartItem[] = [...prevCart];
+      const item: any = updatedCart[index];
       const modifierCost =
         item?.selectedAddIns
-          ?.map(({ price }) => price)
-          .reduce((sum, price) => sum + (price || 0), 0) || 0;
+          ?.map((value: any) => value.price)
+          .reduce((sum: any, price: any) => sum + (price || 0), 0) || 0;
       const basePrice = item.price + modifierCost;
       if (item.quantity > 0) {
         item.quantity -= 1;
@@ -52,137 +98,210 @@ const Review = () => {
       .reduce((total, item) => total + (item?.total || 0), 0)
       .toFixed(0);
   };
+  const total: any = calculateTotal();
+  const currency = shopV2Data?.shop?.currency || 'USD';
   const handleOrder = () => {
-    setCart([]);
-    setQuantities([]);
-    setPrices([]);
-    setAlertVisible(true);
-    setTimeout(() => {
-      setAlertVisible(false);
-    }, 3000);
+    const orderItems = cart.map((item: any) => ({
+      id: item.id,
+      name: item?.itemData?.name,
+      itemId: item?._id,
+      imageUrl: item?.itemData?.imageUrl,
+      variationId: item?.variation?._id,
+      categoryId: item?.itemData?.categories?.[0],
+      price: item?.price,
+      quantity: item?.quantity,
+      unit: item?.unit,
+      createdAt: item?.createAt,
+      modifiers: item?.modifiers,
+    }));
+    if (session?._id && orderItems.length > 0) {
+      createOrder({
+        orderId,
+        sessionId: session?._id,
+        items: orderItems,
+      });
+      setAlertVisible(true);
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+      setCart([]);
+      setQuantities([]);
+      setPrices([]);
+      setOrderId(uuidv4());
+    }
   };
+  const handleCheckOut = () => {
+    if (query?.branch && query?.table) {
+      router.push({
+        pathname: '/checkout',
+        query: {
+          branch: query.branch,
+          table: query.table,
+        },
+      });
+    }
+  };
+  const onClickToShowData = () => {
+    if (query?.branch && query?.table) {
+      router.push({
+        pathname: '/newPage',
+        query: {
+          branch: query.branch,
+          table: query.table,
+        },
+      });
+    }
+  };
+
   return (
-    <div className="relative flex flex-col items-center justify-between">
-      <div className="relative flex h-screen w-full max-w-screen-sm flex-col justify-between rounded-lg bg-white shadow-2xl sm:max-w-md">
-        <div className="my-4 flex items-center rounded-xl">
-          <Button className="float-left flex items-center justify-center border-none px-5 py-4 text-3xl shadow-none hover:!text-black active:!border-none active:outline-none sm:text-2xl">
-            <LeftOutlined />
-          </Button>
-          <div className="flex w-full items-center justify-center">
-            <h2 className="mb-4 mr-7 mt-5 text-center text-2xl font-bold sm:text-xl md:text-2xl">
-              Review order
-            </h2>
-          </div>
-        </div>
-        <div className="w-full grow overflow-y-auto pb-16">
-          <div className="size-full !w-full max-w-full">
-            <div className="flex items-center justify-center">
-              <div className="flex w-11/12 items-center justify-between">
-                <h2 className="w-full rounded-lg bg-purple-200 py-3 text-center text-3xl font-medium sm:text-xl">
-                  Table #8
-                </h2>
-              </div>
+    <MultipleSkeletons loading={isFetching}>
+      <div className="flex min-h-screen flex-col">
+        <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
+          {/* Sticky Header */}
+          <header className="sticky top-0 z-10 flex w-full items-center justify-between rounded-t-lg bg-white py-2 shadow-md dark:bg-black sm:py-2">
+            <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
+              <LeftOutlined onClick={onClickToShowData} />
+            </Button>
+            <div className="mr-14 flex w-full items-center justify-center">
+              <h2 className="text-center text-2xl font-bold dark:text-white sm:text-xl md:text-2xl">
+                Review Order
+              </h2>
             </div>
-            {cart.length > 0 ? (
-              cart.map((item, index) => (
-                <div
-                  key={index}
-                  className="mr-5 mt-4 flex w-full items-center justify-between  py-3 shadow-sm"
-                >
-                  <div className="flex">
-                    <img
-                      src={
-                        IMAGE_PATH + item?.itemData?.imageUrl || 'default-image'
-                      }
-                      alt={item?.itemData?.name}
-                      className="mx-4 size-16 rounded-md"
-                    />
-                    <span className="font-bold text-gray-700">
-                      {item?.itemData?.name || 'Unknown'}
-                      <p className="w-56 text-xs text-gray-600">
-                        {item?.selectedAddIns?.map(
-                          ({ name, type, price = 0 }, index) => (
-                            <span key={index}>
-                              {`${type}: ${name}${
-                                price !== 0
-                                  ? ` + ${new Intl.NumberFormat().format(
-                                      price
-                                    )}៛`
-                                  : ''
-                              }`}
-                              {index < item.selectedAddIns.length - 1
-                                ? ', '
-                                : ''}
-                            </span>
-                          )
-                        )}
-                      </p>
-                      <div className="mt-2 flex items-center space-x-4">
-                        <Button
-                          onClick={() => decreaseQuantity(index)}
-                          size="large"
-                          className={`flex !h-8 w-16 items-center justify-center rounded-2xl border-2 border-purple-500 bg-white px-7 py-0 !text-2xl font-black text-purple-500 shadow sm:h-10 sm:w-14 sm:text-base ${
-                            item?.quantity <= 0
-                              ? 'cursor-not-allowed opacity-50'
-                              : ''
-                          }`}
-                          disabled={item?.quantity <= 0}
-                        >
-                          -
-                        </Button>
-                        <span className="text-2xl font-bold text-gray-700 sm:text-lg">
-                          {item?.quantity || 0}
-                        </span>
-                        <Button
-                          size="large"
-                          onClick={() => increaseQuantity(index)}
-                          className="flex !h-8 w-16 items-center justify-center rounded-2xl border-2 border-purple-500 bg-white px-7 py-0 !text-2xl font-black text-purple-500 shadow sm:h-10 sm:w-14 sm:text-base"
-                        >
-                          +
-                        </Button>
-                      </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto px-2 pb-16 pt-4 sm:px-4">
+            <div className="max-h-[calc(100vh-250px)] w-full overflow-y-auto sm:max-h-[calc(100vh-180px)]">
+              <div className="flex items-center justify-center">
+                <div className="flex w-11/12 items-center justify-between">
+                  <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
+                    Table #8
+                  </h2>
+                </div>
+              </div>
+              {cart.length > 0 ? (
+                cart.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    className="mb-3 flex items-center justify-between rounded-lg border bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                  >
+                    <div className="flex">
+                      <img
+                        src={
+                          item?.itemData?.imageUrl
+                            ? IMAGE_PATH + item.itemData.imageUrl
+                            : 'default-image'
+                        }
+                        alt={item?.itemData?.name}
+                        className="mr-3 size-20 rounded-md sm:size-20"
+                      />
+                      <span className="w-48 text-gray-700 dark:text-white">
+                        <p className="text-sm font-bold">
+                          {item?.itemData?.name || 'Unknown'}
+                        </p>
+                        <p className="w-48 text-xs text-gray-600 dark:text-gray-300 sm:w-96">
+                          {item?.selectedAddIns?.map(
+                            (
+                              {
+                                name,
+                                type,
+                                price = 0,
+                              }: { name: any; type: any; price?: number },
+                              index: number
+                            ) => {
+                              if (name && type && price !== undefined) {
+                                return (
+                                  <span key={index}>
+                                    {`${type}: ${name}${
+                                      price !== 0
+                                        ? ` + ${formatCurrency(
+                                            price,
+                                            currency
+                                          )}`
+                                        : ''
+                                    }`}
+                                    {index < item.selectedAddIns.length - 1
+                                      ? ', '
+                                      : ''}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            }
+                          )}
+                        </p>
+                        <div className="mt-2 flex items-center space-x-4">
+                          <Button
+                            onClick={() => decreaseQuantity(index)}
+                            size="large"
+                            className={`flex !h-7 w-16 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-2xl font-black text-violet-800 shadow sm:h-10 sm:w-14 sm:text-base ${
+                              item?.quantity <= 0
+                                ? 'cursor-not-allowed opacity-50'
+                                : ''
+                            }`}
+                            disabled={item?.quantity <= 0}
+                          >
+                            -
+                          </Button>
+                          <span className="text-xl font-bold text-gray-700 dark:text-white sm:text-lg">
+                            {item?.quantity || 0}
+                          </span>
+                          <Button
+                            size="large"
+                            onClick={() => increaseQuantity(index)}
+                            className="flex !h-7 w-16 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-2xl font-black text-violet-800 shadow dark:bg-white sm:h-10 sm:w-14 sm:text-base"
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </span>
+                    </div>
+                    <span className="mb-5 font-bold text-purple-700 dark:text-white">
+                      {`${formatCurrency(item?.total, currency)}`}
                     </span>
                   </div>
-                  <span className="mb-8 mr-3 font-bold text-purple-700">
-                    {new Intl.NumberFormat().format(item?.total || 0)}៛
-                  </span>
-                </div>
-              ))
-            ) : (
-              <h2 className="mt-5 text-center text-2xl font-bold text-gray-500">
-                No items in the cart.
-              </h2>
-            )}
-          </div>
-        </div>
-        <div className="flex justify-center bg-white py-11">
+                ))
+              ) : (
+                <h2 className="mt-5 text-center text-2xl font-bold text-gray-500">
+                  No items in the cart.
+                </h2>
+              )}
+            </div>
+          </main>
           {alertVisible && (
             <Alert
-              message="Send Order Successfully"
+              message="Ordered Successfully"
               type="success"
               showIcon
               closable
               onClose={() => setAlertVisible(false)}
-              style={{
-                fontSize: '1rem',
-                position: 'fixed',
-                top: '10px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 1000,
-              }}
+              className="absolute left-1/2 top-6 z-50 -translate-x-1/2 text-sm sm:text-base"
             />
           )}
-          <Button
-            size="large"
-            onClick={handleOrder}
-            className="absolute bottom-0 mb-8 flex !h-12 w-96 items-center justify-center rounded-lg bg-violet-800 !text-2xl text-white hover:bg-violet-700 hover:!text-white sm:w-96 sm:text-lg"
+
+          {/* Fixed Footer */}
+          <footer
+            className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:bg-black sm:py-6"
           >
-            Send Orders - {new Intl.NumberFormat().format(calculateTotal())}៛
-          </Button>
+            <button
+              onClick={cart.length > 0 ? handleOrder : handleCheckOut}
+              className="mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md hover:opacity-95 sm:w-3/5 sm:p-3"
+            >
+              {cart.length === 0 ? (
+                <span className="flex items-center justify-center">
+                  <ShoppingCartOutlined className="mr-2" /> Checkout Now
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <SendOutlined className="mr-2" /> Send Order{' - '}
+                  {formatCurrency(total ?? 0, currency ?? 'USD')}
+                </span>
+              )}
+            </button>
+          </footer>
         </div>
       </div>
-    </div>
+    </MultipleSkeletons>
   );
 };
 export default Review;
