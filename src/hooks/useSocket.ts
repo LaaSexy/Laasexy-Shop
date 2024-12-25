@@ -25,13 +25,13 @@ const useSocket = ({ onReceivedOrder = () => {} }: UseSocketProps) => {
     }
     const tokenId = tokenBarer;
     const sessionId = session._id;
+    console.log(`Socket: ${sessionId}`);
     socketRef.current = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
       transports: ['websocket'],
       query: { sessionId },
       auth: { token: tokenId },
     });
     const socket = socketRef.current;
-
     const handleConnect = () => {
       setIsConnected(true);
       hasConnected.current = true;
@@ -43,6 +43,7 @@ const useSocket = ({ onReceivedOrder = () => {} }: UseSocketProps) => {
     };
 
     const handleDisconnect = () => {
+      console.log(`Socket: disconnected`);
       setIsConnected(false);
     };
 
@@ -66,7 +67,7 @@ const useSocket = ({ onReceivedOrder = () => {} }: UseSocketProps) => {
         socket.disconnect();
       }
     };
-  }, [session, tokenBarer, onReceivedOrder]);
+  }, [session, tokenBarer]);
 
   const sendMessage = (event: string, payload?: any) => {
     if (socketRef.current && isConnected) {

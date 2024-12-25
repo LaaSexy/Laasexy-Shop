@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
-
 import { Button } from 'antd';
-
-// Define types for Modifier and props
 export interface Modifier {
   _id: string;
   uniqId: string;
   name: string;
   price: number;
 }
-
 export interface ModifierGroup {
   modifiers: Modifier[];
   _id: string;
   type: string;
   isMultiple?: boolean;
 }
-
 interface ModifiersProps {
   selectedVariation?: any;
   onChanged?: (modifiers: Modifier[]) => void;
   data: ModifierGroup[];
 }
-
 const Modifiers: React.FC<ModifiersProps> = ({
   selectedVariation,
   onChanged = () => {},
@@ -80,7 +74,7 @@ const Modifiers: React.FC<ModifiersProps> = ({
     return (
       <div key={_id}>
         <div className="max-h-80 overflow-y-auto md:max-h-96">
-          <div className="bg-white py-3 dark:bg-slate-700">
+          <div className="bg-white py-3 dark:bg-slate-900">
             <h3 className="ml-4 text-lg font-semibold">
               {isMultiple ? `${type}` : type}
             </h3>
@@ -89,7 +83,6 @@ const Modifiers: React.FC<ModifiersProps> = ({
                 const uniqId = isMultiple ? _id + item._id : _id;
                 const isSelected = isSelectModifier(uniqId, item);
                 const handleOnPressItem = () => {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                   isSelected
                     ? onRemoveModifier(uniqId)
                     : onPressItem(item, _id, type, isMultiple);
@@ -103,7 +96,7 @@ const Modifiers: React.FC<ModifiersProps> = ({
                       isSelected
                         ? ' border-violet-800  !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
                         : 'border-gray-400 text-gray-800 dark:border-gray-700'
-                    } !rounded-md border bg-white hover:border-violet-700 hover:text-violet-800 dark:border dark:bg-slate-700 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
+                    } !rounded-md border bg-white hover:border-violet-700 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
                   >
                     {item.name} {item.price > 0 ? `(+${item.price})` : ''}
                   </Button>

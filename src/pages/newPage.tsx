@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import {
   UnorderedListOutlined,
   AppstoreOutlined,
@@ -9,7 +8,6 @@ import { Avatar, Button, List, message } from 'antd';
 import { atom, useAtom } from 'jotai';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-
 import useAuthications from '@/hooks/useAuth';
 import useOrderSessionId from '@/hooks/useCheckOut';
 import { useV2Items } from '@/hooks/useItems';
@@ -17,17 +15,13 @@ import useSession, { sessionAtom } from '@/hooks/useSession';
 import useSocket from '@/hooks/useSocket';
 import { Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
-
 import ItemDetailModal, { cartAtom } from './components/ItemDetailModal';
 import MultipleSkeletons from './components/MultipleSkeletons';
-
 export const imagePath = 'https://api.pointhub.io';
 export const deviceIdAtom = atom(null);
-
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {
-  const currentDeviceId = get(deviceIdAtom); 
+  const currentDeviceId = get(deviceIdAtom);
   const storedUuid: any = localStorage.getItem('deviceId');
-  
   if (storedUuid !== null && currentDeviceId === null) {
     set(deviceIdAtom, storedUuid);
   }
@@ -49,7 +43,7 @@ const newPage = () => {
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const { mutate: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
-
+ 
   const handleOrderUpdate = (newOrder: any) => {
     setCart((prevCart) => {
       const updatedCart = [...prevCart, newOrder];
@@ -61,10 +55,9 @@ const newPage = () => {
   };
 
   const { isConnected } = useSocket({
-    onReceivedOrder: handleOrderUpdate, 
+    onReceivedOrder: handleOrderUpdate,
   });
-  
-  
+
   useEffect(() => {
     if (isConnected) {
       console.log(`Socket connected: ${isConnected}`);
@@ -91,6 +84,7 @@ const newPage = () => {
   useEffect(() => {
     if (deviceId === null) {
       initializeDeviceUuid();
+      console.log('Hello')
     }
   }, [deviceId, initializeDeviceUuid]);
 
@@ -163,7 +157,7 @@ const newPage = () => {
           <List.Item>
             <div
               onClick={() => onClickItem(item)}
-              className="mx-auto mb-3 w-48 rounded-lg border bg-white p-4 text-center shadow-sm dark:border-gray-700 dark:bg-slate-700 sm:w-72"
+              className="mx-auto mb-3 w-48 rounded-lg border bg-white p-4 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-72"
             >
               <img
                 alt={item?.itemData?.name || 'Product Image'}
@@ -211,7 +205,7 @@ const newPage = () => {
           <List.Item>
             <div
               onClick={() => onClickItem(item)}
-              className="flex w-full justify-between rounded-md border shadow-sm dark:border-gray-700 dark:bg-slate-700"
+              className="flex w-full justify-between rounded-md border shadow-sm dark:border-gray-700 dark:bg-slate-900"
             >
               <div className="flex w-full items-center sm:w-auto">
                 <Avatar
@@ -291,7 +285,8 @@ const newPage = () => {
               <ul className="relative flex flex-row items-center justify-center space-x-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                 {shopV2Data?.subCategories?.map((subCategory: any) => (
                   <li key={subCategory._id} className="list-none">
-                    <button
+                    <Button
+                      size='large'
                       onClick={() => onClickCategory(subCategory)}
                       className={`my-3 rounded-md border border-[#DBD5D5] px-4 py-2 text-base dark:border-gray-700 dark:hover:!border-gray-600 sm:my-4 ${
                         selectedCategory === subCategory._id
@@ -301,7 +296,7 @@ const newPage = () => {
                       aria-pressed={selectedCategory === subCategory._id}
                     >
                       {subCategory.name}
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>
@@ -349,5 +344,4 @@ const newPage = () => {
     </MultipleSkeletons>
   );
 };
-
 export default newPage;

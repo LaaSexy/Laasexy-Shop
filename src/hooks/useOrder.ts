@@ -9,9 +9,7 @@ const createOrder = async (param: any) => {
 
 export default function useOrder() {
   const { mutate, data } = useMutation(createOrder, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
+   
   });
 
   return { mutate, data };

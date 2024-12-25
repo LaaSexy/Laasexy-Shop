@@ -5,6 +5,7 @@
     "next/core-web-vitals",
     "plugin:prettier/recommended"
   ],
+
   "rules": {
     "prettier/prettier": [
       "error",
@@ -38,6 +39,9 @@
         }
       }
     ],
+    "plugins": ["react-hooks"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn", // <--- THIS IS THE NEW RULE
     "@typescript-eslint/comma-dangle": "off", // Avoid conflict rule between Eslint and Prettier
     "import/prefer-default-export": "off", // Named export is easier to refactor automatically
     "class-methods-use-this": "off", // _document.tsx uses render method without `this` keyword

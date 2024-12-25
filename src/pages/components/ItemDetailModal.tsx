@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
 import { Button } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
-
 import { formatCurrency } from '@/utils/numeral';
-
 import { IMAGE_PATH } from './left_menu_style/menu_list';
 import Modifiers from './modifier';
-
 interface SelectedOption {
   _id: string | null;
   itemVariationData?: {
@@ -18,11 +14,9 @@ interface SelectedOption {
     };
   };
 }
-
 interface Modifier {
   price: number;
 }
-
 interface CartItem {
   id: string;
   modifiers: number[];
@@ -100,11 +94,11 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     }
     return (
       <div className="max-h-80 overflow-y-auto md:max-h-96">
-        <div className="mb-4 bg-white py-2 dark:bg-slate-700">
+        <div className="mb-4 bg-white py-2 dark:bg-slate-900">
           <h3 className="ml-4 text-lg font-semibold dark:text-white">
             Options
           </h3>
-          <div className="ml-5  flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-700">
+          <div className="ml-5  flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
             {variations?.map((value: any) => (
               <Button
                 key={value._id}
@@ -112,9 +106,9 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 size="large"
                 className={`${
                   selectedOption?._id === value?._id
-                    ? ' border-violet-800 !font-semibold text-violet-800 dark:border-none  dark:bg-violet-500 dark:text-white dark:hover:!text-white'
+                    ? ' border-violet-800 !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
                     : 'border-gray-400 text-gray-800 dark:border-gray-700'
-                } !rounded-md border bg-white hover:border-violet-800 hover:text-violet-800 dark:border dark:bg-slate-700 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
+                } !rounded-md border bg-white hover:border-violet-800 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
               >
                 {`${value?.itemVariationData?.name} - ${formatCurrency(
                   value?.itemVariationData?.priceMoney?.amount,
@@ -143,7 +137,6 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     };
     setCart([...cart, myItem]);
   };
-
   return (
     <div
       className={`fixed inset-0 z-[1000] flex items-end justify-center bg-black bg-opacity-70 transition-opacity duration-300 ${
@@ -172,11 +165,12 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                     : 'default-image')
                 }
                 alt={item?.itemData?.name || 'Item'}
-                className="mx-4 mt-1 size-20 rounded-md sm:size-20"
+                className="mx-4 mt-2 size-20 rounded-md sm:size-20"
               />
-              <h2 className="grow text-lg font-bold dark:text-white sm:text-lg">
-                {item?.itemData?.name || 'Unknown Name'}
-              </h2>
+              <div className="flex flex-col grow ">
+                <h2 className="text-lg font-bold dark:text-white sm:text-lg">{item?.itemData?.name || 'Unknown Name'}</h2>
+                <p className="text-sm mt-1 dark:text-gray-500 sm:text-sm">{item?.itemData?.description}</p>
+              </div>
               <button
                 onClick={() => {
                   setQuantity(0);
@@ -194,7 +188,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               selectedVariation={selectedOption}
               data={modifiers}
             />
-            <div className="relative bottom-0 mt-10 items-center rounded-t-3xl bg-white p-4 py-5 shadow-md dark:bg-black">
+            <div className="relative bottom-0 mt-10 items-center rounded-t-3xl  bg-white p-4 py-5 shadow-md dark:bg-black">
               <div className="flex items-center justify-center gap-4">
                 <Button
                   size="large"

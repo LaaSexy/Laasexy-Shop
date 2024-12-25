@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
 import { LeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { Alert, Button } from 'antd';
+import { Alert, Avatar, Button, List } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-
 import useAuthications from '@/hooks/useAuth';
 import useOrderSessionId from '@/hooks/useCheckOut';
 import { useV2Items } from '@/hooks/useItems';
 import { sessionAtom } from '@/hooks/useSession';
 import { formatCurrency } from '@/utils/numeral';
-
 import { IMAGE_PATH } from './components/left_menu_style/menu_list';
 import MultipleSkeletons from './components/MultipleSkeletons';
 import { deviceIdAtom, initializeDeviceUuidAtom } from './newPage';
+import useSocket from '@/hooks/useSocket';
 
 const checkout = () => {
   const [deviceId] = useAtom(deviceIdAtom);
@@ -25,7 +23,7 @@ const checkout = () => {
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
-  const { mutate, data } = useOrderSessionId();
+  const { mutate, data,  } = useOrderSessionId();
 
   useEffect(() => {
     const item =
@@ -37,6 +35,20 @@ const checkout = () => {
         ?.flatMap((value: any) => value.items) || [];
     setItems(item);
   }, [data]);
+
+  const handleOrderUpdate = ( ) => {
+    mutate({ sessionId: session?._id || '' })
+  };
+
+  const { isConnected } = useSocket({
+    onReceivedOrder: handleOrderUpdate,
+  });
+
+  useEffect(() => {
+    if (isConnected) {
+      console.log(`Socket connected: ${isConnected}`);
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     if (deviceId === null) {
@@ -94,8 +106,8 @@ const checkout = () => {
       <div className="flex min-h-screen flex-col">
         <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
-          <header className="sticky left-0 top-0 flex w-full items-center rounded-xl bg-white py-2 shadow-md dark:bg-black sm:py-2">
-            <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
+          <header className="sticky top-0 z-10 flex w-full items-center justify-between rounded-b-lg bg-white py-2 shadow-md dark:shadow-[0_4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-2">
+            <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black  dark:bg-black dark:hover:!text-white sm:text-2xl">
               <LeftOutlined onClick={onClickToShowData} />
             </Button>
             <div className="mr-16 flex w-full items-center justify-center">
@@ -114,51 +126,38 @@ const checkout = () => {
                   </h2>
                 </div>
               </div>
-
-              {items.length > 0 ? (
-                items.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="mb-4 mr-2 flex items-center justify-between rounded-lg border bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:mr-3"
+                <List
+                className="mr-2 rounded-md border bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:mr-3"
+                dataSource={items}
+                renderItem={(item: any) => (
+                  <List.Item
+                    key={item.id}
+                    className="flex items-center justify-between rounded-lg"
                   >
-                    <div className="flex">
-                      <img
+                    <div className="flex items-start">
+                      <Avatar
                         src={IMAGE_PATH + (item?.imageUrl || 'default-image')}
-                        alt={item?.name}
-                        className="mr-3 size-24 rounded-md sm:size-24"
+                        alt={item?.name || 'Avatar'}
+                        className="ml-3 mr-3 size-24 rounded-md sm:size-24 shadow-lg shadow-gray-500/30 dark:shadow-lg dark:shadow-gray-900/50"
                       />
-                      <span className="w-48 text-gray-700 dark:text-white">
+                      <div className="w-48 text-gray-700 dark:text-white">
                         <p className="text-sm font-bold">
                           {item?.name || 'Unknown'}
                         </p>
-                        <p className="w-48 text-xs text-gray-600 dark:text-gray-300 sm:w-96">
+                        <p className="w-48 text-xs text-gray-600 dark:text-gray-300 sm:w-[700px]">
                           {item?.modifiers?.map(
-                            (
-                              {
-                                name,
-                                type,
-                                price = 0,
-                              }: { name: string; type: any; price?: number },
-                              index: number
-                            ) => {
+                            ({ name, type, price = 0 }: any, index: any) => {
                               if (name && type && price !== undefined) {
                                 return (
                                   <span key={index}>
                                     {`${type}: ${name}${
-                                      price !== 0
-                                        ? ` + ${formatCurrency(
-                                            price,
-                                            currency
-                                          )}`
-                                        : ''
+                                      price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
                                     }`}
-                                    {index < item.modifiers.length - 1
-                                      ? ', '
-                                      : ''}
+                                    {index < item.modifiers.length - 1 ? ', ' : ''}
                                   </span>
                                 );
                               }
-                              return null;
+                              return '';
                             }
                           )}
                         </p>
@@ -167,7 +166,7 @@ const checkout = () => {
                         </p>
                         <div className="mt-2 flex items-center space-x-4">
                           <Button
-                            size="large"
+                            size="small"
                             className="flex !h-7 w-16 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
                             disabled
                           >
@@ -177,25 +176,21 @@ const checkout = () => {
                             {item?.quantity}
                           </span>
                           <Button
-                            size="large"
+                            size="small"
                             disabled
                             className="flex !h-7 w-16 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
                           >
                             +
                           </Button>
                         </div>
-                      </span>
+                      </div>
                     </div>
-                    <span className="mb-5 font-bold text-purple-700 dark:text-white">
-                      {`${formatCurrency(item?.total, currency)}`}
+                    <span className="mb-5 mr-4 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                      {formatCurrency(item?.total, currency)}
                     </span>
-                  </div>
-                ))
-              ) : (
-                <h2 className="mt-5 text-center text-2xl font-bold text-gray-500">
-                  No item for Checkout!!
-                </h2>
-              )}
+                  </List.Item>
+                )}
+              />
             </div>
           </main>
           {alertVisible && (
@@ -209,13 +204,13 @@ const checkout = () => {
             />
           )}
           {/* Fixed Footer */}
-          <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:bg-black sm:py-6">
+          <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
             <div className="flex flex-col space-y-2  dark:bg-black">
               <div className="mx-2 flex items-center justify-between">
                 <h2 className="text-sm font-medium sm:text-lg">Quantity:</h2>
                 <span className="ml-48 text-sm font-medium sm:ml-80 sm:text-lg">
                   {items.reduce(
-                    (total: any, item: any) => total + (item?.quantity ?? 0),
+                    (totals: any, item: any) => totals + (item?.quantity ?? 0),
                     0
                   )}
                 </span>
@@ -230,8 +225,8 @@ const checkout = () => {
                 <h2 className="text-sm font-medium sm:text-lg">
                   Discount:{' '}
                   {items.reduce(
-                    (total: any, item: any) =>
-                      total + (item?.itemData?.discount ?? 0),
+                    (totals: any, item: any) =>
+                      totals + (item?.itemData?.discount ?? 0),
                     0
                   )}
                   %
@@ -239,8 +234,8 @@ const checkout = () => {
                 <span className="ml-48 text-sm font-medium sm:ml-80 sm:text-lg">
                   {formatCurrency(
                     items.reduce(
-                      (total: any, item: any) =>
-                        total + (item?.itemData?.price ?? 0),
+                      (totals: any, item: any) =>
+                        totals + (item?.itemData?.price ?? 0),
                       0
                     ) *
                       (1 -
