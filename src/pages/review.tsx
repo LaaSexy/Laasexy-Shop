@@ -4,7 +4,7 @@ import {
   SendOutlined,
   ShoppingCartOutlined,
 } from '@ant-design/icons';
-import { Alert, Avatar, Button, List } from 'antd';
+import { Avatar, Button, List } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import useAuthications from '@/hooks/useAuth';
@@ -20,7 +20,6 @@ import { generateInvoiceId } from '@/utils/generateInvoiceId';
 const Review = () => {
   const [cart, setCart] = useAtom(cartAtom);
   const [orderId, setOrderId] = useState(generateInvoiceId());
-  const [alertVisible, setAlertVisible] = useState(false);
   const [session] = useAtom(sessionAtom);
   const [, setQuantities] = useState<number[]>([]);
   const [, setPrices] = useState<number[]>([]);
@@ -30,6 +29,7 @@ const Review = () => {
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: createOrder } = useOrder();
   const { mutate: createSession } = useSession();
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() => {
     if (!isSuccess) {
@@ -78,6 +78,7 @@ const Review = () => {
   const total: any = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
   const handleOrder = () => {
+    setOrderSuccess(true);
     const orderItems = cart.map((item: any) => ({
       id: item.id,
       name: item?.itemData?.name,
@@ -97,27 +98,33 @@ const Review = () => {
         sessionId: session?._id,
         items: orderItems,
       });
-      setAlertVisible(true);
-      setTimeout(() => {
-        setAlertVisible(false);
-      }, 3000);
       setCart([]);
       setQuantities([]);
       setPrices([]);
       setOrderId(generateInvoiceId());
     }
   };
-  const handleCheckOut = () => {
-    if (query?.branch && query?.table) {
-      router.push({
-        pathname: '/checkout',
-        query: {
-          branch: query.branch,
-          table: query.table,
-        },
-      });
-    }
+
+  const handleAddMoreItems = () => {
+    router.push({
+      pathname: '/newPage',
+      query: {
+        branch: query.branch,
+        table: query.table,
+      },
+    });
   };
+
+  const handleCheckout = () => {
+    router.push({
+      pathname: '/checkout',
+      query: {
+        branch: query.branch,
+        table: query.table,
+      },
+    });
+  };
+
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
@@ -130,8 +137,63 @@ const Review = () => {
     }
   };
 
+  const OrderSuccessPage = () =>(
+    <div className="bg-white dark:bg-black flex justify-center items-center min-h-screen">
+      <div className="flex flex-col items-center shadow-2xl p-20 rounded-xl mb-20 bg-white dark:bg-black"> 
+        <div className="bg-green text-white animate-pulse rounded-full p-8 mb-6">
+          <svg
+            className="ft-green-tick"
+            xmlns="http://www.w3.org/2000/svg"
+            height="100"
+            width="100"
+            viewBox="0 0 48 48"
+            aria-hidden="true"
+          >
+            <circle className="circle" fill="#5bb543" cx="24" cy="24" r="22" />
+            <path
+              className="tick"
+              fill="none"
+              stroke="#FFF"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeMiterlimit="10"
+              d="M14 27l5.917 4.917L34 17"
+            />
+          </svg>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          Order Sent Successfully!
+        </h1>
+        <p className="text-gray-600 mb-8 text-center">
+          Your order has been sent. You can add more items or proceed to checkout.
+        </p>
+
+        <div className="flex justify-center items-center space-x-4">
+          <Button
+            size="large"
+            className="mx-4 rounded-3xl flex border-none font-bold justify-center items-center bg-gradient-to-r !p-6 from-violet-500 to-indigo-600 text-white !text-xl  hover:!text-white shadow hover:bg-gray-400"
+            onClick={handleAddMoreItems}
+          >
+            <DoubleLeftOutlined /> Add More Items
+          </Button>
+          <Button
+            size="large"
+            className="mx-4 rounded-3xl border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 !p-6 !text-xl font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            onClick={handleCheckout}
+          >
+            <ShoppingCartOutlined /> Checkout Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <MultipleSkeletons loading={isFetching}>
+      {orderSuccess && cart.length <= 0 ? (
+        <OrderSuccessPage />
+      ) : (
       <div className="flex min-h-screen flex-col">
         <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
@@ -222,36 +284,23 @@ const Review = () => {
               />
             </div>
           </main>
-          {alertVisible && (
-            <Alert
-              message="Ordered Successfully"
-              type="success"
-              showIcon
-              closable
-              onClose={() => setAlertVisible(false)}
-              className="absolute left-1/2 top-6 z-50 -translate-x-1/2 text-sm sm:text-base"
-            />
-          )}
           {/* Fixed Footer */}
           <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
-            <button
-              onClick={cart.length > 0 ? handleOrder : handleCheckOut}
-              className="mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md hover:opacity-95 sm:w-3/5 sm:p-3"
-            >
-              {cart.length === 0 || cart.length === null ? (
-                <span className="flex items-center justify-center">
-                  <ShoppingCartOutlined className="mr-2" /> Checkout Now
-                </span>
-              ) : (
-                <span className="flex items-center justify-center">
-                  <SendOutlined className="mr-2" /> Send Order{' - '}
-                  {formatCurrency(total ?? 0, currency ?? 'USD')}
-                </span>
-              )}
-            </button>
+          <button
+            onClick={handleOrder}
+            className={`mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md  sm:w-3/5 sm:p-3 ${cart.length <= 0 ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''}`}
+            disabled={cart.length <= 0}
+          >
+            <span className="flex items-center justify-center">
+              <SendOutlined className="mr-2" /> Send Order{' - '}
+              {formatCurrency(total ?? 0, currency ?? 'USD')}
+            </span>
+          </button>
           </footer>
         </div>
       </div>
+         
+    )}
     </MultipleSkeletons>
   );
 };
