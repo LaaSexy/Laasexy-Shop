@@ -56,7 +56,6 @@ const useSocket = ({ onReceivedOrder = () => {} }: UseSocketProps) => {
     socket.on('response', handleResponse);
     socket.on('disconnect', handleDisconnect);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       if (socket) {
         socket.off('connect', handleConnect);

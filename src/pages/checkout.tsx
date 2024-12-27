@@ -116,8 +116,8 @@ const checkout = () => {
             </div>
           </header>
           {/* Main Content */}
-          <main className="flex-1 max-h-[calc(100vh-365px)] overflow-y-auto px-2 sm:max-h-[calc(100vh-325px)] pt-4 sm:px-4">
-            <div className="w-full sm:max-h-[calc(100vh-350px)]">
+          <main className="flex-1 overflow-y-auto px-2 pt-4 sm:px-4 mb-56">
+            <div className="w-full">
               <div className="flex items-center justify-center">
                 <div className="flex w-11/12 items-center justify-between">
                   <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
@@ -125,69 +125,69 @@ const checkout = () => {
                   </h2>
                 </div>
               </div>
-                <List
+              <List
                 className="rounded-md"
                 dataSource={items}
                 itemLayout="horizontal"
                 renderItem={(item: any) => (
-                  <List.Item
-                  >
-                    <div className="flex w-full items-center justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
-                      <div className="flex items-start">
-                        <Avatar
-                          src={IMAGE_PATH + (item?.imageUrl || 'default-image')}
-                          alt={item?.name || 'Avatar'}
-                          className="ml-1 mr-2 mt-1 mb-1 size-20 rounded-md sm:size-24"
-                        />
-                        <div className="w-48 text-gray-700 dark:text-white sm:mt-2">
-                          <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
-                          {item?.name || 'Unknown'}
-                          </p>
-                          <p className="truncate text-xs text-gray-600 dark:text-gray-300">
-                            {item?.modifiers?.map(
-                              ({ name, type, price = 0 }: any, index: any) => {
-                                if (name && type && price !== undefined) {
-                                  return (
-                                <span key={index}>
-                                  {`${type}: ${name}${
-                                    price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
-                                  }`}
-                                  {index < item.modifiers.length - 1 ? ', ' : ''}
-                                </span>
-                                 );
-                                }
-                                return '';
-                              })}
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">
-                            Status: {item?.status}
-                          </p>
-                          <div className="flex items-center space-x-4">
-                            <Button
-                              size="small"
-                              className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
-                              disabled
-                            >
-                              -
-                            </Button>
-                            <span className="text-xl font-bold text-gray-700 dark:text-white sm:text-lg">
-                              {item?.quantity}
-                            </span>
-                            <Button
-                              size="small"
-                              disabled
-                              className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
-                            >
-                              +
-                            </Button>
-                          </div>
+                <List.Item
+                >
+                  <div className="flex w-full items-center justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
+                    <div className="flex items-start">
+                      <Avatar
+                        src={IMAGE_PATH + (item?.imageUrl || 'default-image')}
+                        alt={item?.name || 'Avatar'}
+                        className="ml-1 mr-2 mt-1 mb-1 size-20 rounded-md sm:size-24"
+                      />
+                      <div className="w-48 text-gray-700 dark:text-white sm:mt-2">
+                        <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
+                        {item?.name || 'Unknown'}
+                        </p>
+                        <p className="truncate sm:w-[500px] text-xs text-gray-600 dark:text-gray-300">
+                          {item?.modifiers?.map(
+                            ({ name, type, price = 0 }: any, index: any) => {
+                              if (name && type && price !== undefined) {
+                                return (
+                              <span key={index}>
+                                {`${type}: ${name}${
+                                  price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
+                                }`}
+                                {index < item.modifiers.length - 1 ? ', ' : ''}
+                              </span>
+                                );
+                              }
+                              return '';
+                            })}
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          Status: {item?.status}
+                        </p>
+                        <div className="flex items-center space-x-4">
+                          <Button
+                            size="small"
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                            disabled
+                          >
+                            -
+                          </Button>
+                          <span className="text-xl font-bold text-gray-700 dark:text-white sm:text-lg">
+                            {item?.quantity}
+                          </span>
+                          <Button
+                            size="small"
+                            disabled
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                          >
+                            +
+                          </Button>
                         </div>
                       </div>
-                      <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
-                        {formatCurrency(item?.total, currency)}
-                      </span>
                     </div>
-                  </List.Item>
+                    <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                      {formatCurrency(item?.total, currency)}
+                    </span>
+                  </div>
+                </List.Item>
                 )}
               />
             </div>
@@ -203,7 +203,7 @@ const checkout = () => {
             />
           )}
           {/* Fixed Footer */}
-          <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-12 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
+          <footer className="fixed bottom-0 h-52 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-12 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
             <div className="flex flex-col space-y-2 dark:bg-black">
               <div className="mx-2 flex items-center justify-between">
                 <h2 className="text-sm font-medium sm:text-lg">Quantity:</h2>
@@ -255,10 +255,10 @@ const checkout = () => {
                   {formatCurrency(total ?? 0, currency ?? 'USD')}
                 </span>
               </div>
-              <div className="flex w-full items-center justify-center bg-white dark:bg-black">
+              <div className="flex w-full mt-1 items-center justify-center">
                 <button
                   onClick={handleCheckOut}
-                  className={`my-2 flex w-11/12 items-center justify-center rounded-3xl border border-white bg-gradient-to-r from-violet-500 to-indigo-600 p-2 text-center text-white hover:opacity-95 sm:mx-24`}
+                  className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border border-white bg-gradient-to-r from-violet-500 to-indigo-600 p-2 text-center text-white hover:opacity-95 sm:mx-24`}
                 >
                   <h2 className="text-xl">
                     <ShoppingCartOutlined /> Checkout {' - '}{' '}

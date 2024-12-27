@@ -57,9 +57,7 @@ const newPage = () => {
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const { mutate: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
-  useEffect(() =>{
-    console.log(filteredItems);
-  },[filteredItems]);
+ 
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("showCart", JSON.stringify(showCart));
@@ -251,7 +249,7 @@ const newPage = () => {
   return (
     <MultipleSkeletons loading={isFetching}>
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
-        <div className="flex min-h-screen flex-col bg-white dark:bg-black ">
+        <div className="flex min-h-screen flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
           <header className="fixed top-0 left-0 h-44 w-full items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-indigo-500/50 sm:h-44">
             <div className="flex items-center justify-center">
@@ -301,7 +299,7 @@ const newPage = () => {
                   </li>
                 ))}
               </ul>
-              <div className="absolute right-0 mt-3 flex h-[40px] w-[50px] items-center justify-center rounded-md bg-white dark:bg-black">
+              <div className="absolute right-0 mt-3 sm:mt-4 flex h-[40px] w-[50px] items-center justify-center rounded-md bg-white dark:bg-black">
                 <Button
                   size="large"
                   onClick={() => setShowCart(!showCart)}

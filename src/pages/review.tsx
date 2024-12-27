@@ -139,16 +139,15 @@ const Review = () => {
             <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
               <DoubleLeftOutlined onClick={onClickToShowData} />
             </Button>
-            <div className="mr-14 flex w-full items-center justify-center">
+            <div className="mr-16 flex w-full items-center justify-center">
               <h2 className="text-center text-2xl font-bold dark:text-white sm:text-xl md:text-2xl">
                 Review Order
               </h2>
             </div>
           </header>
-
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)] px-2 pb-16 pt-4 sm:px-4">
-            <div className="w-full sm:max-h-[calc(100vh-180px)]">
+          <main className="flex-1 overflow-y-auto mb-28 px-2 pt-4 sm:px-4">
+            <div className="w-full">
               <div className="flex items-center justify-center">
                 <div className="flex w-11/12 items-center justify-between">
                   <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
@@ -156,73 +155,71 @@ const Review = () => {
                   </h2>
                 </div>
               </div>
-              
-                <List
+              <List
                 className="rounded-md"
                 dataSource={cart}
                 itemLayout="horizontal"
                 renderItem={(item: any, index: any) => (
-                  <List.Item>
-                    <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
-                    <div className="flex items-start">
-                      <Avatar
-                        src={
-                          IMAGE_PATH + (item?.itemData?.imageUrl || 'default-image')
-                        }
-                        alt={item?.itemData?.name}
-                        className="ml-1 mr-2 mt-1 mb-1 size-20 rounded-md sm:size-24"
-                      />
-                      <div className="w-48 text-gray-700 mt-1 dark:text-white sm:mt-3">
-                        <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
-                          {item?.itemData?.name || 'Unknown'}
-                        </p>
-                        <p className="truncate sm:w-96 text-xs text-gray-600 dark:text-gray-300">
-                          {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, ind: any) => {
-                            if (name && type && price !== undefined) {
-                              return (
-                                <span key={ind}>
-                                  {`${type}: ${name}${
-                                    price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
-                                  }`}
-                                  {ind < item.selectedAddIns.length - 1 ? ', ' : ''}
-                                </span>
-                              );
-                            }
-                            return '';
-                          })}
-                        </p>
-                        <div className="mt-2 flex items-center space-x-4">
-                          <Button
-                            onClick={() => decreaseQuantity(index)}
-                            size="small"
-                            className={`flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow sm:!h-7 sm:w-14 sm:text-base ${
-                              item?.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''
-                            }`}
-                            disabled={item?.quantity <= 0}
-                          >
-                            -
-                          </Button>
-                          <span className="text-lg font-bold text-gray-700 dark:text-white sm:text-lg">
-                            {item?.quantity || 0}
-                          </span>
-                          <Button
-                            onClick={() => increaseQuantity(index)}
-                            size="small"
-                            className="flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow dark:bg-white sm:!h-7 sm:w-14 sm:text-base"
-                          >
-                            +
-                          </Button>
-                        </div>
+                <List.Item>
+                  <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
+                  <div className="flex items-start">
+                    <Avatar
+                      src={
+                        IMAGE_PATH + (item?.itemData?.imageUrl || 'default-image')
+                      }
+                      alt={item?.itemData?.name}
+                      className="ml-1 mr-2 mt-1 mb-1 size-20 rounded-md sm:size-24"
+                    />
+                    <div className="w-48 text-gray-700 mt-1 dark:text-white sm:mt-3">
+                      <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
+                        {item?.itemData?.name || 'Unknown'}
+                      </p>
+                      <p className="truncate sm:w-[500px] text-xs text-gray-600 dark:text-gray-300">
+                        {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, ind: any) => {
+                          if (name && type && price !== undefined) {
+                            return (
+                              <span key={ind}>
+                                {`${type}: ${name}${
+                                  price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
+                                }`}
+                                {ind < item.selectedAddIns.length - 1 ? ', ' : ''}
+                              </span>
+                            );
+                          }
+                          return '';
+                        })}
+                      </p>
+                      <div className="mt-2 flex items-center space-x-4">
+                        <Button
+                          onClick={() => decreaseQuantity(index)}
+                          size="small"
+                          className={`flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow sm:!h-7 sm:w-14 sm:text-base ${
+                            item?.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''
+                          }`}
+                          disabled={item?.quantity <= 0}
+                        >
+                          -
+                        </Button>
+                        <span className="text-lg font-bold text-gray-700 dark:text-white sm:text-lg">
+                          {item?.quantity || 0}
+                        </span>
+                        <Button
+                          onClick={() => increaseQuantity(index)}
+                          size="small"
+                          className="flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow dark:bg-white sm:!h-7 sm:w-14 sm:text-base"
+                        >
+                          +
+                        </Button>
                       </div>
                     </div>
-                    <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
-                      {`${formatCurrency(item?.total, currency)}`}
-                    </span>
-                    </div>
-                  </List.Item>
+                  </div>
+                  <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                    {`${formatCurrency(item?.total, currency)}`}
+                  </span>
+                  </div>
+                </List.Item>
                 )}
               />
-              
             </div>
           </main>
           {alertVisible && (
@@ -235,7 +232,6 @@ const Review = () => {
               className="absolute left-1/2 top-6 z-50 -translate-x-1/2 text-sm sm:text-base"
             />
           )}
-
           {/* Fixed Footer */}
           <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
             <button

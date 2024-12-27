@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatCurrency } from '@/utils/numeral';
 import { IMAGE_PATH } from './left_menu_style/menu_list';
 import Modifiers from './modifier';
+import { SendOutlined } from '@ant-design/icons';
 interface SelectedOption {
   _id: string | null;
   itemVariationData?: {
@@ -165,7 +166,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                     : 'default-image')
                 }
                 alt={item?.itemData?.name || 'Item'}
-                className="mx-4 mt-2 size-20 rounded-md sm:size-20"
+                className="mx-4 size-20 rounded-md sm:size-20"
               />
               <div className="flex flex-col grow">
                 <h2 className="text-lg font-bold dark:text-white sm:text-lg">{item?.itemData?.name || 'Unknown Name'}</h2>
@@ -177,7 +178,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   onClose();
                   handleAddInClick(0);
                 }}
-                className="mb-2 mr-5 text-lg font-bold text-black dark:text-white sm:mb-5 sm:mr-7 sm:text-2xl"
+                className="mb-2 mr-5 text-xl font-bold text-black dark:text-white sm:mb-5 sm:mr-7 sm:text-2xl"
               >
                 ✕
               </button>
@@ -187,7 +188,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             <main
               className={`flex-1 flex overflow-y-auto ${
                 modifiers.length > 3
-                  ? 'h-56 max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)]'
+                  ? 'h-52 max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)]'
                   : modifiers.length > 0
                   ? 'h-auto'
                   : 'h-0'
@@ -231,7 +232,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   onClick={onClickAddToCart}
                   className="sm:w-98 mb-4 mt-5 !h-[60px] w-full bg-gradient-to-r from-violet-500 to-indigo-600 !text-xl text-white hover:bg-violet-700 hover:!text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:text-xl"
                 >
-                  Add to order - {`${formatCurrency(total, currency)}`}
+                  <SendOutlined className="mb-2"/> Add to order - {`${formatCurrency(total, currency)}`}
                 </Button>
               </div>
             </div>
