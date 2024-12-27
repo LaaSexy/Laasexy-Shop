@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  LeftOutlined,
+  DoubleLeftOutlined,
   SendOutlined,
   ShoppingCartOutlined,
 } from '@ant-design/icons';
@@ -52,6 +52,7 @@ const Review = () => {
       return updatedCart;
     });
   };
+  
   const decreaseQuantity = (index: number) => {
     setCart((prevCart: any) => {
       const updatedCart = [...prevCart];
@@ -136,7 +137,7 @@ const Review = () => {
           {/* Sticky Header */}
           <header className="sticky top-0 z-10 flex w-full items-center justify-between rounded-b-lg bg-white py-2 shadow-md dark:shadow-[0_4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-2">
             <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
-              <LeftOutlined onClick={onClickToShowData} />
+              <DoubleLeftOutlined onClick={onClickToShowData} />
             </Button>
             <div className="mr-14 flex w-full items-center justify-center">
               <h2 className="text-center text-2xl font-bold dark:text-white sm:text-xl md:text-2xl">
@@ -146,8 +147,8 @@ const Review = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto px-2 pb-16 pt-4 sm:px-4">
-            <div className="max-h-[calc(100vh-250px)] w-full overflow-y-auto sm:max-h-[calc(100vh-180px)]">
+          <main className="flex-1 overflow-y-auto max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)] px-2 pb-16 pt-4 sm:px-4">
+            <div className="w-full sm:max-h-[calc(100vh-180px)]">
               <div className="flex items-center justify-center">
                 <div className="flex w-11/12 items-center justify-between">
                   <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
@@ -155,36 +156,35 @@ const Review = () => {
                   </h2>
                 </div>
               </div>
-             
+              
                 <List
-                className="mr-2 rounded-md border bg-white shadow-sm dark:border-gray-800 dark:bg-gray-800"
+                className="rounded-md"
                 dataSource={cart}
+                itemLayout="horizontal"
                 renderItem={(item: any, index: any) => (
-                  <List.Item
-                    key={item.id}
-                    className="flex items-center justify-between rounded-lg p-2"
-                  >
+                  <List.Item>
+                    <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
                     <div className="flex items-start">
                       <Avatar
                         src={
                           IMAGE_PATH + (item?.itemData?.imageUrl || 'default-image')
                         }
                         alt={item?.itemData?.name}
-                        className="ml-3 mr-3 size-24 rounded-md sm:size-24 shadow-lg shadow-gray-500/30 dark:shadow-lg dark:shadow-gray-900/50"
+                        className="ml-1 mr-2 mt-1 mb-1 size-20 rounded-md sm:size-24"
                       />
-                      <div className="w-48 text-gray-700 dark:text-white">
-                        <p className="text-sm font-bold">
+                      <div className="w-48 text-gray-700 mt-1 dark:text-white sm:mt-3">
+                        <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
                           {item?.itemData?.name || 'Unknown'}
                         </p>
-                        <p className="w-48 text-xs text-gray-600 dark:text-gray-300 sm:w-[700px]">
-                          {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, indexs: any) => {
+                        <p className="truncate sm:w-96 text-xs text-gray-600 dark:text-gray-300">
+                          {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, ind: any) => {
                             if (name && type && price !== undefined) {
                               return (
-                                <span key={indexs}>
+                                <span key={ind}>
                                   {`${type}: ${name}${
                                     price !== 0 ? ` + ${formatCurrency(price, currency)}` : ''
                                   }`}
-                                  {indexs < item.selectedAddIns.length - 1 ? ', ' : ''}
+                                  {ind < item.selectedAddIns.length - 1 ? ', ' : ''}
                                 </span>
                               );
                             }
@@ -195,7 +195,7 @@ const Review = () => {
                           <Button
                             onClick={() => decreaseQuantity(index)}
                             size="small"
-                            className={`flex !h-7 w-16 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow sm:h-10 sm:w-14 sm:text-base ${
+                            className={`flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow sm:!h-7 sm:w-14 sm:text-base ${
                               item?.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''
                             }`}
                             disabled={item?.quantity <= 0}
@@ -208,16 +208,17 @@ const Review = () => {
                           <Button
                             onClick={() => increaseQuantity(index)}
                             size="small"
-                            className="flex !h-7 w-16 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow dark:bg-white sm:h-10 sm:w-14 sm:text-base"
+                            className="flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow dark:bg-white sm:!h-7 sm:w-14 sm:text-base"
                           >
                             +
                           </Button>
                         </div>
                       </div>
                     </div>
-                    <span className="mb-5 mr-4 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                    <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
                       {`${formatCurrency(item?.total, currency)}`}
                     </span>
+                    </div>
                   </List.Item>
                 )}
               />
@@ -241,7 +242,7 @@ const Review = () => {
               onClick={cart.length > 0 ? handleOrder : handleCheckOut}
               className="mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md hover:opacity-95 sm:w-3/5 sm:p-3"
             >
-              {cart.length === 0 ? (
+              {cart.length === 0 || cart.length === null ? (
                 <span className="flex items-center justify-center">
                   <ShoppingCartOutlined className="mr-2" /> Checkout Now
                 </span>

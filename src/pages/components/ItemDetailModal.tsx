@@ -94,11 +94,11 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     }
     return (
       <div className="max-h-80 overflow-y-auto md:max-h-96">
-        <div className="mb-4 bg-white py-2 dark:bg-slate-900">
+        <div className="mb-4 bg-white pt-1 pb-2 dark:bg-slate-900">
           <h3 className="ml-4 text-lg font-semibold dark:text-white">
             Options
           </h3>
-          <div className="ml-5  flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
+          <div className="ml-5 flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
             {variations?.map((value: any) => (
               <Button
                 key={value._id}
@@ -108,7 +108,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   selectedOption?._id === value?._id
                     ? ' border-violet-800 !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
                     : 'border-gray-400 text-gray-800 dark:border-gray-700'
-                } !rounded-md border bg-white hover:border-violet-800 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
+                } !rounded-md border bg-white hover:border-violet-800 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white sm:px-6`}
               >
                 {`${value?.itemVariationData?.name} - ${formatCurrency(
                   value?.itemVariationData?.priceMoney?.amount,
@@ -167,7 +167,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 alt={item?.itemData?.name || 'Item'}
                 className="mx-4 mt-2 size-20 rounded-md sm:size-20"
               />
-              <div className="flex flex-col grow ">
+              <div className="flex flex-col grow">
                 <h2 className="text-lg font-bold dark:text-white sm:text-lg">{item?.itemData?.name || 'Unknown Name'}</h2>
                 <p className="text-sm mt-1 dark:text-gray-500 sm:text-sm">{item?.itemData?.description}</p>
               </div>
@@ -183,12 +183,28 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               </button>
             </div>
             {optionRender(item?.itemData?.variations)}
-            <Modifiers
-              onChanged={setSelectedAddIns}
-              selectedVariation={selectedOption}
-              data={modifiers}
-            />
-            <div className="relative bottom-0 mt-10 items-center rounded-t-3xl  bg-white p-4 py-5 shadow-md dark:bg-black">
+            {/* Scrollable Modifiers Section */}
+            <main
+              className={`flex-1 flex overflow-y-auto ${
+                modifiers.length > 3
+                  ? 'h-56 max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)]'
+                  : modifiers.length > 0
+                  ? 'h-auto'
+                  : 'h-0'
+              }`}
+            >
+              <div className="w-full sm:max-h-[calc(100vh-180px)]">
+                {modifiers.length > 0 && (
+                  <Modifiers
+                    onChanged={setSelectedAddIns}
+                    selectedVariation={selectedOption}
+                    data={modifiers}
+                  />
+                )}
+              </div>
+            </main>
+
+            <div className="relative bottom-0 mt-6 items-center rounded-t-3xl bg-white p-4 py-5 shadow-md dark:bg-black">
               <div className="flex items-center justify-center gap-4">
                 <Button
                   size="large"
@@ -200,9 +216,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 >
                   -
                 </Button>
-                <span className="mx-3 text-2xl font-bold sm:mx-5 sm:text-5xl">
-                  {quantity}
-                </span>
+                <span className="mx-3 text-2xl font-bold sm:mx-5 sm:text-5xl">{quantity}</span>
                 <Button
                   size="large"
                   onClick={increaseQuantity}

@@ -72,9 +72,9 @@ const Modifiers: React.FC<ModifiersProps> = ({
     isMultiple = false,
   }: ModifierGroup) => {
     return (
-      <div key={_id}>
-        <div className="max-h-80 overflow-y-auto md:max-h-96">
-          <div className="bg-white py-3 dark:bg-slate-900">
+      <div key={_id} className="flex-1 h-full overflow-y-auto">
+        <div className="max-h-[calc(100vh-100px)] sm:max-h-[calc(100vh-120px)]">
+          <div className="bg-white dark:bg-slate-900">
             <h3 className="ml-4 text-lg font-semibold">
               {isMultiple ? `${type}` : type}
             </h3>
@@ -94,21 +94,21 @@ const Modifiers: React.FC<ModifiersProps> = ({
                     size="large"
                     className={`${
                       isSelected
-                        ? ' border-violet-800  !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
+                        ? ' border-violet-800 !font-semibold text-violet-800 dark:border-none dark:bg-violet-700 dark:text-white dark:hover:!text-white'
                         : 'border-gray-400 text-gray-800 dark:border-gray-700'
-                    } !rounded-md border bg-white hover:border-violet-700 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white  sm:px-6`}
+                    } !rounded-md border bg-white hover:border-violet-700 hover:text-violet-800 dark:border dark:bg-slate-900 dark:text-white dark:hover:!border-gray-600 dark:hover:!text-white sm:px-6`}
                   >
                     {item.name} {item.price > 0 ? `(+${item.price})` : ''}
                   </Button>
                 );
               })}
             </div>
+            <hr className="mt-3 border-gray-200 dark:border-gray-900"/>
           </div>
         </div>
       </div>
     );
   };
-
   return <div>{data.map(renderModifierGroup)}</div>;
 };
 

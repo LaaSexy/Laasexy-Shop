@@ -25,7 +25,6 @@ const useSocket = ({ onReceivedOrder = () => {} }: UseSocketProps) => {
     }
     const tokenId = tokenBarer;
     const sessionId = session._id;
-    console.log(`Socket: ${sessionId}`);
     socketRef.current = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
       transports: ['websocket'],
       query: { sessionId },
