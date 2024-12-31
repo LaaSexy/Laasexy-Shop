@@ -2,25 +2,24 @@ import React, { useEffect, useState } from 'react';
 import {
   DoubleLeftOutlined,
   SendOutlined,
-  ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, List } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import useAuthications from '@/hooks/useAuth';
 import { useV2Items } from '@/hooks/useItems';
-import useOrder from '@/hooks/useOrder';
+import useOrder, { orderIdAtom } from '@/hooks/useOrder';
 import useSession, { sessionAtom } from '@/hooks/useSession';
 import { formatCurrency } from '@/utils/numeral';
 import { cartAtom } from './components/ItemDetailModal';
 import { IMAGE_PATH } from './components/left_menu_style/menu_list';
 import MultipleSkeletons from './components/MultipleSkeletons';
 import { generateInvoiceId } from '@/utils/generateInvoiceId';
-
 const Review = () => {
   const [cart, setCart] = useAtom(cartAtom);
   const [orderId, setOrderId] = useState(generateInvoiceId());
   const [session] = useAtom(sessionAtom);
+  const [idOrder] = useAtom(orderIdAtom);
   const [, setQuantities] = useState<number[]>([]);
   const [, setPrices] = useState<number[]>([]);
   const { mutate: isSuccess } = useAuthications();
@@ -30,6 +29,13 @@ const Review = () => {
   const { mutate: createOrder } = useOrder();
   const { mutate: createSession } = useSession();
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  useEffect(() => {
+    const storedOrderSuccess = localStorage.getItem('orderSuccess');
+    if (storedOrderSuccess === 'true') {
+      setOrderSuccess(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isSuccess) {
@@ -69,12 +75,14 @@ const Review = () => {
       return updatedCart;
     });
   };
+
   const calculateTotal = () => {
     return cart
       .filter((item) => item?.total > 0)
       .reduce((total, item) => total + (item?.total || 0), 0)
       .toFixed(0);
   };
+
   const total: any = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
   const handleOrder = () => {
@@ -92,6 +100,7 @@ const Review = () => {
       createdAt: item?.createAt,
       modifiers: item?.modifiers,
     }));
+    localStorage.setItem('orderSuccess', 'true');
     if (session?._id && orderItems.length > 0) {
       createOrder({
         orderId,
@@ -104,7 +113,6 @@ const Review = () => {
       setOrderId(generateInvoiceId());
     }
   };
-
   const handleAddMoreItems = () => {
     router.push({
       pathname: '/newPage',
@@ -138,9 +146,9 @@ const Review = () => {
   };
 
   const OrderSuccessPage = () =>(
-    <div className="bg-white dark:bg-black flex justify-center items-center min-h-screen">
-      <div className="flex flex-col items-center shadow-2xl p-20 rounded-xl mb-20 bg-white dark:bg-black"> 
-        <div className="bg-green text-white animate-pulse rounded-full p-8 mb-6">
+    <div className="bg-white dark:bg-black flex justify-center items-center min-h-svh">
+      <div className="flex flex-col items-center rounded-xl bg-white dark:bg-black p-6 md:p-8 lg:p-10">
+        <div className="bg-green shadow-lg text-white animate-pulse rounded-full mb-8">
           <svg
             className="ft-green-tick"
             xmlns="http://www.w3.org/2000/svg"
@@ -162,28 +170,51 @@ const Review = () => {
             />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+        <h1 className="text-xl md:text-2xl mb-4 font-bold text-gray-800 dark:text-white text-center">
           Order Sent Successfully!
         </h1>
-        <p className="text-gray-600 mb-8 text-center">
-          Your order has been sent. You can add more items or proceed to checkout.
-        </p>
-
-        <div className="flex justify-center items-center space-x-4">
-          <Button
-            size="large"
-            className="mx-4 rounded-3xl flex border-none font-bold justify-center items-center bg-gradient-to-r !p-6 from-violet-500 to-indigo-600 text-white !text-xl  hover:!text-white shadow hover:bg-gray-400"
+        <div className="flex justify-between items-center">
+          <p className="text-gray-900 font-semibold text-lg dark:text-white">Order number: </p>
+          <p className="text-gray-900 font-semibold text-lg dark:text-white ml-4">{idOrder}</p>
+        </div>
+        <div className="w-full sm:w-[500px] mb-10">
+          <p className="text-gray-600 text-center mt-3 dark:text-white">
+            Congratulations! Your order has been successfully placed.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <button
+            type="button"
             onClick={handleAddMoreItems}
+            className="w-full sm:w-auto mx-4 rounded-xl border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
-            <DoubleLeftOutlined /> Add More Items
-          </Button>
-          <Button
-            size="large"
-            className="mx-4 rounded-3xl border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 !p-6 !text-xl font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            <svg
+              className="w-5 h-5 me-2"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2.1L2 9h2v11a1 1 0 0 0 1 1h6V14h2v7h6a1 1 0 0 0 1-1V9h2L12 2.1ZM19 9v11h-4v-6H9v6H5V9L12 4.3 19 9Z" />
+            </svg>
+            Add More Items
+          </button>
+          <button
+            type="button"
             onClick={handleCheckout}
+            className="w-full sm:w-auto mx-4 rounded-xl border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
-            <ShoppingCartOutlined /> Checkout Now
-          </Button>
+            <svg
+              className="w-4 h-4 me-2"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 18 21"
+            >
+              <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+            </svg>
+            Checkout Now
+          </button>
         </div>
       </div>
     </div>
@@ -198,7 +229,7 @@ const Review = () => {
         <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
           <header className="sticky top-0 z-10 flex w-full items-center justify-between rounded-b-lg bg-white py-2 shadow-md dark:shadow-[0_4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-2">
-            <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
+            <Button className="float-left flex items-center justify-center border-none !p-5 text-2xl shadow-none hover:text-black active:!border-none active:outline-none dark:bg-black dark:hover:!text-white sm:text-2xl">
               <DoubleLeftOutlined onClick={onClickToShowData} />
             </Button>
             <div className="mr-16 flex w-full items-center justify-center">

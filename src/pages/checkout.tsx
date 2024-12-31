@@ -23,7 +23,6 @@ const checkout = () => {
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
   const { mutate, data,  } = useOrderSessionId();
-
   useEffect(() => {
     const item =
       data
@@ -34,7 +33,6 @@ const checkout = () => {
         ?.flatMap((value: any) => value.items) || [];
     setItems(item);
   }, [data]);
-
   const handleOrderUpdate = ( ) => {
     mutate({ sessionId: session?._id || '' })
   };
