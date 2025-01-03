@@ -29,7 +29,9 @@ const Review = () => {
   const { mutate: createOrder } = useOrder();
   const { mutate: createSession } = useSession();
   const [orderSuccess, setOrderSuccess] = useState(false);
-
+  useEffect(() =>{
+    console.log(cart);
+  },[cart])
   useEffect(() => {
     const storedOrderSuccess = localStorage.getItem('orderSuccess');
     if (storedOrderSuccess === 'true') {
@@ -89,7 +91,7 @@ const Review = () => {
     setOrderSuccess(true);
     const orderItems = cart.map((item: any) => ({
       id: item.id,
-      name: item?.itemData?.name,
+      name: item?.name,
       itemId: item?._id,
       imageUrl: item?.itemData?.imageUrl,
       variationId: item?.variation?._id,
@@ -265,7 +267,7 @@ const Review = () => {
                     />
                     <div className="w-48 text-gray-700 mt-1 dark:text-white sm:mt-3">
                       <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
-                        {item?.itemData?.name || 'Unknown'}
+                        {item?.name || 'Unknown'}
                       </p>
                       <p className="truncate sm:w-[500px] text-xs text-gray-600 dark:text-gray-300">
                         {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, ind: any) => {

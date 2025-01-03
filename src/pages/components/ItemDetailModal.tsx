@@ -126,8 +126,13 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     handleClick();
     onClose();
     const deviceUuid = uuidv4();
+    const name =
+    item?.itemData?.variations?.length < 2
+      ? item?.itemData?.name || ''
+      : `${item?.itemData?.name || ''}${selectedOption?.itemVariationData?.name ? ` (${selectedOption.itemVariationData.name})` : ''}`.trim();
     const myItem = {
       ...item,
+      name,
       modifiers: selectedAddIns,
       id: deviceUuid,
       selectedAddIns,
@@ -169,7 +174,19 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 className="mx-4 size-20 rounded-md sm:size-20"
               />
               <div className="flex flex-col grow">
-                <h2 className="text-lg font-bold dark:text-white sm:text-lg">{item?.itemData?.name || 'Unknown Name'}</h2>
+                {item?.itemData?.variations?.length < 2 ? (
+                  <h2 className="text-lg font-bold dark:text-white sm:text-lg">
+                    {item?.itemData?.name || ''}
+                  </h2>
+                ) : (
+                  <h2 className="text-lg font-bold dark:text-white sm:text-lg">
+                    {`${item?.itemData?.name || ''}${
+                      selectedOption?.itemVariationData?.name
+                        ? ` (${selectedOption.itemVariationData.name})`
+                        : ''
+                    }`.trim()}
+                  </h2>
+                )}
                 <p className="text-sm mt-1 dark:text-gray-500 sm:text-sm">{item?.itemData?.description}</p>
               </div>
               <button
