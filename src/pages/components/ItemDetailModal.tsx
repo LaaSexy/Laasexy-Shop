@@ -13,6 +13,7 @@ interface SelectedOption {
     priceMoney?: {
       amount: number;
     };
+    name:string,
   };
 }
 interface Modifier {
