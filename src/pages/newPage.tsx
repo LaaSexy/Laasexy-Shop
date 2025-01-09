@@ -312,6 +312,7 @@ const newPage = () => {
             </div>
           </nav>
           {showCart ? <GridContent /> : <ListContent />}
+          
           {/* Fixed Footer */}
           {(cart.length > 0 || items.length > 0) && (
             <footer className="fixed bottom-0 flex w-full shrink-0 items-center justify-center bg-white dark:bg-black">
