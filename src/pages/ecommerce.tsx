@@ -8,11 +8,9 @@ import useOrderSessionId from '@/hooks/useCheckOut';
 import { useV2Items } from '@/hooks/useItems';
 import useSession, { sessionAtom } from '@/hooks/useSession';
 import { Item } from '@/types/Item';
-import ItemDetailModal, { cartAtom } from './components/ItemDetailModal';
 import MultipleSkeletons from './components/MultipleSkeletons';
 import { formatCurrency } from '@/utils/numeral';
 import { MenuOutlined } from '@ant-design/icons';
-
 export const imagePath = 'https://api.pointhub.io';
 export const deviceIdAtom = atom<string | null>(null);
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {
@@ -31,10 +29,9 @@ export const initializeDeviceUuidAtom = atom(null, (get, set) => {
 export const generateDeviceId = () => {
   return Math.floor(Math.random() * 100000) + "-" + Date.now();
 };
-import type { GetProps } from 'antd';
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
 
+type SearchProps = React.ComponentProps<typeof Search>;
+const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value:any, _e:any, info:any) => console.log(info?.source, value);
 // LanguageDropdown Component
 const LanguageDropdown = () => {
@@ -117,9 +114,7 @@ const LanguageDropdown = () => {
   );
 };
 
-
 const Ecommerce = () => {
-  const [cart] = useAtom(cartAtom);
   const [deviceId] = useAtom(deviceIdAtom);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -290,7 +285,7 @@ const Ecommerce = () => {
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
                     />
                   </svg>
-                  <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold dark:border-white text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2">{cart.length || 0}</div>
+                  <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold dark:border-white text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2">0</div>
                 </button>
                 <div className="flex justify-end items-center pr-6">
                   <Button
@@ -717,6 +712,7 @@ const Ecommerce = () => {
               </div>
             </div>
           )}
+
           <footer>
             <div className="bg-violet-500">
               <div className="max-w-2xl mx-auto text-white py-10">
@@ -726,15 +722,17 @@ const Ecommerce = () => {
                   <div className="flex justify-center my-10">
                     {/* Google Play Store Button */}
                     <div className="flex items-center border rounded-lg px-4 py-2 mx-2 cursor-pointer hover:bg-gray-800 transition-colors duration-300">
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/512/888/888857.png"
-                        alt="Google Play Store"
-                        className="w-7 md:w-8"
-                      />
-                      <div className="text-left ml-3">
-                        <p className="text-xs text-gray-200">Download on</p>
-                        <p className="text-sm md:text-base">Google Play Store</p>
-                      </div>
+                      <a href="https://play.google.com/store/apps/details?id=io.pointhub.merchant&hl=km">
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/512/888/888857.png"
+                          alt="Google Play Store"
+                          className="w-7 md:w-8"
+                        />
+                        <div className="text-left ml-3">
+                          <p className="text-xs text-gray-200">Download on</p>
+                          <p className="text-sm md:text-base text-gray-200">Google Play Store</p>
+                        </div>
+                      </a>
                     </div>
 
                     {/* Apple Store Button */}
