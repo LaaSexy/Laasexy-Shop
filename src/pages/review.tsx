@@ -131,6 +131,8 @@ const Review = () => {
       query: {
         branch: query.branch,
         table: query.table,
+        name: query.name,
+
       },
     });
   };
@@ -142,6 +144,8 @@ const Review = () => {
         query: {
           branch: query.branch,
           table: query.table,
+          name: query.name,
+
         },
       });
     }
@@ -246,7 +250,7 @@ const Review = () => {
               <div className="flex items-center justify-center">
                 <div className="flex w-11/12 items-center justify-between">
                   <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
-                    Table #8
+                    Table #{ query.name}
                   </h2>
                 </div>
               </div>

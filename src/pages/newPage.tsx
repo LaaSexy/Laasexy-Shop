@@ -122,6 +122,8 @@ const newPage = () => {
         query: {
           branch: query.branch,
           table: query.table,
+          name: query.name,
+
         },
       });
     }
@@ -134,6 +136,7 @@ const newPage = () => {
         query: {
           branch: query.branch,
           table: query.table,
+          name: query.name,
         },
       });
     }

@@ -97,6 +97,7 @@ const checkout = () => {
         query: {
           branch: query.branch,
           table: query.table,
+          name: query.name,
         },
       });
     }
@@ -123,7 +124,7 @@ const checkout = () => {
               <div className="flex items-center justify-center">
                 <div className="flex w-11/12 items-center justify-between">
                   <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
-                    Table to Checkout
+                    Table #{query.name}
                   </h2>
                 </div>
               </div>
@@ -257,7 +258,7 @@ const checkout = () => {
                   {formatCurrency(total ?? 0, currency ?? 'USD')}
                 </span>
               </div>
-              <div className="flex w-full mt-1 items-center justify-center">
+              {/* <div className="flex w-full mt-1 items-center justify-center">
                 <button
                   onClick={handleCheckOut}
                   className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border border-white bg-gradient-to-r from-violet-500 to-indigo-600 p-2 text-center text-white hover:opacity-95 sm:mx-24`}
@@ -269,7 +270,7 @@ const checkout = () => {
                     })`}
                   </h2>
                 </button>
-              </div>
+              </div> */}
             </div>
           </footer>
         </div>
