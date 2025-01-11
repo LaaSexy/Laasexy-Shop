@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DoubleLeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { DoubleLeftOutlined } from '@ant-design/icons';
 import { Alert, Avatar, Button, List } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
@@ -81,15 +81,15 @@ const checkout = () => {
   };
   const total = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
-  const handleCheckOut = () => {
-    if (items.length > 0) {
-      setAlertVisible(true);
-      setTimeout(() => {
-        setAlertVisible(false);
-      }, 3000);
-      setItems([]);
-    }
-  };
+  // const handleCheckOut = () => {
+  //   if (items.length > 0) {
+  //     setAlertVisible(true);
+  //     setTimeout(() => {
+  //       setAlertVisible(false);
+  //     }, 3000);
+  //     setItems([]);
+  //   }
+  // };
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
