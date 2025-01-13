@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Drawer, Input, List, Menu } from 'antd';
+import { Button, Drawer, Input, Menu } from 'antd';
 import { useRouter } from 'next/router';
 import { useV2Items } from '@/hooks/useItems';
 import MultipleSkeletons from '../components/MultipleSkeletons';
 import { imagePath } from '../order/index';
 import { formatCurrency } from '@/utils/numeral';
 import _ from 'lodash';
-import { AppstoreOutlined, MenuOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { MenuOutlined } from '@ant-design/icons';
 type SearchProps = React.ComponentProps<typeof Search>;
 const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value: any, _e: any, info: any) =>
@@ -127,13 +127,7 @@ const Ecommerce = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const [visible, setVisible] = useState(false);
-  const [showCart, setShowCart] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedShowCart = localStorage.getItem('showCart');
-      return savedShowCart ? JSON.parse(savedShowCart) : true;
-    }
-    return true;
-  });
+
 
   useEffect(() => {
     if (shopV2Data?.items) {
@@ -260,64 +254,7 @@ const Ecommerce = () => {
       </div>
     </div>
   );
-
-  const ListContent = ({ items }: { items: Item[] }) => (
-    <div className="w-full bg-white dark:bg-black">
-      <List
-        className="bg-white dark:bg-slate-800"
-        loading={isFetching}
-        itemLayout="horizontal"
-        dataSource={items}
-        renderItem={(item: Item) => (
-          <List.Item>
-            <a
-              href={`/ProductPage/${item._id}`}
-              className="flex w-full justify-between no-underline rounded-md border shadow-sm dark:border-gray-700 dark:bg-slate-900 cursor-pointer hover:no-underline hover:border-transparent" 
-            >
-              <div className="flex w-full items-center sm:w-auto">
-                <Avatar
-                  src={
-                    item?.itemData?.imageUrl
-                      ? `${imagePath}${item.itemData.imageUrl}`
-                      : '/placeholder-image.jpg'
-                  }
-                  className="m-2 size-20 rounded-md sm:size-28 transition duration-300 ease-in-out hover:scale-110"
-                />
-                <div>
-                  <h3 className="mb-3 text-sm text-black dark:text-white">
-                    {item?.itemData?.name || 'Unnamed Product'}
-                  </h3>
-                  <h5 className="!w-5 text-lg font-bold text-violet-700 dark:text-white sm:w-4">
-                    {formatCurrency(
-                      item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
-                      shopV2Data?.shop?.currency
-                    )}
-                  </h5>
-                </div>
-              </div>
-              <div className="mr-5 flex items-center gap-4">
-                <div>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                    className="mt-10 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 text-base font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
-                  >
-                    <img
-                      src="/assets/images/add-to-cart.png"
-                      alt="Add to Cart Icon"
-                      className="size-4"
-                    />
-                  </Button>
-                </div>
-              </div>
-            </a>
-          </List.Item>
-        )}
-      />
-    </div>
-  );
-
+ 
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % images.length);
   };
@@ -575,11 +512,7 @@ const Ecommerce = () => {
                     </button>
                   </div>
                   <div className="p-4">
-                    {showCart ? (
                       <GridContent items={items} productsScrollRef={productsScrollRef} />
-                    ) : (
-                      <ListContent items={items} />
-                    )}
                   </div>
                 </div>
               ))}

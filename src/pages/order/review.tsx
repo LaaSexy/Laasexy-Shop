@@ -30,6 +30,10 @@ const Review = () => {
   const { mutateSession: createSession } = useSession();
   const [orderSuccess, setOrderSuccess] = useState(false);
 
+  useEffect(() =>{
+    console.log(cart);
+  },[cart]) 
+
   useEffect(() => {
     const storedOrderSuccess = localStorage.getItem('orderSuccess');
     if (storedOrderSuccess === 'true') {
