@@ -14,8 +14,8 @@ import { useV2Items } from '@/hooks/useItems';
 import useSession, { sessionAtom } from '@/hooks/useSession';
 import { Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
-import ItemDetailModal, { cartAtom } from './components/ItemDetailModal';
-import MultipleSkeletons from './components/MultipleSkeletons';
+import ItemDetailModal, { cartAtom } from '../components/ItemDetailModal';
+import MultipleSkeletons from '../components/MultipleSkeletons';
 export const imagePath = 'https://api.pointhub.io';
 export const deviceIdAtom = atom<string | null>(null);
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {

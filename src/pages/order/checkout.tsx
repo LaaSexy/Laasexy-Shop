@@ -8,8 +8,8 @@ import useOrderSessionId from '@/hooks/useCheckOut';
 import { useV2Items } from '@/hooks/useItems';
 import { sessionAtom } from '@/hooks/useSession';
 import { formatCurrency } from '@/utils/numeral';
-import { IMAGE_PATH } from './components/left_menu_style/menu_list';
-import MultipleSkeletons from './components/MultipleSkeletons';
+import { IMAGE_PATH } from '../components/left_menu_style/menu_list';
+import MultipleSkeletons from '../components/MultipleSkeletons';
 import { deviceIdAtom, initializeDeviceUuidAtom } from './newPage';
 import useSocket from '@/hooks/useSocket';
 const checkout = () => {
