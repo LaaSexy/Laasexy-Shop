@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Drawer, Input, List, Menu } from 'antd';
 import { useRouter } from 'next/router';
 import { useV2Items } from '@/hooks/useItems';
-import MultipleSkeletons from './components/MultipleSkeletons';
-import { imagePath } from './newPage';
+import MultipleSkeletons from '../components/MultipleSkeletons';
+import { imagePath } from '../order/index';
 import { formatCurrency } from '@/utils/numeral';
 import _ from 'lodash';
 import { AppstoreOutlined, MenuOutlined, UnorderedListOutlined } from '@ant-design/icons';
@@ -359,7 +359,7 @@ const Ecommerce = () => {
         <div className="flex min-h-screen flex-col">
           <div className="relative flex min-h-screen max-w-full flex-col bg-[#e8e4e4] dark:bg-black">
             {/* Sticky Header */}
-            <header className="sticky left-0 top-0 z-50 h-32 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-52">
+            <header className="sticky left-0 top-0 z-50 h-32 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   {shopV2Data?.shop?.logoUrl && (
@@ -384,16 +384,6 @@ const Ecommerce = () => {
                     onSearch={onSearch}
                     className="mr-6 w-[400px] sm:w-[300px]"
                   />
-                  <div className="absolute right-0 flex h-[50px] w-[50px] items-center justify-center rounded-md bg-violet-500">
-                    <Button
-                      size="large"
-                      onClick={() => setShowCart(!showCart)}
-                      className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white hover:!border-white dark:border-white"
-                      aria-label="Open Options"
-                    >
-                      {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-                    </Button>
-                  </div>
                 </div>
                 <div className="hidden items-center justify-center sm:flex">
                   <Search
@@ -440,7 +430,7 @@ const Ecommerce = () => {
                 </div>
               </div>
               <nav className="hidden max-w-full flex-col gap-4 overflow-auto whitespace-nowrap px-4 sm:flex sm:flex-row sm:pl-5">
-                <div className="flex w-full min-w-full max-w-full items-start justify-start gap-4 overflow-x-auto whitespace-nowrap sm:pl-5 sm:pr-14">
+                <div className="flex w-full min-w-full max-w-full items-start justify-start gap-4 overflow-x-auto whitespace-nowrap sm:pl-5 sm:pr-8">
                   <ul className="relative flex flex-row items-center justify-center space-x-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                     {shopV2Data?.subCategories?.map((subCategory: any) => (
                       <li key={subCategory._id} className="list-none">
@@ -459,16 +449,6 @@ const Ecommerce = () => {
                       </li>
                     ))}
                   </ul>
-                  <div className="absolute right-0 mt-3 sm:mt-3 flex h-[50px] w-[50px] items-center justify-center rounded-md bg-violet-500">
-                    <Button
-                      size="large"
-                      onClick={() => setShowCart(!showCart)}
-                      className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white hover:!border-white dark:border-white"
-                      aria-label="Open Options"
-                    >
-                      {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-                    </Button>
-                  </div>
                 </div>
               </nav>
             </header>

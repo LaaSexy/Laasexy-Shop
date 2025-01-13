@@ -11,9 +11,9 @@ import { useV2Items } from '@/hooks/useItems';
 import useOrder, { orderIdAtom } from '@/hooks/useOrder';
 import useSession, { sessionAtom } from '@/hooks/useSession';
 import { formatCurrency } from '@/utils/numeral';
-import { cartAtom } from './components/ItemDetailModal';
-import { IMAGE_PATH } from './components/left_menu_style/menu_list';
-import MultipleSkeletons from './components/MultipleSkeletons';
+import { cartAtom } from '../components/ItemDetailModal';
+import { IMAGE_PATH } from '../components/left_menu_style/menu_list';
+import MultipleSkeletons from '../components/MultipleSkeletons';
 import { generateInvoiceId } from '@/utils/generateInvoiceId';
 const Review = () => {
   const [cart, setCart] = useAtom(cartAtom);
@@ -27,11 +27,9 @@ const Review = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: createOrder } = useOrder();
-  const { mutate: createSession } = useSession();
+  const { mutateSession: createSession } = useSession();
   const [orderSuccess, setOrderSuccess] = useState(false);
-  useEffect(() =>{
-    console.log(cart);
-  },[cart])
+
   useEffect(() => {
     const storedOrderSuccess = localStorage.getItem('orderSuccess');
     if (storedOrderSuccess === 'true') {
@@ -115,9 +113,10 @@ const Review = () => {
       setOrderId(generateInvoiceId());
     }
   };
+
   const handleAddMoreItems = () => {
     router.push({
-      pathname: '/newPage',
+      pathname: '/order',
       query: {
         branch: query.branch,
         table: query.table,
@@ -127,12 +126,11 @@ const Review = () => {
 
   const handleCheckout = () => {
     router.push({
-      pathname: '/checkout',
+      pathname: '/order/checkout',
       query: {
         branch: query.branch,
         table: query.table,
         name: query.name,
-
       },
     });
   };
@@ -140,12 +138,11 @@ const Review = () => {
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
-        pathname: '/newPage',
+        pathname: '/order',
         query: {
           branch: query.branch,
           table: query.table,
           name: query.name,
-
         },
       });
     }

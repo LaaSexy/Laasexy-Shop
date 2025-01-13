@@ -55,7 +55,7 @@ const newPage = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: loginDevice, isSuccess } = useAuthications();
-  const { mutate: createSession } = useSession();
+  const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
  
   useEffect(() => {
@@ -118,12 +118,11 @@ const newPage = () => {
   const reviewOrder = () => {
     if (query?.branch && query?.table) {
       router.push({
-        pathname: '/review',
+        pathname: 'order/review',
         query: {
           branch: query.branch,
           table: query.table,
           name: query.name,
-
         },
       });
     }
@@ -132,7 +131,7 @@ const newPage = () => {
   const ProceedPayment = () => {
     if (query?.branch && query?.table) {
       router.push({
-        pathname: '/checkout',
+        pathname: 'order/checkout',
         query: {
           branch: query.branch,
           table: query.table,
@@ -290,7 +289,7 @@ const newPage = () => {
                     <Button
                       size='large'
                       onClick={() => onClickCategory(subCategory)}
-                      className={`my-3 rounded-md border flex justify-center items-center !p-5 border-[#DBD5D5] px-4 py-4 text-base dark:border-gray-700 dark:hover:!border-gray-600 sm:my-4 ${
+                      className={`my-3 rounded-md border flex justify-center items-center !p-5 border-[#DBD5D5] dark:hover:!border-violet-500 px-4 py-4 text-base dark:border-gray-700 sm:my-4 ${
                         selectedCategory === subCategory._id
                           ? ' bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                           : 'bg-transparent'

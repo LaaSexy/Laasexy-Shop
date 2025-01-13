@@ -10,7 +10,7 @@ import { sessionAtom } from '@/hooks/useSession';
 import { formatCurrency } from '@/utils/numeral';
 import { IMAGE_PATH } from '../components/left_menu_style/menu_list';
 import MultipleSkeletons from '../components/MultipleSkeletons';
-import { deviceIdAtom, initializeDeviceUuidAtom } from './newPage';
+import { deviceIdAtom, initializeDeviceUuidAtom } from './index';
 import useSocket from '@/hooks/useSocket';
 const checkout = () => {
   const [deviceId] = useAtom(deviceIdAtom);
@@ -93,7 +93,7 @@ const checkout = () => {
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
-        pathname: '/newPage',
+        pathname: '/order',
         query: {
           branch: query.branch,
           table: query.table,
