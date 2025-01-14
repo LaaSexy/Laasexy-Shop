@@ -32,21 +32,21 @@ export const initializeDeviceUuidAtom = atom(null, (get, set) => {
 });
 
 export const generateDeviceId = () => {
-  return Math.floor(Math.random() * 100000) + "-" + Date.now();
+  return Math.floor(Math.random() * 100000) + '-' + Date.now();
 };
 
 const newPage = () => {
   const [cart] = useAtom(cartAtom);
+  const [session] = useAtom(sessionAtom);
   const [deviceId] = useAtom(deviceIdAtom);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [filteredItems, setFilteredItems] = useState([]);
-  const [session] = useAtom(sessionAtom);
   const [items, setItems] = useState([]);
   const [seletedItem, setSelectedItem] = useState(null);
   const [showCart, setShowCart] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      const savedShowCart = localStorage.getItem("showCart");
-      return savedShowCart ? JSON.parse(savedShowCart) : true; 
+    if (typeof window !== 'undefined') {
+      const savedShowCart = localStorage.getItem('showCart');
+      return savedShowCart ? JSON.parse(savedShowCart) : true;
     }
     return true;
   });
@@ -57,9 +57,13 @@ const newPage = () => {
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
-
-  
  
+  useEffect(() => {
+    if (isSuccess) {
+      createSession();
+    }
+  }, [isSuccess]);
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("showCart", JSON.stringify(showCart));
@@ -77,11 +81,6 @@ const newPage = () => {
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      createSession();
-    }
-  }, [isSuccess]);
   
   useEffect(() => {
     if (deviceId === null) {

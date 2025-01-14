@@ -442,7 +442,7 @@ const Ecommerce = () => {
                         {items.map((item: Item) => (
                           <a
                             key={item._id}
-                            href={`/ProductOverview/${item._id}`}
+                            href={`/ecommerce/ProductDetail/${item._id}`}
                             className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
                           >
                             <img

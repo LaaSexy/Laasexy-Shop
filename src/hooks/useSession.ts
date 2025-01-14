@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
+import { atom, useAtom } from 'jotai';
 import { useMutation } from 'react-query';
 import { useEffect, useState } from 'react';
 
@@ -15,7 +14,7 @@ export interface Session {
   };
 }
 
-export const sessionAtom = atomWithStorage<Session | null>('session', null);
+export const sessionAtom = atom<Session | null>(null);
 
 const createSession = async (params: any) => {
   console.log({params})
@@ -37,7 +36,6 @@ export default function useSession() {
           const { latitude, longitude } = coords;
           console.log({latitude,longitude})
           setLocation({ latitude, longitude });
- 
           setIsLocationLoading(false);
         },
         (error) => {
