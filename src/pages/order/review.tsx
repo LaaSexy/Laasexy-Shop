@@ -31,8 +31,8 @@ const Review = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() =>{
-    console.log(cart);
-  },[cart]) 
+    console.log(session);
+  },[session]) 
 
   useEffect(() => {
     const storedOrderSuccess = localStorage.getItem('orderSuccess');
@@ -326,8 +326,10 @@ const Review = () => {
           <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
           <button
             onClick={handleOrder}
-            className={`mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md  sm:w-3/5 sm:p-3 ${cart.length <= 0 ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''}`}
-            disabled={cart.length <= 0}
+            className={`mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md sm:w-3/5 sm:p-3 ${
+              cart.length <= 0 || !session ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
+            }`}
+            disabled={cart.length <= 0 || !session}
           >
             <span className="flex items-center justify-center">
               <SendOutlined className="mr-2" /> Send Order{' - '}

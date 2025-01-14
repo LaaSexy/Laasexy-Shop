@@ -32,6 +32,7 @@
     "react-router-dom": "^6.28.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+    "swiper": "^11.2.1",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
@@ -59,7 +60,7 @@
     "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.37.3",
-    "eslint-plugin-react-hooks": "^5.2.0-canary-97d79495-20241223",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^7.0.4",

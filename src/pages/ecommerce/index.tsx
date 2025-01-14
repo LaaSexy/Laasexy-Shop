@@ -20,14 +20,18 @@ const LanguageDropdown = () => {
     { name: 'EN', icon: '/assets/images/English.png' },
     { name: 'CH', icon: '/assets/images/Chinese.jpg' },
   ];
+
   const toggleDropdown = () => setIsOpen(!isOpen);
+
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
     setIsOpen(false);
   };
+
   const selectedLanguageIcon = languages.find(
     (lang) => lang.name === selectedLanguage
   )?.icon;
+
   return (
     <div className="relative inline-block text-left">
       <div>
@@ -43,10 +47,9 @@ const LanguageDropdown = () => {
             <img
               src={selectedLanguageIcon}
               alt={selectedLanguage}
-              className="mr-2 h-5 w-8"
+              className="h-5 w-8"
             />
           )}
-          {selectedLanguage}
           <svg
             className="-mr-1 ml-2 size-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +67,7 @@ const LanguageDropdown = () => {
       </div>
       {isOpen && (
         <div
-          className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white  shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="absolute right-0 z-50 mt-2 w-16 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -74,15 +77,14 @@ const LanguageDropdown = () => {
               <button
                 key={language.name}
                 onClick={() => handleLanguageSelect(language.name)}
-                className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                className="flex w-full items-center justify-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem"
               >
                 <img
                   src={language.icon}
                   alt={language.name}
-                  className="mr-2 h-5 w-8"
+                  className="h-5 w-8"
                 />
-                {language.name}
               </button>
             ))}
           </div>
@@ -106,10 +108,6 @@ interface Item {
   };
   _id: string;
 }
-interface GridContentProps {
-  items: Item[];
-  productsScrollRef: React.RefObject<HTMLDivElement>;
-}
 const images = [
   '/assets/images/Banner 1.jpg',
   '/assets/images/Banner 2.jpg',
@@ -117,6 +115,7 @@ const images = [
   '/assets/images/Banner 4.jpg',
   '/assets/images/Banner 5.jpg',
 ];
+
 const Ecommerce = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -154,107 +153,6 @@ const Ecommerce = () => {
     }
   };
 
-  const GridContent = ({ items, productsScrollRef }: GridContentProps) => (
-    <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
-      <div className="relative w-full px-2 pb-4">
-        <Button
-          onClick={() => scrollLeft(productsScrollRef)}
-          className={`absolute left-0 top-1/2 z-10 ml-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
-            items.length <= 5 ? 'hidden' : 'block'
-          }`}
-          style={{ transform: 'translateY(-50%)' }}
-        >
-          <svg
-            className="size-4 text-black dark:text-black rtl:rotate-180"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 6 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 1 1 5l4 4"
-            />
-          </svg>
-        </Button>
-        <div
-          ref={productsScrollRef}
-          className="flex w-full flex-nowrap space-x-4 overflow-x-auto overflow-y-hidden px-4 py-2"
-          style={{ scrollBehavior: 'smooth' }}
-        >
-          {items.map((item: Item) => (
-            <a
-              key={item._id}
-              href={`/ProductPage/${item._id}`}
-              className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
-            >
-              <img
-                alt={item?.itemData?.name || 'Product Image'}
-                src={
-                  item?.itemData?.imageUrl
-                    ? `${imagePath}${item.itemData.imageUrl}`
-                    : '/placeholder-image.jpg'
-                }
-                className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
-              />
-              <div className="mx-2 mb-4">
-                <h2 className="mb-2 text-start text-sm text-black dark:text-white">
-                  {item?.itemData?.name || 'Unnamed Product'}
-                </h2>
-                <div className="flex items-center justify-between">
-                  <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white">
-                    {formatCurrency(
-                      item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
-                      shopV2Data?.shop?.currency
-                    )}
-                  </h5>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                    className="mt-2 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
-                  >
-                    <img
-                      src="/assets/images/add-to-cart.png"
-                      alt="Add to Cart Icon"
-                      className="size-4"
-                    />
-                  </Button>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-        <Button
-          onClick={() => scrollRight(productsScrollRef)}
-          className={`absolute right-0 top-1/2 z-10 mr-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
-            items.length <= 5 ? 'hidden' : 'block'
-          }`}
-          style={{ transform: 'translateY(-50%)' }}
-        >
-          <svg
-            className="size-4 text-black dark:text-black rtl:rotate-180"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 6 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m1 9 4-4-4-4"
-            />
-          </svg>
-        </Button>
-      </div>
-    </div>
-  );
- 
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % images.length);
   };
@@ -296,7 +194,7 @@ const Ecommerce = () => {
         <div className="flex min-h-screen flex-col">
           <div className="relative flex min-h-screen max-w-full flex-col bg-[#e8e4e4] dark:bg-black">
             {/* Sticky Header */}
-            <header className="sticky left-0 top-0 z-50 h-32 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
+            <header className="sticky left-0 top-0 z-50 h-28 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   {shopV2Data?.shop?.logoUrl && (
@@ -309,7 +207,7 @@ const Ecommerce = () => {
                       className="m-2 hidden size-16 rounded-md sm:block sm:size-20"
                     />
                   )}
-                  <p className="my-3 ml-5 text-center text-xl text-white sm:ml-0 sm:text-2xl">
+                  <p className="my-3 ml-5 text-center text-lg text-white sm:ml-0 sm:text-left sm:text-xl md:text-2xl truncate max-w-[200px] sm:max-w-[300px] md:max-w-[400px]">
                     {shopV2Data?.shop?.name || 'Logo'}
                   </p>
                 </div>
@@ -319,7 +217,7 @@ const Ecommerce = () => {
                     allowClear
                     size="large"
                     onSearch={onSearch}
-                    className="mr-6 w-[400px] sm:w-[300px]"
+                    className="w-[400px] sm:w-[300px]"
                   />
                 </div>
                 <div className="hidden items-center justify-center sm:flex">
@@ -356,7 +254,7 @@ const Ecommerce = () => {
                       0
                     </div>
                   </button>
-                  <div className="flex items-center justify-end pr-1">
+                  <div className="flex items-center justify-end pr-3">
                     <Button
                       type="text"
                       icon={<MenuOutlined style={{ fontSize: '22px' }} />}
@@ -496,7 +394,7 @@ const Ecommerce = () => {
             </div>
 
             {/* Main Content */}
-            <main className="mb-4 flex-1 px-2 mt-4 sm:px-4">
+            <main className="mb-4 flex-1 px-0 mt-3 sm:px-4 sm:mt-4">
               {Object.entries(groupedItems).map(([categoryId, items]) => (
                 <div key={categoryId} className="bg-white dark:bg-slate-800 rounded-sm shadow-sm mb-4">
                   <div className="flex justify-between items-center p-4">
@@ -511,8 +409,103 @@ const Ecommerce = () => {
                       <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
                     </button>
                   </div>
-                  <div className="p-4">
-                      <GridContent items={items} productsScrollRef={productsScrollRef} />
+                  <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
+                    <div className="relative w-full pb-4">
+                      <Button
+                        onClick={() => scrollLeft(productsScrollRef)}
+                        className={`absolute left-0 top-1/2 z-10 ml-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
+                          items.length <= 5 ? 'hidden' : 'block'
+                        }`}
+                        style={{ transform: 'translateY(-50%)' }}
+                      >
+                        <svg
+                          className="size-4 text-black dark:text-black rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 6 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 1 1 5l4 4"
+                          />
+                        </svg>
+                      </Button>
+                      <div
+                        ref={productsScrollRef}
+                        className="flex w-full flex-nowrap space-x-4 overflow-x-auto overflow-y-hidden px-2 py-4"
+                        style={{ scrollBehavior: 'smooth' }}
+                      >
+                        {items.map((item: Item) => (
+                          <a
+                            key={item._id}
+                            href={`/ProductOverview/${item._id}`}
+                            className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
+                          >
+                            <img
+                              alt={item?.itemData?.name || 'Product Image'}
+                              src={
+                                item?.itemData?.imageUrl
+                                  ? `${imagePath}${item.itemData.imageUrl}`
+                                  : '/placeholder-image.jpg'
+                              }
+                              className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
+                            />
+                            <div className="mx-2 mb-4">
+                              <h2 className="mb-2 text-start text-sm text-black dark:text-white">
+                                {item?.itemData?.name || 'Unnamed Product'}
+                              </h2>
+                              <div className="flex items-center justify-between">
+                                <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white">
+                                  {formatCurrency(
+                                    item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
+                                    shopV2Data?.shop?.currency
+                                  )}
+                                </h5>
+                                <Button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  className="mt-2 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
+                                >
+                                  <img
+                                    src="/assets/images/add-to-cart.png"
+                                    alt="Add to Cart Icon"
+                                    className="size-4"
+                                  />
+                                </Button>
+                              </div>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                      <Button
+                        onClick={() => scrollRight(productsScrollRef)}
+                        className={`absolute right-0 top-1/2 z-10 mr-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
+                          items.length <= 5 ? 'hidden' : 'block'
+                        }`}
+                        style={{ transform: 'translateY(-50%)' }}
+                      >
+                        <svg
+                          className="size-4 text-black dark:text-black rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 6 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="m1 9 4-4-4-4"
+                          />
+                        </svg>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
