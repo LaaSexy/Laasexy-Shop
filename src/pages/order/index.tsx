@@ -57,6 +57,8 @@ const newPage = () => {
   const { mutate: loginDevice, isSuccess } = useAuthications();
   const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
+
+  
  
   useEffect(() => {
     if (typeof window !== "undefined") {
