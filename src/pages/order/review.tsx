@@ -18,7 +18,7 @@ import { generateInvoiceId } from '@/utils/generateInvoiceId';
 
 const Review = () => {
   const [, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [, setLocationPermission] = useState<'default' | 'granted' | 'denied'>('default');
+  const [locationPermission, setLocationPermission] = useState<'default' | 'granted' | 'denied'>('default');
   const [cart, setCart] = useAtom(cartAtom);
   const [orderId, setOrderId] = useState(generateInvoiceId());
   const [session] = useAtom(sessionAtom);
@@ -40,7 +40,7 @@ const Review = () => {
 
   useEffect(() => {
     if (!session?._id) {
-      setAlertMessage({ type: 'warning', content: 'Session creation is restricted to within 500 meters of the shop.' });
+      setAlertMessage({ type: 'warning', content: 'You cannot order because you do not stay within 500 meters of the shop.' });
     }
   }, [session?._id]);
 
@@ -59,16 +59,16 @@ const Review = () => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        setAlertMessage({ type: 'success', content: 'Location access granted!' });
-        localStorage.setItem('locationMessageShown', 'true');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        // setAlertMessage({ type: 'success', content: 'Location access granted!' });
+        // localStorage.setItem('locationMessageShown', 'true');
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
           setLocationPermission('denied');
-          setAlertMessage({ type: 'warning', content: 'Session creation is restricted to within 500 meters of the shop.' });
+          setAlertMessage({ type: 'warning', content: 'You cannot order because location access is denied.' });
         } else {
           setAlertMessage({ type: 'error', content: 'Unable to retrieve your location.' });
         }
@@ -152,7 +152,17 @@ const Review = () => {
       setAlertMessage({ type: 'error', content: 'Session is not available. Please start a new session.' });
       return;
     }
-    setOrderSuccess(true);
+  
+    if (locationPermission === 'denied') {
+      setAlertMessage({ type: 'error', content: 'You cannot send the order because location access is denied.' });
+      return;
+    }
+  
+    if (cart.length === 0) {
+      setAlertMessage({ type: 'error', content: 'Your cart is empty. Please add items to your cart before placing an order.' });
+      return;
+    }
+  
     const orderItems = cart.map((item: any) => ({
       id: item.id,
       name: item?.name,
@@ -166,18 +176,19 @@ const Review = () => {
       createdAt: item?.createAt,
       modifiers: item?.modifiers,
     }));
+  
+    createOrder({
+      orderId,
+      sessionId: session?._id,
+      items: orderItems,
+    });
+  
+    setOrderSuccess(true);
     localStorage.setItem('orderSuccess', 'true');
-    if (session?._id && orderItems.length > 0) {
-      createOrder({
-        orderId,
-        sessionId: session?._id,
-        items: orderItems,
-      });
-      setCart([]);
-      setQuantities([]);
-      setPrices([]);
-      setOrderId(generateInvoiceId());
-    }
+    setCart([]);
+    setQuantities([]);
+    setPrices([]);
+    setOrderId(generateInvoiceId());
   };
 
   const handleAddMoreItems = () => {
@@ -307,7 +318,7 @@ const Review = () => {
                   showIcon
                   closable
                   onClose={() => setAlertMessage(null)}
-                  className="w-[700px] text-center text-sm"
+                  className="w-96 text-center text-sm sm:w-[700px]"
                 />
               </div>
             )}

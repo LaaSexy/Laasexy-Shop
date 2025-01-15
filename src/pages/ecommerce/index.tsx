@@ -20,9 +20,7 @@ const LanguageDropdown = () => {
     { name: 'EN', icon: '/assets/images/English.png' },
     { name: 'CH', icon: '/assets/images/Chinese.jpg' },
   ];
-
   const toggleDropdown = () => setIsOpen(!isOpen);
-
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
     setIsOpen(false);
@@ -31,7 +29,6 @@ const LanguageDropdown = () => {
   const selectedLanguageIcon = languages.find(
     (lang) => lang.name === selectedLanguage
   )?.icon;
-
   return (
     <div className="relative inline-block text-left">
       <div>
@@ -442,7 +439,7 @@ const Ecommerce = () => {
                         {items.map((item: Item) => (
                           <a
                             key={item._id}
-                            href={`/ecommerce/ProductDetail/${item._id}`}
+                            href={`ecommerce/ProductDetail/${item._id}`}
                             className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
                           >
                             <img

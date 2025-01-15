@@ -74,13 +74,13 @@ const checkout = () => {
       });
     }
   }, [query, deviceId]);
-
   const calculateTotal = () => {
     return items
-      .filter((item: any) => item?.total > 0)
+      .filter((item: any) => item?.total > 0 && item?.status !== "cancel")
       .reduce((total: any, item: any) => total + (item?.total || 0), 0)
       .toFixed(0);
   };
+  
   const total = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
   // const handleCheckOut = () => {
@@ -92,6 +92,7 @@ const checkout = () => {
   //     setItems([]);
   //   }
   // };
+
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
@@ -116,7 +117,7 @@ const checkout = () => {
             </Button>
             <div className="mr-16 flex w-full items-center justify-center">
               <h2 className="text-center text-2xl font-bold dark:text-white sm:text-xl md:text-2xl">
-                Checkout Page
+                Checkout
               </h2>
             </div>
           </header>
@@ -165,12 +166,12 @@ const checkout = () => {
                             })}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300">
-                          Status: {item?.status}
+                          Status: {item?.status === 'kitchen' ? 'cooking' : item?.status === 'pending' ? 'waiting' : item?.status}
                         </p>
                         <div className="flex items-center space-x-4">
                           <Button
                             size="small"
-                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-xl font-black sm:h-10 sm:w-14 sm:text-base"
                             disabled
                           >
                             -
@@ -181,7 +182,7 @@ const checkout = () => {
                           <Button
                             size="small"
                             disabled
-                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-xl font-black sm:h-10 sm:w-14 sm:text-base"
                           >
                             +
                           </Button>

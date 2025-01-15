@@ -35,7 +35,7 @@ export const generateDeviceId = () => {
   return Math.floor(Math.random() * 100000) + '-' + Date.now();
 };
 
-const newPage = () => {
+const newPage: React.FC = () => {
   const [cart] = useAtom(cartAtom);
   const [session] = useAtom(sessionAtom);
   const [deviceId] = useAtom(deviceIdAtom);
@@ -55,9 +55,9 @@ const newPage = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: loginDevice, isSuccess } = useAuthications();
-  const { mutateSession: createSession } = useSession();
+  const { mutateSession: createSession} = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
- 
+
   useEffect(() => {
     if (isSuccess) {
       createSession();
@@ -253,6 +253,7 @@ const newPage = () => {
     <MultipleSkeletons loading={isFetching}>
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
+          
           {/* Sticky Header */}
           <header className="fixed top-0 left-0 h-44 w-full items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-indigo-500/50 sm:h-44">
             <div className="flex items-center justify-center">
