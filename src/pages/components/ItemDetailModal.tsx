@@ -145,7 +145,6 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     };
     setCart([...cart, myItem]);
   };
-
   return (
     <div
       className={`fixed inset-0 z-[1000] flex items-end justify-center bg-black bg-opacity-70 transition-opacity duration-300 ${

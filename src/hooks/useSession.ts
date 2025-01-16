@@ -1,7 +1,6 @@
 import { atom, useAtom } from 'jotai';
 import { useMutation } from 'react-query';
 import { useEffect, useState } from 'react';
-
 import instanceEOrder from '@/utils/AxiosEOrder';
 
 // Define the Session interface
@@ -25,7 +24,6 @@ interface CreateSessionParams {
 
 // Function to create a session
 const createSession = async (params: CreateSessionParams): Promise<Session> => {
-  console.log({ params });
   const { data } = await instanceEOrder.post<Session>('/sessions', params);
   return data;
 };
@@ -72,14 +70,24 @@ export default function useSession(): UseSessionReturn {
           setLocation({ latitude, longitude });
           setIsLocationLoading(false);
           setLocationPermission('granted');
-
-          // Immediately create session with the fetched location
           mutate({ latitude, longitude });
         },
         (error: GeolocationPositionError) => {
           setLocationError(error.message);
           setIsLocationLoading(false);
           setLocationPermission('denied');
+
+          if (error.code === error.PERMISSION_DENIED) {
+            console.log('Location permission denied. Retrying in 5 seconds...');
+            setTimeout(() => {
+              fetchLocation();
+            }, 5000);
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
         }
       );
     } else {

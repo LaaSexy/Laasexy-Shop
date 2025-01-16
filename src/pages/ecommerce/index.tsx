@@ -7,6 +7,7 @@ import { imagePath } from '../order/index';
 import { formatCurrency } from '@/utils/numeral';
 import _ from 'lodash';
 import { MenuOutlined } from '@ant-design/icons';
+import ProductDetail from './ProductDetail';
 type SearchProps = React.ComponentProps<typeof Search>;
 const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value: any, _e: any, info: any) =>
@@ -25,7 +26,6 @@ const LanguageDropdown = () => {
     setSelectedLanguage(language);
     setIsOpen(false);
   };
-
   const selectedLanguageIcon = languages.find(
     (lang) => lang.name === selectedLanguage
   )?.icon;
@@ -123,7 +123,7 @@ const Ecommerce = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const [visible, setVisible] = useState(false);
-
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     if (shopV2Data?.items) {
@@ -163,8 +163,14 @@ const Ecommerce = () => {
   const goToSlide = (index: any) => {
     setActiveSlide(index);
   };
+
   const showDrawer = () => {
     setVisible(true);
+  };
+
+  const onClickItem = (item: any) => {
+    console.log(`Hello item ${JSON.stringify(item)}`);
+    setSelectedItem(item);
   };
 
   useEffect(() => {
@@ -437,9 +443,9 @@ const Ecommerce = () => {
                         style={{ scrollBehavior: 'smooth' }}
                       >
                         {items.map((item: Item) => (
-                          <a
+                          <div
                             key={item._id}
-                            href={`ecommerce/ProductDetail/${item._id}`}
+                            onClick={() => onClickItem(item)}
                             className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
                           >
                             <img
@@ -476,7 +482,7 @@ const Ecommerce = () => {
                                 </Button>
                               </div>
                             </div>
-                          </a>
+                          </div>
                         ))}
                       </div>
                       <Button
@@ -585,6 +591,10 @@ const Ecommerce = () => {
             </div>
             </footer>
           </div>
+          <ProductDetail
+          currency={shopV2Data?.shop?.currency}
+          item={selectedItem}
+        />
         </div>
       )}
     </MultipleSkeletons>
