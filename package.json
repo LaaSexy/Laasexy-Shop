@@ -13,7 +13,7 @@
     "lint": "next lint",
     "build-types": "tsc --noEmit --pretty",
     "prepare": "husky install",
-    "docker:up": "docker-compose -f docker-compose.yaml up -d --build pointhub-web"
+    "docker:up": "docker-compose -f docker-compose.yaml up -d --build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
