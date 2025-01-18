@@ -123,6 +123,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       </div>
     );
   };
+  
   const onClickAddToCart = () => {
     handleClick();
     onClose();

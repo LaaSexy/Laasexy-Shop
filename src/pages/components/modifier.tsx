@@ -44,10 +44,8 @@ const Modifiers: React.FC<ModifiersProps> = ({
     isMultiple: boolean
   ) => {
     const uniqId = isMultiple ? groupId + modifier._id : groupId;
-
     const updatedModifiers: any = new Map(addedModifiers);
     updatedModifiers.set(uniqId, { ...modifier, groupId, type, uniqId });
-
     setAddedModifiers(updatedModifiers);
     onChanged(Array.from(updatedModifiers.values()));
   };

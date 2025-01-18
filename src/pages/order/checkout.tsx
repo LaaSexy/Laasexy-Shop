@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DoubleLeftOutlined } from '@ant-design/icons';
+import { LeftOutlined } from '@ant-design/icons';
 import { Alert, Avatar, Button, List } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
@@ -74,13 +74,13 @@ const checkout = () => {
       });
     }
   }, [query, deviceId]);
-
   const calculateTotal = () => {
     return items
-      .filter((item: any) => item?.total > 0)
+      .filter((item: any) => item?.total > 0 && item?.status !== "cancel")
       .reduce((total: any, item: any) => total + (item?.total || 0), 0)
       .toFixed(0);
   };
+  
   const total = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
   // const handleCheckOut = () => {
@@ -92,6 +92,7 @@ const checkout = () => {
   //     setItems([]);
   //   }
   // };
+
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
@@ -112,11 +113,11 @@ const checkout = () => {
           {/* Sticky Header */}
           <header className="sticky top-0 z-10 flex w-full items-center justify-between rounded-b-lg bg-white py-2 shadow-md dark:shadow-[0_4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-2">
             <Button className="float-left flex items-center justify-center border-none p-5 text-2xl shadow-none hover:text-black  dark:bg-black dark:hover:!text-white sm:text-2xl">
-              <DoubleLeftOutlined onClick={onClickToShowData} />
+              <LeftOutlined onClick={onClickToShowData} />
             </Button>
             <div className="mr-16 flex w-full items-center justify-center">
               <h2 className="text-center text-2xl font-bold dark:text-white sm:text-xl md:text-2xl">
-                Checkout Page
+                Checkout
               </h2>
             </div>
           </header>
@@ -165,12 +166,12 @@ const checkout = () => {
                             })}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300">
-                          Status: {item?.status}
+                          Status: {item?.status === 'kitchen' ? 'cooking' : item?.status === 'pending' ? 'waiting' : item?.status}
                         </p>
                         <div className="flex items-center space-x-4">
                           <Button
                             size="small"
-                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-xl font-black sm:h-10 sm:w-14 sm:text-base"
                             disabled
                           >
                             -
@@ -181,7 +182,7 @@ const checkout = () => {
                           <Button
                             size="small"
                             disabled
-                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-2xl font-black sm:h-10 sm:w-14 sm:text-base"
+                            className="flex !h-5 w-12 items-center justify-center rounded-2xl bg-white px-7 py-0 !text-xl font-black sm:h-10 sm:w-14 sm:text-base"
                           >
                             +
                           </Button>

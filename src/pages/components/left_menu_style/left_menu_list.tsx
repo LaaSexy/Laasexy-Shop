@@ -1,23 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { List, Skeleton, Image, Tag, Card } from 'antd';
-
 import { Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
-
 import ItemDetailModal from '../ItemDetailModal';
+import ProductDetail from '@/pages/ecommerce/ProductDetail';
 
 const imagePath = 'https://api.pointhub.io';
 
 const ItemRender = (props: any) => {
   const { item, currency, lang, onClick } = props;
   return (
-    <List.Item className="max-w-md " onClick={onClick}>
+    <List.Item className="max-w-md" onClick={onClick}>
       <Card
         cover={
           <Image
             alt={item.itemData.name}
-            className=" max-h-80 w-48 max-w-xs rounded-md object-contain"
+            className="max-h-80 w-48 max-w-xs rounded-md object-contain"
             src={imagePath + item.itemData.imageUrl}
             preview={false}
           />
@@ -46,17 +44,19 @@ const ItemRender = (props: any) => {
     </List.Item>
   );
 };
+
 const MenuList = (props: any) => {
   const { data, fetching, currency = 'USD', lang = '1' } = props;
   const listRef = useRef<HTMLDivElement>(null);
-  const [seletedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [data]);
 
-  const onClickItem = (item: any) => {
+  const onClickItem = (item: Item) => {
     setSelectedItem(item);
   };
 
@@ -84,12 +84,27 @@ const MenuList = (props: any) => {
           )}
         />
       </div>
-      <ItemDetailModal
-        currency={currency}
-        isVisible={!!seletedItem}
-        onClose={onCancel}
-        item={seletedItem}
-      />
+      {selectedItem && (
+        <>
+          {/* ItemDetailModal for smaller screens */}
+          <div className="block lg:hidden">
+            <ItemDetailModal
+              currency={currency}
+              isVisible={!!selectedItem}
+              onClose={onCancel}
+              item={selectedItem}
+            />
+          </div>
+
+          {/* ProductDetail for larger screens */}
+          <div className="hidden lg:block">
+            <ProductDetail
+              currency={currency}
+              item={selectedItem}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
