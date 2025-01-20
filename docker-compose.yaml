@@ -5,7 +5,7 @@ services:
       build:
           context: .
           dockerfile: Dockerfile
-      container_name: pointhub-web
+      container_name: pointhub-web-menu
       restart: unless-stopped
       networks:
           - nginx-network
