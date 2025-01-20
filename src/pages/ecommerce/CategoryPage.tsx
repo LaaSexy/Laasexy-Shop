@@ -24,7 +24,7 @@ interface CategoryPageProps {
 
 const CategoryPage: React.FC<CategoryPageProps> = ({
   currency,
-  filterItems,
+  filterItems=[],
   selectedItem,
   onItemClick,
 }) => {
