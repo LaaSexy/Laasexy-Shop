@@ -235,7 +235,7 @@ const NewPage: React.FC = () => {
                       ? `${imagePath}${item.itemData.imageUrl}`
                       : '/placeholder-image.jpg'
                   }
-                  className="m-2 size-20 rounded-md sm:size-28 transition duration-300 ease-in-out hover:scale-105"
+                  className="m-2 size-20 rounded-md sm:size-28"
                 />
                 <div>
                   <h3 className="mb-3 text-sm text-black dark:text-white">
@@ -315,8 +315,10 @@ const NewPage: React.FC = () => {
             </h4>
             <ol className="list-decimal list-inside space-y-2 text-gray-600">
               <li>Open <strong className="text-gray-800">Settings</strong> on your iPhone or iPad.</li>
-              <li>Scroll down and tap <strong className="text-gray-800">Safari</strong>.</li>
-              <li>Scroll down and tap <strong className="text-gray-800">Location</strong> under "Settings for Websites".</li>
+              <li>Scroll down and tap <strong className="text-gray-800">Privacy & Security</strong>.</li>
+              <li>Scroll down and tap <strong className="text-gray-800">Location Services</strong>.</li>
+              <li>Scroll down and tap <strong className="text-gray-800">Safari Websites</strong>.</li>
+              <li>Scroll down and tap <strong className="text-gray-800">While Using the App</strong>.</li>
               <li>Find this website in the list and change the permission to <strong className="text-green-600">Allow</strong> or <strong className="text-green-600">Ask</strong>.</li>
             </ol>
           </div>

@@ -123,7 +123,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       </div>
     );
   };
-  
+
   const onClickAddToCart = () => {
     handleClick();
     onClose();
@@ -249,9 +249,13 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 <Button
                   size="large"
                   onClick={onClickAddToCart}
-                  className="sm:w-98 mb-4 mt-5 !h-[60px] w-full bg-gradient-to-r from-violet-500 to-indigo-600 !text-xl text-white hover:bg-violet-700 hover:!text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:text-xl"
+                  type="primary"
+                  className={`sm:w-98 mt-5 !h-[60px] w-full bg-gradient-to-r from-violet-500 to-indigo-600 !text-xl text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:text-xl${
+                    quantity <= 0 ? 'cursor-not-allowed opacity-60' : ''
+                  }`}
+                  disabled={quantity <= 0}
                 >
-                  <SendOutlined className="mb-2"/> Add to order - {`${formatCurrency(total, currency)}`}
+                  <SendOutlined className="mr-2"/> Add to order - {`${formatCurrency(total, currency)}`}
                 </Button>
               </div>
             </div>
