@@ -96,7 +96,7 @@ const checkout = () => {
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
       router.push({
-        pathname: '/order',
+        pathname: '/ecommerce',
         query: {
           branch: query.branch,
           table: query.table,
@@ -124,13 +124,6 @@ const checkout = () => {
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto px-2 pt-4 sm:px-4 mb-56">
             <div className="w-full">
-              <div className="flex items-center justify-center">
-                <div className="flex w-11/12 items-center justify-between">
-                  <h2 className="mb-3 w-full rounded-lg bg-violet-400 py-1 text-center text-xl font-medium text-white dark:bg-violet-500 dark:text-white sm:py-3 sm:text-xl">
-                    Table #{query.name}
-                  </h2>
-                </div>
-              </div>
               <List
                 className="rounded-md"
                 dataSource={items}

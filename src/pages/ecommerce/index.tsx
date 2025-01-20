@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Drawer, Input, Menu } from 'antd';
 import { useRouter } from 'next/router';
 import { useV2Items } from '@/hooks/useItems';
@@ -7,11 +7,39 @@ import { imagePath } from '../order/index';
 import { formatCurrency } from '@/utils/numeral';
 import _ from 'lodash';
 import { MenuOutlined } from '@ant-design/icons';
-import ProductDetail from './ProductDetail';
+import ProductDetail, { cartAtom } from './ProductDetail';
+import { atom, useAtom } from 'jotai';
+import useSession, { sessionAtom } from '@/hooks/useSession';
+import useAuthications from '@/hooks/useAuth';
+import useOrderSessionId from '@/hooks/useCheckOut';
+import CategoryPage from './CategoryPage';
+import type { Swiper as SwiperType } from 'swiper';
+import { Navigation, Thumbs } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+export const deviceIdAtom = atom<string | null>(null);
+export const initializeDeviceUuidAtom = atom(null, (get, set) => {
+  const currentDeviceId = get(deviceIdAtom);
+  console.log(currentDeviceId);
+  const storedUuid = localStorage.getItem('deviceId');
+  if (storedUuid) {
+    set(deviceIdAtom, storedUuid);
+  } else {
+    const newDeviceId = generateDeviceId();
+    localStorage.setItem('deviceId', newDeviceId);
+    set(deviceIdAtom, newDeviceId);
+  }
+});
+
+export const generateDeviceId = () => {
+  return Math.floor(Math.random() * 100000) + '-' + Date.now();
+};
+
 type SearchProps = React.ComponentProps<typeof Search>;
 const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value: any, _e: any, info: any) =>
   console.log(info?.source, value);
+
 // LanguageDropdown Component
 const LanguageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +72,7 @@ const LanguageDropdown = () => {
             <img
               src={selectedLanguageIcon}
               alt={selectedLanguage}
-              className="h-5 w-8"
+              className="h-5 w-8 sm:h-7 sm:w-10"
             />
           )}
           <svg
@@ -90,6 +118,7 @@ const LanguageDropdown = () => {
     </div>
   );
 };
+
 interface Item {
   itemData: {
     categories: string[];
@@ -105,6 +134,7 @@ interface Item {
   };
   _id: string;
 }
+
 const images = [
   '/assets/images/Banner 1.jpg',
   '/assets/images/Banner 2.jpg',
@@ -114,16 +144,37 @@ const images = [
 ];
 
 const Ecommerce = () => {
+  const [session] = useAtom(sessionAtom);
+  const [cart] = useAtom(cartAtom);
+  const [deviceId] = useAtom(deviceIdAtom);
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [, setFilteredItems] = useState([]);
-  const productsScrollRef = useRef<HTMLDivElement>(null);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [thumbsSwiper] = useState<SwiperType | null>(null);
   const [groupedItems, setGroupedItems] = useState<Record<string, Item[]>>({});
+  const { mutate, data } = useOrderSessionId();
+  const { mutate: loginDevice, isSuccess } = useAuthications();
+  const { mutateSession: createSession } = useSession();
   const router = useRouter();
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const [visible, setVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [, setItems] = useState([]);
+  const [isSubcategorySelected, setIsSubcategorySelected] = useState(false);
+
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
+
+  useEffect(() => {
+    if (query?.branch) {
+      loginDevice({
+        deviceUuid: deviceId,
+        branchId: query.branch,
+      });
+    }
+  }, [query, deviceId]);
 
   useEffect(() => {
     if (shopV2Data?.items) {
@@ -132,22 +183,30 @@ const Ecommerce = () => {
     }
   }, [shopV2Data]);
 
-  const scrollLeft = (ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current) {
-      ref.current.scrollBy({
-        left: -200,
-        behavior: 'smooth',
-      });
+  useEffect(() => {
+    if (isSuccess) {
+      createSession();
     }
-  };
-  
-  const scrollRight = (ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current) {
-      ref.current.scrollBy({
-        left: 200,
-        behavior: 'smooth',
-      });
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      mutate({ sessionId: session?._id || '' });
     }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    const item = data?.flatMap((value: any) => value.items) || [];
+    setItems(item);
+  }, [data]);
+
+  const onClickCategory = (category: any) => {
+    setSelectedCategory(category._id);
+    setIsSubcategorySelected(true);
+    const filterData: any = _.filter(shopV2Data?.items, (item: Item) => {
+      return item.itemData.categories.indexOf(category._id) > -1;
+    });
+    setFilteredItems(filterData);
   };
 
   const nextSlide = () => {
@@ -157,9 +216,11 @@ const Ecommerce = () => {
   const prevSlide = () => {
     setActiveSlide((prev) => (prev - 1 + images.length) % images.length);
   };
+
   const onClose = () => {
     setVisible(false);
   };
+
   const goToSlide = (index: any) => {
     setActiveSlide(index);
   };
@@ -168,25 +229,23 @@ const Ecommerce = () => {
     setVisible(true);
   };
 
-  const onClickItem = (item: any) => {
-    console.log(`Hello item ${JSON.stringify(item)}`);
+  const onClickItem = (item: Item) => {
     setSelectedItem(item);
   };
 
-  useEffect(() => {
-    if (shopV2Data?.subCategories) {
-      onClickCategory(shopV2Data?.subCategories?.[0]);
-    }
-  }, [shopV2Data]);
-  
-  const onClickCategory = (category: any) => {
-    setSelectedCategory(category._id);
-    const filterData: any = _.filter(shopV2Data?.items, (item: Item) => {
-      return item.itemData.categories.indexOf(category._id) > -1;
-    });
-    setFilteredItems(filterData);
+  const onCancel = () => {
+    setSelectedItem(null);
   };
-   
+
+  const handleReviewProduct = () => {
+    router.push({
+      pathname: '/ecommerce/ReviewProduct',
+      query: {
+        branch: query.branch,
+      },
+    });
+  };
+
   return (
     <MultipleSkeletons loading={isFetching}>
       {shopV2Data?.subCategories?.length <= 0 ? (
@@ -195,7 +254,7 @@ const Ecommerce = () => {
         </div>
       ) : (
         <div className="flex min-h-screen flex-col">
-          <div className="relative flex min-h-screen max-w-full flex-col bg-[#e8e4e4] dark:bg-black">
+          <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
             {/* Sticky Header */}
             <header className="sticky left-0 top-0 z-50 h-28 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
               <div className="flex items-center justify-between">
@@ -236,10 +295,11 @@ const Ecommerce = () => {
                   <LanguageDropdown />
                   <button
                     type="button"
-                    className="relative mr-2 inline-flex items-center rounded-lg text-center text-sm font-medium text-white hover:border"
+                    onClick={handleReviewProduct}
+                    className="relative mr-2 inline-flex items-center rounded-lg text-center px-2 py-2 text-sm font-medium text-white hover:border sm:px-4 sm:py-2"
                   >
                     <svg
-                      className="size-7"
+                      className="size-7 sm:size-8"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -253,8 +313,8 @@ const Ecommerce = () => {
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
                       />
                     </svg>
-                    <div className="absolute -end-2 -top-2 inline-flex size-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-white">
-                      0
+                    <div className="absolute -end-1 -top-0 sm:-end-0 sm:-top-1 inline-flex size-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-white">
+                      {cart.length || 0}
                     </div>
                   </button>
                   <div className="flex items-center justify-end pr-3">
@@ -270,6 +330,25 @@ const Ecommerce = () => {
               <nav className="hidden max-w-full flex-col gap-4 overflow-auto whitespace-nowrap px-4 sm:flex sm:flex-row sm:pl-5">
                 <div className="flex w-full min-w-full max-w-full items-start justify-start gap-4 overflow-x-auto whitespace-nowrap sm:pl-5 sm:pr-8">
                   <ul className="relative flex flex-row items-center justify-center space-x-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                    {/* Home Button */}
+                    <li key="home" className="list-none">
+                      <Button
+                        size="large"
+                        onClick={() => {
+                          setSelectedCategory(null);
+                          setIsSubcategorySelected(false);
+                        }}
+                        className={`my-3 flex items-center justify-center rounded-md border border-[#DBD5D5] !p-5 text-base text-white hover:!border-white hover:bg-violet-700 hover:!text-white sm:my-4 ${
+                          selectedCategory === null
+                            ? ' bg-violet-700 text-white hover:!text-white'
+                            : 'bg-transparent'
+                        }`}
+                        aria-pressed={selectedCategory === null}
+                      >
+                        Home
+                      </Button>
+                    </li>
+                    {/* Subcategory Buttons */}
                     {shopV2Data?.subCategories?.map((subCategory: any) => (
                       <li key={subCategory._id} className="list-none">
                         <Button
@@ -290,7 +369,7 @@ const Ecommerce = () => {
                 </div>
               </nav>
             </header>
-          
+
             <Drawer
               title="Menu"
               placement="right"
@@ -298,10 +377,25 @@ const Ecommerce = () => {
               visible={visible}
             >
               <Menu mode="vertical" className="text-base">
+                {/* Home Option */}
+                <Menu.Item
+                  key="home"
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setIsSubcategorySelected(false);
+                    onClose(); 
+                  }}
+                >
+                  Home
+                </Menu.Item>
+                {/* Subcategory Options */}
                 {shopV2Data?.subCategories?.map((subCategory: any) => (
                   <Menu.Item
                     key={subCategory._id}
-                    onClick={() => onClickCategory(subCategory)}
+                    onClick={() => {
+                      onClickCategory(subCategory);
+                      onClose();
+                    }}
                   >
                     {subCategory.name}
                   </Menu.Item>
@@ -309,292 +403,282 @@ const Ecommerce = () => {
               </Menu>
             </Drawer>
 
-            {/* Banner Scroll Section */}
-            <div
-              id="default-carousel"
-              className="relative w-full"
-              data-carousel="slide"
-            >
-              <div className="relative h-44 overflow-hidden sm:h-96">
-                {images.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                      index === activeSlide ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    data-carousel-item
-                  >
-                    <img
-                      src={image}
-                      className="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
-                      alt={`Slide ${index + 1}`}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-                {images.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`size-3 rounded-full ${
-                      index === activeSlide ? 'bg-white' : 'bg-white/50'
-                    }`}
-                    aria-current={index === activeSlide}
-                    aria-label={`Slide ${index + 1}`}
-                    onClick={() => goToSlide(index)}
-                  ></button>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="group absolute start-0 top-0 z-30 ml-2 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-                onClick={prevSlide}
-              >
-                <span className="dark:group-focus:ring-white-800/70 inline-flex size-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-white dark:group-hover:bg-white">
-                  <svg
-                    className="size-4 text-white dark:text-black rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                  <span className="sr-only">Previous</span>
-                </span>
-              </button>
-              <button
-                type="button"
-                className="group absolute end-0 top-0 z-30 mr-2 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-                onClick={nextSlide}
-              >
-                <span className="dark:group-focus:ring-white-800/70 inline-flex size-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-white dark:group-hover:bg-white">
-                  <svg
-                    className="size-4 text-white dark:text-black rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <span className="sr-only">Next</span>
-                </span>
-              </button>
-            </div>
-
-            {/* Main Content */}
-            <main className="mb-4 flex-1 px-0 mt-3 sm:px-4 sm:mt-4">
-              {Object.entries(groupedItems).map(([categoryId, items]) => (
-                <div key={categoryId} className="bg-white dark:bg-slate-800 rounded-sm shadow-sm mb-4">
-                  <div className="flex justify-between items-center p-4">
-                    <h3 className="text-xl font-bold dark:text-white">
-                      {shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId)?.name ||
-                        'Uncategorized'}
-                    </h3>
-                    <button
-                      className="group relative text-lg font-bold text-violet-600 dark:text-white"
-                    >
-                      See All
-                      <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
-                    </button>
-                  </div>
-                  <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
-                    <div className="relative w-full pb-4">
-                      <Button
-                        onClick={() => scrollLeft(productsScrollRef)}
-                        className={`absolute left-0 top-1/2 z-10 ml-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
-                          items.length <= 5 ? 'hidden' : 'block'
-                        }`}
-                        style={{ transform: 'translateY(-50%)' }}
-                      >
-                        <svg
-                          className="size-4 text-black dark:text-black rtl:rotate-180"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 6 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 1 1 5l4 4"
-                          />
-                        </svg>
-                      </Button>
+            {selectedItem ? (
+              <ProductDetail
+                currency={shopV2Data?.shop?.currency}
+                item={selectedItem}
+                onClose={onCancel}
+              />
+            ) : isSubcategorySelected ? (
+              <CategoryPage
+                currency={shopV2Data?.shop?.currency}
+                filterItems={filteredItems}
+                selectedItem={selectedItem}
+                onItemClick={onClickItem}
+              />
+            ) : (
+              <>
+                {/* Banner Scroll Section */}
+                <div
+                  id="default-carousel"
+                  className="relative w-full"
+                  data-carousel="slide"
+                >
+                  <div className="relative h-44 mt-3 overflow-hidden sm:h-96">
+                    {images.map((image, index) => (
                       <div
-                        ref={productsScrollRef}
-                        className="flex w-full flex-nowrap space-x-4 overflow-x-auto overflow-y-hidden px-2 py-4"
-                        style={{ scrollBehavior: 'smooth' }}
+                        key={index}
+                        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                          index === activeSlide ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        data-carousel-item
                       >
-                        {items.map((item: Item) => (
-                          <div
-                            key={item._id}
-                            onClick={() => onClickItem(item)}
-                            className="w-[190px] flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer" 
+                        <img
+                          src={image}
+                          className="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                          alt={`Slide ${index + 1}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+                    {images.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`size-3 rounded-full ${
+                          index === activeSlide ? 'bg-white' : 'bg-white/50'
+                        }`}
+                        aria-current={index === activeSlide}
+                        aria-label={`Slide ${index + 1}`}
+                        onClick={() => goToSlide(index)}
+                      ></button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="group absolute start-0 top-0 z-30 ml-2 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                    onClick={prevSlide}
+                  >
+                    <span className="dark:group-focus:ring-white-800/70 inline-flex size-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-white dark:group-hover:bg-white">
+                      <svg
+                        className="size-4 text-white dark:text-black rtl:rotate-180"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 6 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 1 1 5l4 4"
+                        />
+                      </svg>
+                      <span className="sr-only">Previous</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="group absolute end-0 top-0 z-30 mr-2 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                    onClick={nextSlide}
+                  >
+                    <span className="dark:group-focus:ring-white-800/70 inline-flex size-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-white dark:group-hover:bg-white">
+                      <svg
+                        className="size-4 text-white dark:text-black rtl:rotate-180"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 6 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 9 4-4-4-4"
+                        />
+                      </svg>
+                      <span className="sr-only">Next</span>
+                    </span>
+                  </button>
+                </div>
+                {/* Main Content */}
+                <main className="mb-4 flex-1 px-0 sm:px-4 bg-gray-300 dark:bg-black">
+                  {Object.entries(groupedItems).map(([categoryId, items]) => (
+                    <div key={categoryId} className="bg-white dark:bg-slate-800 rounded-sm shadow-sm mb-4">
+                      <div className="flex justify-between items-center p-4 mt-4">
+                        <h3 className="text-xl font-bold dark:text-white">
+                          {shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId)?.name ||
+                            'Uncategorized'}
+                        </h3>
+                        <button
+                          onClick={() => onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId))}
+                          className="group relative text-lg font-bold text-violet-600 dark:text-white"
+                        >
+                          See All
+                          <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
+                        </button>
+                      </div>
+                      <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
+                        <div className="relative w-full pb-4">
+                          <Swiper
+                            modules={[Navigation, Thumbs]}
+                            loop={true}
+                            spaceBetween={32}
+                            navigation={true}
+                            thumbs={{ swiper: thumbsSwiper }}
+                            className="product-prev"
+                            breakpoints={{
+                              320: {
+                                slidesPerView: 2,
+                                spaceBetween: 16,
+                              },
+                              768: {
+                                slidesPerView: 3,
+                                spaceBetween: 24,
+                              },
+                              1024: {
+                                slidesPerView: 4,
+                                spaceBetween: 32,
+                              },
+                              1280: {
+                                slidesPerView: 5,
+                                spaceBetween: 32,
+                              },
+                            }}
                           >
-                            <img
-                              alt={item?.itemData?.name || 'Product Image'}
-                              src={
-                                item?.itemData?.imageUrl
-                                  ? `${imagePath}${item.itemData.imageUrl}`
-                                  : '/placeholder-image.jpg'
-                              }
-                              className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
-                            />
-                            <div className="mx-2 mb-4">
-                              <h2 className="mb-2 text-start text-sm text-black dark:text-white">
-                                {item?.itemData?.name || 'Unnamed Product'}
-                              </h2>
-                              <div className="flex items-center justify-between">
-                                <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white">
-                                  {formatCurrency(
-                                    item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
-                                    shopV2Data?.shop?.currency
-                                  )}
-                                </h5>
-                                <Button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                  className="mt-2 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
+                            {items.map((item: Item) => (
+                              <SwiperSlide key={item._id}>
+                                <div
+                                  onClick={() => onClickItem(item)}
+                                  className="w-[190px] ml-5 flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer"
                                 >
                                   <img
-                                    src="/assets/images/add-to-cart.png"
-                                    alt="Add to Cart Icon"
-                                    className="size-4"
+                                    alt={item?.itemData?.name || 'Product Image'}
+                                    src={
+                                      item?.itemData?.imageUrl
+                                        ? `${imagePath}${item.itemData.imageUrl}`
+                                        : '/placeholder-image.jpg'
+                                    }
+                                    className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
                                   />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                                  <div className="mx-2 mb-5">
+                                    <h2 className="mb-2 text-start text-sm text-black dark:text-white">
+                                      {item?.itemData?.name || 'Unnamed Product'}
+                                    </h2>
+                                    <div className="flex items-center justify-between">
+                                      <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white mb-4">
+                                        {formatCurrency(
+                                          item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
+                                          shopV2Data?.shop?.currency
+                                        )}
+                                      </h5>
+                                      <Button
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                        }}
+                                        className="mt-2 mb-4 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
+                                      >
+                                        <img
+                                          src="/assets/images/add-to-cart.png"
+                                          alt="Add to Cart Icon"
+                                          className="size-4"
+                                        />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </SwiperSlide>
+                            ))}
+                          </Swiper>
+                        </div>
                       </div>
-                      <Button
-                        onClick={() => scrollRight(productsScrollRef)}
-                        className={`absolute right-0 top-1/2 z-10 mr-2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md dark:bg-white ${
-                          items.length <= 5 ? 'hidden' : 'block'
-                        }`}
-                        style={{ transform: 'translateY(-50%)' }}
+                    </div>
+                  ))}
+                </main>
+              </>
+            )}
+            <footer className="mt-4">
+              <div className="bg-gray-900">
+                <div className="mx-auto max-w-2xl py-10 text-white">
+                  <div className="text-center">
+                    <h3 className="mb-3 text-3xl">
+                      Shop the latest trends and products with us.
+                    </h3>
+                    <p>
+                      Point hub POS is user-friendly and easy to navigate, making
+                      it accessible for business owners and staff of all technical
+                      levels.
+                    </p>
+                    <div className="my-10 flex justify-center">
+                      <button
+                        onClick={() =>
+                          window.open(
+                            'https://play.google.com/store/apps/details?id=io.pointhub.merchant&hl=km',
+                            '_blank'
+                          )
+                        }
                       >
-                        <svg
-                          className="size-4 text-black dark:text-black rtl:rotate-180"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 6 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="m1 9 4-4-4-4"
+                        <div className="mx-2 flex cursor-pointer items-center rounded-lg border px-4 py-2 transition-colors duration-300 hover:bg-gray-800">
+                          <img
+                            src="https://cdn-icons-png.flaticon.com/512/888/888857.png"
+                            alt="Google Play Store"
+                            className="w-7 md:w-8"
                           />
-                        </svg>
-                      </Button>
+                          <div className="ml-3 text-left">
+                            <p className="text-xs text-gray-200">Download on</p>
+                            <p className="text-sm text-gray-200 md:text-base">
+                              Google Play Store
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() =>
+                          window.open(
+                            'https://apps.apple.com/us/app/point-hub-pos-point-of-sale/id1472932126',
+                            '_blank'
+                          )
+                        }
+                      >
+                        <div className="mx-2 flex w-44 cursor-pointer items-center rounded-lg border px-4 py-2 transition-colors duration-300 hover:bg-gray-800">
+                          <img
+                            src="https://cdn-icons-png.flaticon.com/512/888/888841.png"
+                            alt="Apple Store"
+                            className="w-7 md:w-8"
+                          />
+                          <div className="ml-3 text-left">
+                            <p className="text-xs text-gray-200">Download on</p>
+                            <p className="text-sm md:text-base">Apple Store</p>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center text-sm text-gray-400 md:flex-row md:justify-between">
+                    <button>
+                      <p className="order-2 hover:text-white md:order-1 md:mt-0">
+                        &copy; Point hub POS.
+                      </p>
+                    </button>
+                    <div className="order-1 md:order-2">
+                      <span className="cursor-pointer px-2 transition-colors duration-300 hover:text-white">
+                        About us
+                      </span>
+                      <span className="cursor-pointer border-l px-2 transition-colors duration-300 hover:text-white">
+                        Contact us
+                      </span>
+                      <span className="cursor-pointer border-l px-2 transition-colors duration-300 hover:text-white">
+                        Privacy Policy
+                      </span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </main>
-
-            <footer className="mt-4">
-            <div className="bg-gray-900">
-              <div className="mx-auto max-w-2xl py-10 text-white">
-                <div className="text-center">
-                  <h3 className="mb-3 text-3xl">Download our fitness app</h3>
-                  <p>
-                    Point hub POS is user-friendly and easy to navigate, making
-                    it accessible for business owners and staff of all technical
-                    levels.
-                  </p>
-                  <div className="my-10 flex justify-center">
-                    <button
-                      onClick={() =>
-                        window.open(
-                          'https://play.google.com/store/apps/details?id=io.pointhub.merchant&hl=km',
-                          '_blank'
-                        )
-                      }
-                    >
-                      <div className="mx-2 flex cursor-pointer items-center rounded-lg border px-4 py-2 transition-colors duration-300 hover:bg-gray-800">
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/888/888857.png"
-                          alt="Google Play Store"
-                          className="w-7 md:w-8"
-                        />
-                        <div className="ml-3 text-left">
-                          <p className="text-xs text-gray-200">Download on</p>
-                          <p className="text-sm text-gray-200 md:text-base">
-                            Google Play Store
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() =>
-                        window.open(
-                          'https://apps.apple.com/us/app/point-hub-pos-point-of-sale/id1472932126',
-                          '_blank'
-                        )
-                      }
-                    >
-                      <div className="mx-2 flex w-44 cursor-pointer items-center rounded-lg border px-4 py-2 transition-colors duration-300 hover:bg-gray-800">
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/888/888841.png"
-                          alt="Apple Store"
-                          className="w-7 md:w-8"
-                        />
-                        <div className="ml-3 text-left">
-                          <p className="text-xs text-gray-200">Download on</p>
-                          <p className="text-sm md:text-base">Apple Store</p>
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center text-sm text-gray-400 md:flex-row md:justify-between">
-                  <button>
-                    <p className="order-2 hover:text-white md:order-1 md:mt-0">
-                      &copy; Point hub POS.
-                    </p>
-                  </button>
-                  <div className="order-1 md:order-2">
-                    <span className="cursor-pointer px-2 transition-colors duration-300 hover:text-white">
-                      About us
-                    </span>
-                    <span className="cursor-pointer border-l px-2 transition-colors duration-300 hover:text-white">
-                      Contact us
-                    </span>
-                    <span className="cursor-pointer border-l px-2 transition-colors duration-300 hover:text-white">
-                      Privacy Policy
-                    </span>
-                  </div>
-                </div>
               </div>
-            </div>
             </footer>
           </div>
-          <ProductDetail
-          currency={shopV2Data?.shop?.currency}
-          item={selectedItem}
-        />
         </div>
       )}
     </MultipleSkeletons>
