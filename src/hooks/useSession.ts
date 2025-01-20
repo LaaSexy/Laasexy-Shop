@@ -1,7 +1,8 @@
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useMutation } from 'react-query';
 import { useEffect, useState } from 'react';
 import instanceEOrder from '@/utils/AxiosEOrder';
+import { atomWithStorage } from 'jotai/utils';
 
 // Define the Session interface
 export interface Session {
@@ -14,7 +15,7 @@ export interface Session {
 }
 
 // Define the session atom
-export const sessionAtom = atom<Session | null>(null);
+export const sessionAtom = atomWithStorage<Session | null>('session', null);
 
 // Define the type for the session creation parameters
 interface CreateSessionParams {
