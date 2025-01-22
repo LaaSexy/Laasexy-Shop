@@ -57,6 +57,7 @@ export default function useSession(): UseSessionReturn {
       console.log('Session created successfully:', sessionData);
     },
     onError: (error: Error) => {
+      setSession(null);
       console.error('Failed to create session:', error);
     },
   });
