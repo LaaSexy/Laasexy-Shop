@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Drawer, Input, Menu } from 'antd';
+import { Button, Drawer, Input, Menu, message } from 'antd';
 import { useRouter } from 'next/router';
 import { useV2Items } from '@/hooks/useItems';
 import MultipleSkeletons from '../components/MultipleSkeletons';
@@ -18,6 +18,7 @@ import { Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 export const deviceIdAtom = atom<string | null>(null);
+
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {
   const currentDeviceId = get(deviceIdAtom);
   console.log(currentDeviceId);
@@ -35,19 +36,15 @@ export const generateDeviceId = () => {
   return Math.floor(Math.random() * 100000) + '-' + Date.now();
 };
 
-type SearchProps = React.ComponentProps<typeof Search>;
 const { Search } = Input;
-const onSearch: SearchProps['onSearch'] = (value: any, _e: any, info: any) =>
-  console.log(info?.source, value);
 
-// LanguageDropdown Component
 const LanguageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('KH');
   const languages = [
-    { name: 'KH', icon: '/assets/images/Cambodia.png' },
-    { name: 'EN', icon: '/assets/images/English.png' },
-    { name: 'CH', icon: '/assets/images/Chinese.jpg' },
+    { name: 'KH', icon: '/assets/images/Cambodia.png', label: 'ភាសាខ្មែរ' },
+    { name: 'EN', icon: '/assets/images/English.png', label: 'English' },
+    { name: 'CH', icon: '/assets/images/Chinese.jpg', label: '中文' },
   ];
   const toggleDropdown = () => setIsOpen(!isOpen);
   const handleLanguageSelect = (language: string) => {
@@ -57,6 +54,9 @@ const LanguageDropdown = () => {
   const selectedLanguageIcon = languages.find(
     (lang) => lang.name === selectedLanguage
   )?.icon;
+  const selectedLanguageLabel = languages.find(
+    (lang) => lang.name === selectedLanguage
+  )?.label;
   return (
     <div className="relative inline-block text-left">
       <div>
@@ -75,6 +75,9 @@ const LanguageDropdown = () => {
               className="h-5 w-8 sm:h-7 sm:w-10"
             />
           )}
+          <span className="hidden lg:inline ml-2">
+            {selectedLanguageLabel}
+          </span>
           <svg
             className="-mr-1 ml-2 size-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +95,7 @@ const LanguageDropdown = () => {
       </div>
       {isOpen && (
         <div
-          className="absolute right-0 z-50 mt-2 w-16 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="absolute right-0 z-50 mt-2 w-40 sm:w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -102,7 +105,7 @@ const LanguageDropdown = () => {
               <button
                 key={language.name}
                 onClick={() => handleLanguageSelect(language.name)}
-                className="flex w-full items-center justify-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="flex w-full items-center justify-start px-2 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem"
               >
                 <img
@@ -110,6 +113,9 @@ const LanguageDropdown = () => {
                   alt={language.name}
                   className="h-5 w-8"
                 />
+                <span className="ml-2 sm:inline">
+                  {language.label}
+                </span>
               </button>
             ))}
           </div>
@@ -143,6 +149,13 @@ const images = [
   '/assets/images/Banner 5.jpg',
 ];
 
+const playSuccessSound = () => {
+  const audio = new Audio('/assets/audio/error.mp3');
+  audio.play().catch((error) => {
+    console.error('Failed to play sound:', error);
+  });
+};
+
 const Ecommerce = () => {
   const [session] = useAtom(sessionAtom);
   const [cart] = useAtom(cartAtom);
@@ -162,10 +175,13 @@ const Ecommerce = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [, setItems] = useState([]);
   const [isSubcategorySelected, setIsSubcategorySelected] = useState(false);
+  const [, setSearchQuery] = useState('');
+  const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
 
   useEffect(() => {
-    console.log(session);
-  }, [session]);
+    console.log('Session Id: ' + session?._id);
+    console.log('Device Id: ' + deviceId);
+  }, [session?._id, deviceId]);
 
   useEffect(() => {
     if (query?.branch) {
@@ -175,6 +191,12 @@ const Ecommerce = () => {
       });
     }
   }, [query, deviceId]);
+
+  useEffect(() => {
+    if (deviceId === null) {
+      initializeDeviceUuid();
+    }
+  }, [deviceId, initializeDeviceUuid]);
 
   useEffect(() => {
     if (shopV2Data?.items) {
@@ -201,6 +223,11 @@ const Ecommerce = () => {
   }, [data]);
 
   const onClickCategory = (category: any) => {
+    if (!category?._id) {
+      message.error("Unknown category", category?._id);
+      playSuccessSound();
+      return;
+    }
     setSelectedCategory(category._id);
     setIsSubcategorySelected(true);
     const filterData: any = _.filter(shopV2Data?.items, (item: Item) => {
@@ -246,6 +273,20 @@ const Ecommerce = () => {
     });
   };
 
+  const onSearch = (value: string) => {
+    setSearchQuery(value);
+    if (value) {
+      const filtered = shopV2Data?.items.filter((item: Item) =>
+        item.itemData.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(filtered);
+      setIsSubcategorySelected(true);
+    } else {
+      setFilteredItems(shopV2Data?.items || []);
+      setIsSubcategorySelected(false);
+    }
+  };
+
   return (
     <MultipleSkeletons loading={isFetching}>
       {shopV2Data?.subCategories?.length <= 0 ? (
@@ -279,18 +320,20 @@ const Ecommerce = () => {
                     allowClear
                     size="large"
                     onSearch={onSearch}
-                    className="w-[400px] sm:w-[300px]"
+                    className="w-full max-w-[400px]"
                   />
                 </div>
-                <div className="hidden items-center justify-center sm:flex">
+                {/* Search Bar for Larger Screens */}
+                <div className="hidden sm:flex items-center justify-center flex-1 mx-4">
                   <Search
                     placeholder="Type your keyword..."
                     allowClear
                     size="large"
                     onSearch={onSearch}
-                    className="w-full sm:w-[700px]"
+                    className="w-full max-w-[700px]"
                   />
                 </div>
+                 {/* Language Dropdown, Cart, and Menu Button */}
                 <div className="flex items-center justify-end">
                   <LanguageDropdown />
                   <button
@@ -337,6 +380,7 @@ const Ecommerce = () => {
                         onClick={() => {
                           setSelectedCategory(null);
                           setIsSubcategorySelected(false);
+                          setSelectedItem(null);
                         }}
                         className={`my-3 flex items-center justify-center rounded-md border border-[#DBD5D5] !p-5 text-base text-white hover:!border-white hover:bg-violet-700 hover:!text-white sm:my-4 ${
                           selectedCategory === null
@@ -353,7 +397,10 @@ const Ecommerce = () => {
                       <li key={subCategory._id} className="list-none">
                         <Button
                           size="large"
-                          onClick={() => onClickCategory(subCategory)}
+                          onClick={() => {
+                            onClickCategory(subCategory);
+                            setSelectedItem(null);
+                          }}
                           className={`my-3 flex items-center justify-center rounded-md border border-[#DBD5D5] !p-5 text-base text-white hover:!border-white hover:bg-violet-700 hover:!text-white sm:my-4 ${
                             selectedCategory === subCategory._id
                               ? ' bg-violet-700 text-white hover:!text-white'
@@ -409,13 +456,6 @@ const Ecommerce = () => {
                 item={selectedItem}
                 onClose={onCancel}
               />
-            ) : isSubcategorySelected ? (
-              <CategoryPage
-                currency={shopV2Data?.shop?.currency}
-                filterItems={filteredItems}
-                selectedItem={selectedItem}
-                onItemClick={onClickItem}
-              />
             ) : (
               <>
                 {/* Banner Scroll Section */}
@@ -424,7 +464,7 @@ const Ecommerce = () => {
                   className="relative w-full"
                   data-carousel="slide"
                 >
-                  <div className="relative h-44 mt-3 overflow-hidden sm:h-96">
+                  <div className="relative h-44 overflow-hidden sm:h-64 md:h-96">
                     {images.map((image, index) => (
                       <div
                         key={index}
@@ -504,103 +544,118 @@ const Ecommerce = () => {
                     </span>
                   </button>
                 </div>
-                {/* Main Content */}
-                <main className="mb-4 flex-1 px-0 sm:px-4 bg-gray-300 dark:bg-black">
-                  {Object.entries(groupedItems).map(([categoryId, items]) => (
-                    <div key={categoryId} className="bg-white dark:bg-slate-800 rounded-sm shadow-sm mb-4">
-                      <div className="flex justify-between items-center p-4 mt-4">
-                        <h3 className="text-xl font-bold dark:text-white">
-                          {shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId)?.name ||
-                            'Uncategorized'}
-                        </h3>
-                        <button
-                          onClick={() => onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId))}
-                          className="group relative text-lg font-bold text-violet-600 dark:text-white"
-                        >
-                          See All
-                          <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
-                        </button>
-                      </div>
-                      <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
-                        <div className="relative w-full pb-4">
-                          <Swiper
-                            modules={[Navigation, Thumbs]}
-                            loop={true}
-                            spaceBetween={32}
-                            navigation={true}
-                            thumbs={{ swiper: thumbsSwiper }}
-                            className="product-prev"
-                            breakpoints={{
-                              320: {
-                                slidesPerView: 2,
-                                spaceBetween: 16,
-                              },
-                              768: {
-                                slidesPerView: 3,
-                                spaceBetween: 24,
-                              },
-                              1024: {
-                                slidesPerView: 4,
-                                spaceBetween: 32,
-                              },
-                              1280: {
-                                slidesPerView: 5,
-                                spaceBetween: 32,
-                              },
-                            }}
+
+                {/* Render CategoryPage if isSubcategorySelected is true */}
+                {isSubcategorySelected ? (
+                  <CategoryPage
+                    currency={shopV2Data?.shop?.currency}
+                    filterItems={filteredItems}
+                    selectedItem={selectedItem}
+                    onItemClick={onClickItem}
+                  />
+                ) : (
+                  <>
+                  {/* Main Content */}
+                  <main className="flex-1 px-0 sm:px-4 bg-gray-300 dark:bg-black">
+                    {Object.entries(groupedItems).map(([categoryId, items]) => (
+                      <div key={categoryId} className="bg-white dark:bg-slate-800 rounded-sm shadow-sm mb-4">
+                        <div className="flex justify-between items-center p-4 mt-4">
+                          <h3 className="text-xl font-bold dark:text-white">
+                            {shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId)?.name ||
+                              'Uncategorized'}
+                          </h3>
+                          <button
+                            onClick={() => onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId))}
+                            className="group relative text-lg font-bold text-violet-600 dark:text-white"
                           >
-                            {items.map((item: Item) => (
-                              <SwiperSlide key={item._id}>
-                                <div
-                                  onClick={() => onClickItem(item)}
-                                  className="w-[190px] ml-5 flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer"
-                                >
-                                  <img
-                                    alt={item?.itemData?.name || 'Product Image'}
-                                    src={
-                                      item?.itemData?.imageUrl
-                                        ? `${imagePath}${item.itemData.imageUrl}`
-                                        : '/placeholder-image.jpg'
-                                    }
-                                    className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
-                                  />
-                                  <div className="mx-2 mb-5">
-                                    <h2 className="mb-2 text-start text-sm text-black dark:text-white">
-                                      {item?.itemData?.name || 'Unnamed Product'}
-                                    </h2>
-                                    <div className="flex items-center justify-between">
-                                      <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white mb-4">
-                                        {formatCurrency(
-                                          item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
-                                          shopV2Data?.shop?.currency
-                                        )}
-                                      </h5>
-                                      <Button
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                        }}
-                                        className="mt-2 mb-4 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
-                                      >
-                                        <img
-                                          src="/assets/images/add-to-cart.png"
-                                          alt="Add to Cart Icon"
-                                          className="size-4"
-                                        />
-                                      </Button>
+                            See All
+                            <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
+                          </button>
+                        </div>
+                        <div className="w-full overflow-hidden bg-white dark:bg-slate-800">
+                          <div className="relative w-full pb-4">
+                            <Swiper
+                              modules={[Navigation, Thumbs]}
+                              loop={true}
+                              spaceBetween={32}
+                              navigation={true}
+                              thumbs={{ swiper: thumbsSwiper }}
+                              className="product-prev"
+                              breakpoints={{
+                                320: {
+                                  slidesPerView: 2,
+                                  spaceBetween: 16,
+                                },
+                                768: {
+                                  slidesPerView: 3,
+                                  spaceBetween: 24,
+                                },
+                                1024: {
+                                  slidesPerView: 4,
+                                  spaceBetween: 32,
+                                },
+                                1280: {
+                                  slidesPerView: 5,
+                                  spaceBetween: 32,
+                                },
+                              }}
+                            >
+                              {items.map((item: Item) => (
+                                <SwiperSlide key={item._id}>
+                                  <div
+                                    onClick={() => onClickItem(item)}
+                                    className="w-[190px] ml-5 flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer"
+                                  >
+                                    <img
+                                      alt={item?.itemData?.name || 'Product Image'}
+                                      src={
+                                        item?.itemData?.imageUrl
+                                          ? `${imagePath}${item.itemData.imageUrl}`
+                                          : '/placeholder-image.jpg'
+                                      }
+                                      className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
+                                    />
+                                    <div className="mx-2 mb-5">
+                                      <h2 className="mb-2 text-start text-sm text-black dark:text-white">
+                                        {item?.itemData?.name || 'Unnamed Product'}
+                                      </h2>
+                                      <div className="flex items-center justify-between">
+                                        <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white mb-4">
+                                          {formatCurrency(
+                                            item?.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount || 0,
+                                            shopV2Data?.shop?.currency
+                                          )}
+                                        </h5>
+                                        <Button
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                          }}
+                                          className="mt-2 mb-4 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white"
+                                        >
+                                          <img
+                                            src="/assets/images/add-to-cart.png"
+                                            alt="Add to Cart Icon"
+                                            className="size-4"
+                                          />
+                                        </Button>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </SwiperSlide>
-                            ))}
-                          </Swiper>
+                                </SwiperSlide>
+                              ))}
+                            </Swiper>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </main>
+                    ))}
+                  </main>
+                  </>
+                )}
               </>
-            )}
-            <footer className="mt-4">
+            )} 
+
+            {/* footer Content */}
+            <footer>
               <div className="bg-gray-900">
                 <div className="mx-auto max-w-2xl py-10 text-white">
                   <div className="text-center">

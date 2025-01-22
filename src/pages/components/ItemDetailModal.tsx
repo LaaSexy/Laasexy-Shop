@@ -100,7 +100,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           <h3 className="ml-4 text-lg font-semibold dark:text-white">
             Options
           </h3>
-          <div className="ml-5 flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
+          <div className="ml-5 flex max-h-24 flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
             {variations?.map((value: any) => (
               <Button
                 key={value._id}
@@ -205,15 +205,9 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             {optionRender(item?.itemData?.variations)}
             {/* Scrollable Modifiers Section */}
             <main
-              className={`flex-1 flex overflow-y-auto ${
-                modifiers.length > 3
-                  ? 'h-52 max-h-[calc(100vh-250px)] sm:max-h-[calc(100vh-180px)]'
-                  : modifiers.length > 0
-                  ? 'h-auto'
-                  : 'h-0'
-              }`}
+              className="flex-1 flex max-h-56 overflow-y-auto"
             >
-              <div className="w-full sm:max-h-[calc(100vh-180px)]">
+              <div className="w-full">
                 {modifiers.length > 0 && (
                   <Modifiers
                     onChanged={setSelectedAddIns}

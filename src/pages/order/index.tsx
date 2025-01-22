@@ -173,19 +173,27 @@ const NewPage: React.FC = () => {
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
-        grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 10 }}
+        grid={{
+          xs: 2,
+          sm: 2,
+          md: 3,
+          lg: 4,
+          xl: 4,
+          xxl: 4,
+          gutter: 16,
+        }}
         renderItem={(item: any) => (
           <List.Item>
             <div
               onClick={() => onClickItem(item)}
-              className="mx-auto mb-3 w-48 rounded-lg border bg-white p-4 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-72"
+              className="mx-auto mb-3 w-48 rounded-lg border bg-white p-4 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-72 cursor-pointer"
             >
               <img
-                alt={item?.itemData?.name || 'Product Image'}
+                alt={item?.itemData?.name || 'Unknow the product name'}
                 src={
                   item?.itemData?.imageUrl
                     ? `${imagePath}${item.itemData.imageUrl}`
-                    : '/placeholder-image.jpg'
+                    : '/assets/images/default.png'
                 }
                 className="mx-auto mb-4 h-[160px] w-[280px] rounded-md object-cover sm:h-[210px] sm:w-[280px] transition duration-300 ease-in-out hover:scale-105"
               />
@@ -204,7 +212,7 @@ const NewPage: React.FC = () => {
                   <img
                     src="/assets/images/add-to-cart.png"
                     alt="Add to Cart Icon"
-                    className="size-4 "
+                    className="size-4"
                   />
                 </Button>
               </div>
@@ -226,7 +234,7 @@ const NewPage: React.FC = () => {
           <List.Item>
             <div
               onClick={() => onClickItem(item)}
-              className="flex w-full justify-between rounded-md border shadow-sm  dark:border-gray-700 dark:bg-slate-900"
+              className="flex w-full justify-between rounded-md border shadow-sm  dark:border-gray-700 dark:bg-slate-900 cursor-pointer"
             >
               <div className="flex w-full items-center sm:w-auto">
                 <Avatar

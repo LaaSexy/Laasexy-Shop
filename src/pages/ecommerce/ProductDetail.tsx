@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message  } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -44,6 +44,12 @@ interface ProductDetailProps {
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>('cart', []);
+const playSuccessSound = () => {
+  const audio = new Audio('/assets/audio/orderSucess.mp3');
+  audio.play().catch((error) => {
+    console.error('Failed to play sound:', error);
+  });
+};
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }) => {
   const [cart, setCart] = useAtom(cartAtom);
@@ -158,7 +164,46 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
     setCart([...cart, myItem]);
     handleClick();
     onClose();
+    message.success({
+      content: 'Order added successfully!',
+      duration: 3,
+    });
+     playSuccessSound();
   };
+
+  // const onClickBuyNow = () =>{
+  //   const deviceUuid = uuidv4();
+  //   const name =
+  //     item?.itemData?.variations?.length < 2
+  //       ? item?.itemData?.name || ''
+  //       : `${item?.itemData?.name || ''}${
+  //           selectedOption?.itemVariationData?.name
+  //             ? ` (${selectedOption.itemVariationData.name})`
+  //             : ''
+  //         }`.trim();
+  //   const myItem = {
+  //     ...item,
+  //     name,
+  //     modifiers: selectedAddIns,
+  //     id: deviceUuid,
+  //     selectedAddIns,
+  //     total,
+  //     quantity,
+  //     price: selectedOption?.itemVariationData?.priceMoney?.amount,
+  //     variation: selectedOption,
+  //   };
+  //   setCart([...cart, myItem]);
+  //   handleClick();
+  //   onClose();
+  //   if (query?.branch) {
+  //     router.push({
+  //       pathname: '/ecommerce/Checkout',
+  //       query: {
+  //         branch: query.branch,
+  //       },
+  //     });
+  //   }
+  // }
 
   return (
     <MultipleSkeletons loading={isFetching}>
@@ -192,6 +237,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                         shopV2Data?.shop?.currency
                       )}
                     </h6>
+
                     {/* Rating and Reviews */}
                     {/* <div className="flex items-center gap-2 whitespace-nowrap">
                       <Rate disabled defaultValue={4} className="text-yellow-400" />
@@ -243,7 +289,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                     <Button
                       type="primary"
                       size="large"
-                      className={`w-full flex !text-lg !p-5 justify-center items-center${
+                      className={`w-full flex !text-xl !p-6 !rounded-full justify-center items-center${
                         quantity <= 0 || total <= 0
                           ? 'cursor-not-allowed opacity-60 flex justify-center items-center'
                           : ''
@@ -251,9 +297,26 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                       disabled={quantity <= 0 || total <= 0}
                       onClick={onClickAddToCart}
                     >
+                      <svg
+                        className="-ms-2 me-2 h-6 w-6"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
+                        />
+                      </svg>
                       Add to cart - {formatCurrency(total, currency)}
                     </Button>
-                    <Button
+                    {/* <Button
                       type="primary"
                       size="large"
                       className={`w-full flex !text-lg !p-5 justify-center items-center${
@@ -262,7 +325,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                           : ''
                       }`}
                       disabled={quantity <= 0  || total <= 0}
-                      onClick={onClickAddToCart}
+                      onClick={onClickBuyNow}
                     >
                       <svg
                         className="-ms-2 me-2 h-5 w-5"
@@ -282,7 +345,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                         />
                       </svg>
                       Buy Now
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 {/* Image Section with Swiper */}
