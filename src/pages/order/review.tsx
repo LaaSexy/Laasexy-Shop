@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  DeleteOutlined,
   LeftOutlined,
   SendOutlined,
 } from '@ant-design/icons';
@@ -31,12 +32,9 @@ const Review = () => {
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const { mutate: createOrder } = useOrder();
   const { mutateSession: createSession } = useSession();
-  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [,setOrderSuccess] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error' | 'info' | 'warning', content: string } | null>(null);
-
-  useEffect(() => {
-    console.log(session?._id);
-  }, [session?._id]);
 
   useEffect(() => {
     if (!session?._id) {
@@ -92,13 +90,6 @@ const Review = () => {
   }, [session]);
 
   useEffect(() => {
-    const storedOrderSuccess = localStorage.getItem('orderSuccess');
-    if (storedOrderSuccess === 'true') {
-      setOrderSuccess(true);
-    }
-  }, []);
-
-  useEffect(() => {
     if (!isSuccess) {
       createSession();
     }
@@ -129,7 +120,7 @@ const Review = () => {
           ?.map((value: any) => value.price)
           .reduce((sum: any, price: any) => sum + (price || 0), 0) || 0;
       const basePrice = item.price + modifierCost;
-      if (item.quantity > 0) {
+      if (item.quantity > 1) {
         item.quantity -= 1;
         item.total = basePrice * item.quantity;
       }
@@ -152,17 +143,14 @@ const Review = () => {
       setAlertMessage({ type: 'error', content: 'Session is not available. Please start a new session.' });
       return;
     }
-  
     if (locationPermission === 'denied') {
       setAlertMessage({ type: 'error', content: 'You cannot send the order because location access is denied.' });
       return;
     }
-  
     if (cart.length === 0) {
       setAlertMessage({ type: 'error', content: 'Your cart is empty. Please add items to your cart before placing an order.' });
       return;
     }
-  
     const orderItems = cart.map((item: any) => ({
       id: item.id,
       name: item?.name,
@@ -176,14 +164,13 @@ const Review = () => {
       createdAt: item?.createAt,
       modifiers: item?.modifiers,
     }));
-  
     createOrder({
       orderId,
       sessionId: session?._id,
       items: orderItems,
     });
-  
     setOrderSuccess(true);
+    setOrderPlaced(true); 
     localStorage.setItem('orderSuccess', 'true');
     setCart([]);
     setQuantities([]);
@@ -192,6 +179,7 @@ const Review = () => {
   };
 
   const handleAddMoreItems = () => {
+    setOrderPlaced(false);
     router.push({
       pathname: '/order',
       query: {
@@ -263,17 +251,18 @@ const Review = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <button
+        <button
             type="button"
             onClick={handleAddMoreItems}
-            className="w-full sm:w-auto mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
-            Add More Items
+           <img src="/assets/images/Back Arrow.png" alt="" className="size-6 mr-1" />
+            Back to Home
           </button>
           <button
             type="button"
             onClick={handleCheckout}
-            className="w-full sm:w-auto mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
             <svg
               className="w-4 h-4 me-2"
@@ -291,9 +280,17 @@ const Review = () => {
     </div>
   );
 
+  const removeItemFromCart = (index: number) => {
+    setCart((prevCart: any) => {
+      const updatedCart = [...prevCart];
+      updatedCart.splice(index, 1);
+      return updatedCart;
+    });
+  };
+
   return (
     <MultipleSkeletons loading={isFetching}>
-      {orderSuccess && cart.length <= 0 ? (
+      {orderPlaced  && cart.length <= 0 ? (
         <OrderSuccessPage />
       ) : (
         <div className="flex min-h-screen flex-col">
@@ -390,9 +387,19 @@ const Review = () => {
                             </div>
                           </div>
                         </div>
-                        <span className="mb-10 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
-                          {`${formatCurrency(item?.total, currency)}`}
-                        </span>
+                        <div className="flex flex-col items-end justify-center">
+                          <span className="mb-5 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                              {`${formatCurrency(item?.total, currency)}`}
+                          </span>
+                          <Button
+                              type="text"
+                              danger
+                              onClick={() => removeItemFromCart(index)}
+                              className="mt-2 flex font-medium text-sm sm:text-base items-center justify-center text-red-500 hover:text-red-700"
+                            >
+                              <DeleteOutlined className="text-lg"/>
+                          </Button>
+                        </div>
                       </div>
                     </List.Item>
                   )}
@@ -404,13 +411,13 @@ const Review = () => {
               <button
                 onClick={handleOrder}
                 className={`mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md sm:w-3/5 sm:p-3 ${
-                  cart.length <= 0 || !session?._id ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
+                  cart.length <= 0 || !session?._id || total <= 0 ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
                 }`}
-                disabled={cart.length <= 0 || !session?._id}
+                disabled={cart.length <= 0 || !session?._id || total <= 0}
               >
                 <span className="flex items-center justify-center">
                   <SendOutlined className="mr-2" /> Send Order{' - '}
-                  {formatCurrency(total ?? 0, currency ?? 'USD')}
+                  {formatCurrency(total, currency ?? 'USD')}
                 </span>
               </button>
             </footer>

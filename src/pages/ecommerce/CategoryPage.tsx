@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons';
-import { Avatar, Button, List, Empty  } from 'antd';
+import { Avatar, Button, List, Empty } from 'antd';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { useV2Items } from '@/hooks/useItems';
-import { Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
 import MultipleSkeletons from '../components/MultipleSkeletons';
 import ProductDetail from './ProductDetail';
@@ -24,12 +23,11 @@ interface CategoryPageProps {
 
 const CategoryPage: React.FC<CategoryPageProps> = ({
   currency,
-  filterItems,
+  filterItems = [],
   selectedItem,
   onItemClick,
 }) => {
   const [, setSelectedCategory] = useState<number | null>(null);
-  const [, setFilteredItems] = useState([]);
   const [showCart, setShowCart] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const savedShowCart = localStorage.getItem('showCart');
@@ -61,10 +59,6 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
 
   const onClickCategory = (category: any) => {
     setSelectedCategory(category._id);
-    const filterData: any = _.filter(shopV2Data?.items, (item: Item) => {
-      return item.itemData.categories.indexOf(category._id) > -1;
-    });
-    setFilteredItems(filterData);
   };
 
   const onClickItem = (item: any) => {
@@ -75,7 +69,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
 
   const GridContent = () => (
     <div className="w-full overflow-hidden bg-white dark:bg-black px-4 sm:px-14">
-      <div className="mb-10 mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="mb-10 mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {filterItems.map((item: any) => (
           <div
             key={item._id}
@@ -191,19 +185,19 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
               {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
             </Button>
           </div>
-           {/* Main Content */}
-           {selectedItem ? (
+          {/* Main Content */}
+          {selectedItem ? (
             <ProductDetail
               currency={currency}
               item={selectedItem}
               onClose={onCancel}
             />
+          ) : filterItems.length === 0 ? (
+            <Empty className="mt-10" description="No items found" />
+          ) : showCart ? (
+            <GridContent />
           ) : (
-            filterItems.length === 0 ? (
-              <Empty className="mt-10" description="No items found" />
-            ) : (
-              showCart ? <GridContent /> : <ListContent />
-            )
+            <ListContent />
           )}
         </div>
       </div>

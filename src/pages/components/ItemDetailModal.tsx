@@ -100,7 +100,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           <h3 className="ml-4 text-lg font-semibold dark:text-white">
             Options
           </h3>
-          <div className="ml-5 flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
+          <div className="ml-5 flex max-h-28 flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-slate-900">
             {variations?.map((value: any) => (
               <Button
                 key={value._id}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  DeleteOutlined,
   LeftOutlined,
   SendOutlined,
 } from '@ant-design/icons';
@@ -15,7 +16,12 @@ import { cartAtom } from '../components/ItemDetailModal';
 import { IMAGE_PATH } from '../components/left_menu_style/menu_list';
 import MultipleSkeletons from '../components/MultipleSkeletons';
 import { generateInvoiceId } from '@/utils/generateInvoiceId';
-
+const playSuccessSound = () => {
+  const audio = new Audio('/assets/audio/orderSucess.mp3');
+  audio.play().catch((error) => {
+    console.error('Failed to play sound:', error);
+  });
+};
 const ReviewProduct = () => {
   const [cart, setCart] = useAtom(cartAtom);
   const [orderId, setOrderId] = useState(generateInvoiceId());
@@ -41,13 +47,6 @@ const ReviewProduct = () => {
       setAlertMessage({ type: 'warning', content: 'You can not create the session so you can not send order!!' });
     }
   }, [session?._id]);
-
-  useEffect(() => {
-    const storedOrderSuccess = localStorage.getItem('orderSuccess');
-    if (storedOrderSuccess === 'true') {
-      setOrderSuccess(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (!isSuccess) {
@@ -84,15 +83,18 @@ const ReviewProduct = () => {
         item.quantity -= 1;
         item.total = basePrice * item.quantity;
       }
+      if (item.quantity <= 0) {
+        updatedCart.splice(index, 1);
+      }
       return updatedCart;
     });
   };
 
   const calculateTotal = () => {
-    return cart
+    const total = cart
       .filter((item) => item?.total > 0)
-      .reduce((total, item) => total + (item?.total || 0), 0)
-      .toFixed(0);
+      .reduce((total, item) => total + (item?.total || 0), 0);
+    return total.toFixed(2);
   };
 
   const total: any = calculateTotal();
@@ -112,37 +114,40 @@ const ReviewProduct = () => {
       createdAt: item?.createAt,
       modifiers: item?.modifiers,
     }));
-
     createOrder({
       orderId,
       sessionId: session?._id,
       items: orderItems,
     });
-    
     setOrderSuccess(true);
     localStorage.setItem('orderSuccess', 'true');
     setCart([]);
     setQuantities([]);
     setPrices([]);
     setOrderId(generateInvoiceId());
+    playSuccessSound();
   };
 
   const handleAddMoreItems = () => {
-    router.push({
-      pathname: '/ecommerce',
-      query: {
-        branch: query.branch,
-      },
-    });
+    if (query?.branch) {
+      router.push({
+        pathname: '/ecommerce',
+        query: {
+          branch: query.branch,
+        },
+      });
+    }
   };
 
   const handleCheckout = () => {
-    router.push({
-      pathname: '/ecommerce/checkout',
-      query: {
-        branch: query.branch,
-      },
-    });
+    if (query?.branch) {
+      router.push({
+        pathname: '/ecommerce/Checkout',
+        query: {
+          branch: query.branch,
+        },
+      });
+    }
   };
 
   const onClickToShowData = () => {
@@ -190,21 +195,22 @@ const ReviewProduct = () => {
         </div>
         <div className="w-full sm:w-[500px] mb-10">
           <p className="text-gray-600 text-center mt-3 dark:text-white">
-            Congratulations! Your order has been successfully placed.
+            Your order was successful! Just wait for you go to checkout. 
           </p>
         </div>
         <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
           <button
             type="button"
             onClick={handleAddMoreItems}
-            className="w-full sm:w-auto mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-violet-500 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
-            Add More Items
+           <img src="/assets/images/Back Arrow.png" alt="" className="size-6 mr-1" />
+            Back to Home
           </button>
           <button
             type="button"
             onClick={handleCheckout}
-            className="w-full sm:w-auto mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-violet-500 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
             <svg
               className="w-4 h-4 me-2"
@@ -303,7 +309,7 @@ const ReviewProduct = () => {
                               <Button
                                 onClick={() => decreaseQuantity(index)}
                                 shape="circle"
-                                className={`flex items-center text-base sm:text-xl border-violet-500 text-violet-500 font-semibold justify-center w-7 h-7 sm:w-8 sm:h-8 dark:border-slate-600 dark:text-slate-300 ${
+                                className={`flex items-center text-base sm:text-xl border-violet-500 text-violet-500 font-semibold justify-center w-8 h-8 sm:w-10 sm:h-10 dark:border-slate-600 dark:text-slate-300 ${
                                   item?.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''
                                 }`}
                                 disabled={item?.quantity <= 0}
@@ -316,29 +322,26 @@ const ReviewProduct = () => {
                               <Button
                                 onClick={() => increaseQuantity(index)}
                                 shape="circle"
-                                className="flex items-center text-base sm:text-xl border-violet-500 bg-violet-500 text-white hover:!text-white font-semibold justify-center w-7 h-7 sm:w-8 sm:h-8 dark:border-slate-600 dark:text-slate-300"
+                                className="flex items-center text-base sm:text-xl border-violet-500 bg-violet-500 text-white hover:!text-white font-semibold justify-center w-8 h-8 sm:w-10 sm:h-10 dark:border-slate-600 dark:text-slate-300"
                               >
                                 +
                               </Button>
                             </div>
                           </div>
                         </div>
-                          <div className="flex flex-col items-end justify-center">
-                            <span className="mb-5 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
-                                  {`${formatCurrency(item?.total, currency)}`}
-                            </span>
-                            <Button
-                                type="text"
-                                danger
-                                onClick={() => removeItemFromCart(index)}
-                                className="mt-2 flex font-medium text-sm sm:text-base items-center justify-center text-red-500 hover:text-red-700"
-                              >
-                                <svg className="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                                </svg>
-                                Remove
-                              </Button>
-                          </div>
+                        <div className="flex flex-col items-end justify-center">
+                          <span className="mb-5 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
+                                {`${formatCurrency(item?.total, currency)}`}
+                          </span>
+                          <Button
+                              type="text"
+                              danger
+                              onClick={() => removeItemFromCart(index)}
+                              className="mt-2 flex font-medium text-sm sm:text-base items-center justify-center text-red-500 hover:text-red-700"
+                            >
+                              <DeleteOutlined/>
+                          </Button>
+                        </div>
                       </div>
                     </List.Item>
                   )}
