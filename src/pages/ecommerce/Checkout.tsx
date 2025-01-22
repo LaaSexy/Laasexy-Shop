@@ -79,24 +79,21 @@ const Checkout = () => {
 
   const validateInputs = () => {
     let isValid = true;
-
     if (!address.trim()) {
       setAddressError('Address is required');
       isValid = false;
     } else {
       setAddressError('');
     }
-
     if (!phone.trim()) {
       setPhoneError('Phone number is required');
       isValid = false;
-    } else if (!/^\d{10,15}$/.test(phone)) {
-      setPhoneError('Phone number must be between 10 and 15 digits');
+    } else if (!/^0\d{6,8}$/.test(phone)) {
+      setPhoneError('Phone number must start with 0 and be between 7 and 9 digits');
       isValid = false;
     } else {
       setPhoneError('');
     }
-
     return isValid;
   };
 
@@ -105,11 +102,9 @@ const Checkout = () => {
       message.error('Your cart is empty');
       return;
     }
-
     if (!validateInputs()) {
       return;
     }
-
     setIsCheckoutSuccess(true);
   };
 
@@ -161,13 +156,13 @@ const Checkout = () => {
         </h1>
         <div className="w-full sm:w-[500px] mb-10">
           <p className="text-gray-600 text-center mt-3 dark:text-white">
-            Your checkout was successful! Just wait for the items to arrive at home.
+            Your checkout was successful! Just wait for the items to arrive at your home.
           </p>
           <p className="text-gray-600 text-center mt-3 dark:text-white">
-            <strong>Address:</strong> {address}
+            <strong>Your Address: </strong> {address}
           </p>
           <p className="text-gray-600 text-center mt-3 dark:text-white">
-            <strong>Phone:</strong> {phone}
+            <strong>Your Phone number: </strong> {phone}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -208,9 +203,9 @@ const Checkout = () => {
           </header>
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto px-4 pt-6 sm:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-36">
               {/* Left Column: Contact and Payment Method */}
-              <div className="space-y-6 borer bg-white px-4 py-4 rounded-md dark:bg-black shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+              <div className="space-y-6 borer bg-white px-4 py-4 rounded-md dark:bg-black dark:border-gray-800 dark:border shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
                 <h3 className="text-xl font-bold dark:text-white">Contact</h3>
                 <div className="flex flex-col gap-4">
                   {/* Address Input */}
@@ -264,7 +259,7 @@ const Checkout = () => {
                 <Radio.Group name="paymentMethod" defaultValue="cash" className="w-full">
                   <div className="flex flex-col gap-4">
                     <PaymentOption
-                      src="/assets/images/ABA.jpg"
+                      src="/assets/images/ABA.png"
                       title="ABA Bank"
                       description="Checked Automatically"
                       value="aba"
@@ -279,7 +274,7 @@ const Checkout = () => {
                 </Radio.Group>
               </div>
               {/* Right Column: Your Order */}
-              <div className="borer bg-white px-4 py-4 rounded-md dark:bg-black shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+              <div className="borer bg-white px-4 py-4 rounded-md dark:bg-black dark:border-gray-800 dark:border shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
                 <h3 className="text-xl font-bold dark:text-white mb-2">Your Ordered</h3>
                 <List
                   className="rounded-md"

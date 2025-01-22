@@ -79,12 +79,9 @@ const ReviewProduct = () => {
           ?.map((value: any) => value.price)
           .reduce((sum: any, price: any) => sum + (price || 0), 0) || 0;
       const basePrice = item.price + modifierCost;
-      if (item.quantity > 0) {
+      if (item.quantity > 1) {
         item.quantity -= 1;
         item.total = basePrice * item.quantity;
-      }
-      if (item.quantity <= 0) {
-        updatedCart.splice(index, 1);
       }
       return updatedCart;
     });
@@ -276,7 +273,7 @@ const ReviewProduct = () => {
                   itemLayout="horizontal"
                   renderItem={(item: any, index: any) => (
                     <List.Item>
-                      <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-slate-900">
+                      <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700  hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)] transition-shadow duration-300 dark:bg-slate-900">
                         <div className="flex items-start">
                           <Avatar
                             src={
@@ -331,15 +328,15 @@ const ReviewProduct = () => {
                         </div>
                         <div className="flex flex-col items-end justify-center">
                           <span className="mb-5 mr-3 font-bold text-purple-700 text-sm dark:text-white sm:text-base">
-                                {`${formatCurrency(item?.total, currency)}`}
+                            {`${formatCurrency(item?.total, currency)}`}
                           </span>
                           <Button
-                              type="text"
-                              danger
-                              onClick={() => removeItemFromCart(index)}
-                              className="mt-2 flex font-medium text-sm sm:text-base items-center justify-center text-red-500 hover:text-red-700"
-                            >
-                              <DeleteOutlined/>
+                            type="text"
+                            danger
+                            onClick={() => removeItemFromCart(index)}
+                            className="mt-2 flex font-medium text-sm sm:text-base items-center justify-center text-red-500 hover:text-red-700"
+                          >
+                            <DeleteOutlined className="text-xl"/>
                           </Button>
                         </div>
                       </div>

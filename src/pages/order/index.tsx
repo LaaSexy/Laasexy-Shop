@@ -173,7 +173,15 @@ const NewPage: React.FC = () => {
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
-        grid={{ xs: 2, sm: 2, lg: 4, xl: 4, xxl: 4, gutter: 10 }}
+        grid={{
+          xs: 2,
+          sm: 2,
+          md: 3,
+          lg: 4,
+          xl: 4,
+          xxl: 4,
+          gutter: 16,
+        }}
         renderItem={(item: any) => (
           <List.Item>
             <div
