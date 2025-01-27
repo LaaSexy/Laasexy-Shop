@@ -4,7 +4,7 @@ import {
   LeftOutlined,
   SendOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, List, Alert } from 'antd';
+import { Avatar, Button, List, Alert, message } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import useAuthications from '@/hooks/useAuth';
@@ -35,7 +35,13 @@ const Review = () => {
   const [,setOrderSuccess] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error' | 'info' | 'warning', content: string } | null>(null);
+  // const currentBranchId = shopV2Data?.shop?._id;
+  // const filteredCart = cart.filter((item) => item?.branchId === currentBranchId);
 
+  useEffect(() =>{
+    console.log(cart);
+  },[cart]) 
+  
   useEffect(() => {
     if (!session?._id) {
       setAlertMessage({ type: 'warning', content: 'You cannot order because you do not stay within 500 meters of the shop.' });
@@ -57,18 +63,13 @@ const Review = () => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        // setAlertMessage({ type: 'success', content: 'Location access granted!' });
-        // localStorage.setItem('locationMessageShown', 'true');
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 2000);
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
           setLocationPermission('denied');
           setAlertMessage({ type: 'warning', content: 'You cannot order because location access is denied.' });
         } else {
-          setAlertMessage({ type: 'error', content: 'Unable to retrieve your location.' });
+          setAlertMessage({ type: 'warning', content: 'Unable to retrieve your location.' });
         }
       }
     );
@@ -129,7 +130,7 @@ const Review = () => {
   };
 
   const calculateTotal = () => {
-    return cart
+    return cart 
       .filter((item) => item?.total > 0)
       .reduce((total, item) => total + (item?.total || 0), 0)
       .toFixed(0);
@@ -163,6 +164,7 @@ const Review = () => {
       unit: item?.unit,
       createdAt: item?.createAt,
       modifiers: item?.modifiers,
+      // branchId: item.branchId,
     }));
     createOrder({
       orderId,
@@ -218,7 +220,7 @@ const Review = () => {
       <div className="flex flex-col items-center rounded-xl bg-white dark:bg-black p-6 md:p-8 lg:p-10">
         <div className="bg-green shadow-lg text-white animate-pulse rounded-full mb-8">
           <svg
-            className="ft-green-tick"
+            className="ft-green-tick transition duration-300 ease-in-out hover:scale-105"
             xmlns="http://www.w3.org/2000/svg"
             height="100"
             width="100"
@@ -250,19 +252,21 @@ const Review = () => {
             Congratulations! Your order has been successfully placed.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <div className="flex w-full justify-center items-center">
         <button
             type="button"
             onClick={handleAddMoreItems}
-            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-24 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
            <img src="/assets/images/Back Arrow.png" alt="" className="size-6 mr-1" />
-            Back to Home
+            Explore More
           </button>
+        </div>
+        <div className="flex mt-5 justify-center items-center w-full">
           <button
             type="button"
             onClick={handleCheckout}
-            className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="w-full sm:w-auto px-24 mx-4 rounded-lg border flex justify-center border-gray-200 items-center p-2 !text-lg font-medium text-black hover:!text-slate-900 dark:text-white dark:hover:!text-white hover:opacity-95"
           >
             <svg
               className="w-4 h-4 me-2"
@@ -286,6 +290,7 @@ const Review = () => {
       updatedCart.splice(index, 1);
       return updatedCart;
     });
+    message.error('You has been deleted 1 items!');
   };
 
   return (
@@ -348,7 +353,7 @@ const Review = () => {
                             <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
                               {item?.name || 'Unknown'}
                             </p>
-                            <p className="truncate sm:w-[500px] text-xs text-gray-600 dark:text-gray-300">
+                            <p className="truncate sm:w-[500px] text-xs text-gray-s600 dark:text-gray-300">
                               {item?.selectedAddIns?.map(({ name, type, price = 0 }: any, ind: any) => {
                                 if (name && type && price !== undefined) {
                                   return (
@@ -368,9 +373,9 @@ const Review = () => {
                                 onClick={() => decreaseQuantity(index)}
                                 size="small"
                                 className={`flex !h-6 w-12 items-center justify-center rounded-2xl border border-violet-800 bg-white px-7 py-0 !text-xl font-black text-violet-800 shadow sm:!h-7 sm:w-14 sm:text-base ${
-                                  item?.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''
+                                  item?.quantity <= 1 ? 'cursor-not-allowed opacity-50' : ''
                                 }`}
-                                disabled={item?.quantity <= 0}
+                                disabled={item?.quantity <= 1}
                               >
                                 -
                               </Button>

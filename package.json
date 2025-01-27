@@ -21,6 +21,7 @@
     "antd": "^5.7.0",
     "axios": "^1.7.9",
     "jotai": "^2.10.3",
+    "libphonenumber-js": "^1.11.18",
     "lodash": "^4.17.21",
     "next": "^13.5.2",
     "next-seo": "^5.2.0",

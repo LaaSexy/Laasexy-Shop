@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -26,6 +26,7 @@ interface CartItem {
   quantity: number;
   price?: number;
   variation: SelectedOption;
+  branchId: string;
 }
 interface ItemDetailModalProps {
   currency: string;
@@ -34,6 +35,12 @@ interface ItemDetailModalProps {
   item: any;
 }
 export const cartAtom = atomWithStorage<CartItem[]>('cart', []);
+const playSuccessSound = () => {
+  const audio = new Audio('/assets/audio/orderSucess.mp3');
+  audio.play().catch((error) => {
+    console.error('Failed to play sound:', error);
+  });
+};
 
 const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   currency,
@@ -144,6 +151,11 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       variation: selectedOption,
     };
     setCart([...cart, myItem]);
+    message.success({
+      content: 'Order added successfully! 🎉',
+      duration: 3,
+    });
+    playSuccessSound();
   };
   return (
     <div

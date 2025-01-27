@@ -202,7 +202,7 @@ const ReviewProduct = () => {
             className="w-full sm:w-auto px-8 mx-4 rounded-lg border-none flex justify-center items-center bg-violet-500 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
            <img src="/assets/images/Back Arrow.png" alt="" className="size-6 mr-1" />
-            Back to Home
+            Explore More
           </button>
           <button
             type="button"

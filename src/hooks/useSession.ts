@@ -36,6 +36,8 @@ interface UseSessionReturn {
   locationError: string | null;
   isLocationLoading: boolean;
   locationPermission: 'default' | 'granted' | 'denied';
+  showLocationAlert: boolean;
+  handleCloseLocationAlert: () => void;
 }
 
 // useSession hook
@@ -45,6 +47,7 @@ export default function useSession(): UseSessionReturn {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLocationLoading, setIsLocationLoading] = useState<boolean>(true);
   const [locationPermission, setLocationPermission] = useState<'default' | 'granted' | 'denied'>('default');
+  const [showLocationAlert, setShowLocationAlert] = useState<boolean>(false);
 
   // Mutation to create a session
   const { mutate } = useMutation<Session, Error, CreateSessionParams>(createSession, {
@@ -72,13 +75,14 @@ export default function useSession(): UseSessionReturn {
           setLocation({ latitude, longitude });
           setIsLocationLoading(false);
           setLocationPermission('granted');
+          setShowLocationAlert(false); // Hide alert if location is fetched successfully
           mutate({ latitude, longitude });
         },
         (error: GeolocationPositionError) => {
           setLocationError(error.message);
           setIsLocationLoading(false);
           setLocationPermission('denied');
-
+          setShowLocationAlert(true); // Show alert if location permission is denied
           if (error.code === error.PERMISSION_DENIED) {
             console.log('Location permission denied. Retrying in 5 seconds...');
             setTimeout(() => {
@@ -96,6 +100,7 @@ export default function useSession(): UseSessionReturn {
       setLocationError('Geolocation is not supported by your browser.');
       setIsLocationLoading(false);
       setLocationPermission('denied');
+      setShowLocationAlert(true); // Show alert if geolocation is not supported
     }
   };
 
@@ -104,7 +109,13 @@ export default function useSession(): UseSessionReturn {
     setLocationError(null);
     setIsLocationLoading(true);
     setLocationPermission('default');
+    setShowLocationAlert(false); // Hide alert when retrying
     fetchLocation();
+  };
+
+  // Close location alert
+  const handleCloseLocationAlert = () => {
+    setShowLocationAlert(false);
   };
 
   // Fetch location on component mount
@@ -127,5 +138,7 @@ export default function useSession(): UseSessionReturn {
     locationError,
     isLocationLoading,
     locationPermission,
+    showLocationAlert,
+    handleCloseLocationAlert,
   };
 }

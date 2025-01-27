@@ -16,9 +16,7 @@ import CategoryPage from './CategoryPage';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
 export const deviceIdAtom = atom<string | null>(null);
-
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {
   const currentDeviceId = get(deviceIdAtom);
   console.log(currentDeviceId);
@@ -31,13 +29,10 @@ export const initializeDeviceUuidAtom = atom(null, (get, set) => {
     set(deviceIdAtom, newDeviceId);
   }
 });
-
 export const generateDeviceId = () => {
   return Math.floor(Math.random() * 100000) + '-' + Date.now();
 };
-
 const { Search } = Input;
-
 const LanguageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('KH');
@@ -124,7 +119,6 @@ const LanguageDropdown = () => {
     </div>
   );
 };
-
 interface Item {
   itemData: {
     categories: string[];
@@ -140,7 +134,6 @@ interface Item {
   };
   _id: string;
 }
-
 const images = [
   '/assets/images/Banner 1.jpg',
   '/assets/images/Banner 2.jpg',
@@ -148,8 +141,7 @@ const images = [
   '/assets/images/Banner 4.jpg',
   '/assets/images/Banner 5.jpg',
 ];
-
-const playSuccessSound = () => {
+const playFailSound = () => {
   const audio = new Audio('/assets/audio/error.mp3');
   audio.play().catch((error) => {
     console.error('Failed to play sound:', error);
@@ -175,7 +167,7 @@ const Ecommerce = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [, setItems] = useState([]);
   const [isSubcategorySelected, setIsSubcategorySelected] = useState(false);
-  const [, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
 
   useEffect(() => {
@@ -191,6 +183,25 @@ const Ecommerce = () => {
       });
     }
   }, [query, deviceId]);
+
+  const debouncedSearch = _.debounce((value: string) => {
+    if (value) {
+      const filtered = shopV2Data?.items.filter((item: Item) =>
+        item.itemData.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(filtered);
+      setIsSubcategorySelected(true);
+    } else {
+      setFilteredItems(shopV2Data?.items || []);
+      setIsSubcategorySelected(false);
+    }
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
 
   useEffect(() => {
     if (deviceId === null) {
@@ -225,7 +236,7 @@ const Ecommerce = () => {
   const onClickCategory = (category: any) => {
     if (!category?._id) {
       message.error("Unknown category", category?._id);
-      playSuccessSound();
+      playFailSound();
       return;
     }
     setSelectedCategory(category._id);
@@ -252,6 +263,13 @@ const Ecommerce = () => {
     setActiveSlide(index);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [activeSlide]);
+
   const showDrawer = () => {
     setVisible(true);
   };
@@ -260,13 +278,9 @@ const Ecommerce = () => {
     setSelectedItem(item);
   };
 
-  const onCancel = () => {
-    setSelectedItem(null);
-  };
-
   const handleReviewProduct = () => {
     router.push({
-      pathname: '/ecommerce/ReviewProduct',
+      pathname: '/ecommerce/Checkout',
       query: {
         branch: query.branch,
       },
@@ -320,6 +334,8 @@ const Ecommerce = () => {
                     allowClear
                     size="large"
                     onSearch={onSearch}
+                    value={searchQuery}
+                    onChange={handleSearchChange}
                     className="w-full max-w-[400px]"
                   />
                 </div>
@@ -330,6 +346,8 @@ const Ecommerce = () => {
                     allowClear
                     size="large"
                     onSearch={onSearch}
+                    value={searchQuery}
+                    onChange={handleSearchChange}
                     className="w-full max-w-[700px]"
                   />
                 </div>
@@ -454,7 +472,6 @@ const Ecommerce = () => {
               <ProductDetail
                 currency={shopV2Data?.shop?.currency}
                 item={selectedItem}
-                onClose={onCancel}
               />
             ) : (
               <>

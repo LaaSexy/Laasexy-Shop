@@ -39,12 +39,6 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
 
-  const onCancel = () => {
-    if (onItemClick) {
-      onItemClick(null);
-    }
-  };
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('showCart', JSON.stringify(showCart));
@@ -83,7 +77,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
                   ? `${imagePath}${item.itemData.imageUrl}`
                   : '/placeholder-image.jpg'
               }
-              className="mx-auto mb-4 mt-1 h-[160px] w-[210px] rounded-md object-cover sm:h-[210px] sm:w-[275px] transition duration-300 ease-in-out hover:scale-105"
+              className="mx-auto mb-4 mt-1 h-[160px] w-[210px] rounded-md object-cover sm:h-[205px] sm:w-[270px] transition duration-300 ease-in-out hover:scale-105"
             />
             <div className="mx-5 mb-4">
               <h2 className="mb-2 text-start text-sm text-black dark:text-white">
@@ -190,7 +184,6 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
             <ProductDetail
               currency={currency}
               item={selectedItem}
-              onClose={onCancel}
             />
           ) : filterItems.length === 0 ? (
             <Empty className="mt-10" description="No items found" />

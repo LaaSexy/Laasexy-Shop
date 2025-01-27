@@ -74,6 +74,7 @@ const checkout = () => {
       });
     }
   }, [query, deviceId]);
+  
   const calculateTotal = () => {
     return items
       .filter((item: any) => item?.total > 0 && item?.status !== "cancel")
@@ -83,15 +84,6 @@ const checkout = () => {
   
   const total = calculateTotal();
   const currency = shopV2Data?.shop?.currency || 'USD';
-  // const handleCheckOut = () => {
-  //   if (items.length > 0) {
-  //     setAlertVisible(true);
-  //     setTimeout(() => {
-  //       setAlertVisible(false);
-  //     }, 3000);
-  //     setItems([]);
-  //   }
-  // };
 
   const onClickToShowData = () => {
     if (query?.branch && query?.table) {
@@ -261,19 +253,6 @@ const checkout = () => {
                   {formatCurrency(total ?? 0, currency ?? 'USD')}
                 </span>
               </div>
-              {/* <div className="flex w-full mt-1 items-center justify-center">
-                <button
-                  onClick={handleCheckOut}
-                  className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border border-white bg-gradient-to-r from-violet-500 to-indigo-600 p-2 text-center text-white hover:opacity-95 sm:mx-24`}
-                >
-                  <h2 className="text-xl">
-                    <ShoppingCartOutlined /> Checkout {' - '}{' '}
-                    {`(${items.length} ${
-                      items.length === 1 ? 'item' : 'items'
-                    })`}
-                  </h2>
-                </button>
-              </div> */}
             </div>
           </footer>
         </div>

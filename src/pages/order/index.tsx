@@ -60,13 +60,14 @@ const NewPage: React.FC = () => {
   const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
   const [permissionState, setPermissionState] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
-
+  // const currentBranchId = shopV2Data?.shop?._id;
+  // const filteredCart = cart.filter((item) => item.branchId === currentBranchId);
+  
   useEffect(() => {
     const checkPermission = async () => {
       if (navigator.permissions) {
         const status = await navigator.permissions.query({ name: 'geolocation' });
         setPermissionState(status.state);
-
         status.onchange = () => {
           setPermissionState(status.state);
         };
@@ -74,7 +75,6 @@ const NewPage: React.FC = () => {
         setPermissionState('unknown');
       }
     };
-
     checkPermission();
   }, []);
 
@@ -243,7 +243,7 @@ const NewPage: React.FC = () => {
                       ? `${imagePath}${item.itemData.imageUrl}`
                       : '/placeholder-image.jpg'
                   }
-                  className="m-2 size-20 rounded-md sm:size-28"
+                  className="m-2 size-20 rounded-md sm:size-28 transition duration-300 ease-in-out hover:scale-105"
                 />
                 <div>
                   <h3 className="mb-3 text-sm text-black dark:text-white">
@@ -428,7 +428,7 @@ const NewPage: React.FC = () => {
                   <ShoppingCartOutlined />
                   {cart.length > 0
                     ? ` Review Order - (${cart.length} ${
-                        cart.length === 1 ? 'item' : 'items'
+                      cart.length === 1 ? 'item' : 'items'
                       })`
                     : ` Proceed to checkout - (${items.length} ${
                         items.length === 1 ? 'item' : 'items'

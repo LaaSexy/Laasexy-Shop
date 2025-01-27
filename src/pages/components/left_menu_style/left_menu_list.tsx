@@ -101,7 +101,6 @@ const MenuList = (props: any) => {
             <ProductDetail
               currency={currency}
               item={selectedItem}
-              onClose={onCancel}
             />
           </div>
         </>

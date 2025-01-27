@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, message  } from 'antd';
+import { Button, message, Rate  } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -40,7 +40,6 @@ interface CartItem {
 interface ProductDetailProps {
   currency: string;
   item: any;
-  onClose: () => void;
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>('cart', []);
@@ -51,9 +50,9 @@ const playSuccessSound = () => {
   });
 };
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
   const [cart, setCart] = useAtom(cartAtom);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
   const [selectedAddIns, setSelectedAddIns] = useState<Modifier[]>([]);
   const [selectedOption, setSelectionOption] = useState<SelectedOption>({
     _id: null,
@@ -76,35 +75,26 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
     }
   }, [item]);
 
-  const handleClick = () => {
-    setQuantity(0);
-    setSelectedAddIns([]);
-    setSelectionOption({ _id: null });
-  };
-
   const onClickItem = (option: SelectedOption) => {
     setSelectionOption(option);
   };
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => {
-    if (quantity > 0) setQuantity((prev) => prev - 1);
+    if (quantity >= 1) setQuantity((prev) => prev - 1);
   };
 
   const calculateTotalPrice = () => {
     const basePrice =
       selectedOption?.itemVariationData?.priceMoney?.amount || 0;
     const modifierCost =
-      selectedAddIns.reduce((sum, modifier) => sum + (modifier.price || 0), 0) ||
-      0;
+      selectedAddIns.reduce(
+        (sum, modifier) => sum + (modifier.price || 0),
+        0
+      ) || 0;
     const myTotal = (basePrice + modifierCost) * quantity;
     setTotal(myTotal);
   };
-
-  // const handleImageClick = (value: any) => {
-  //   console.log('Hello');
-  //   setSelectionOption(value);
-  // };
 
   useEffect(() => {
     calculateTotalPrice();
@@ -117,7 +107,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
     return (
       <div className="mb-4 bg-white pt-1 pb-2 dark:bg-black">
         <h3 className="text-lg font-semibold dark:text-white">Options</h3>
-        <div className="flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap dark:bg-black">
+        <div className="flex flex-wrap gap-2 max-h-24 overflow-x-auto whitespace-nowrap dark:bg-black">
           {variations?.map((value: any) => (
             <Button
               key={value._id}
@@ -162,48 +152,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
       variation: selectedOption,
     };
     setCart([...cart, myItem]);
-    handleClick();
-    onClose();
+    setQuantity(0);
+    setSelectedAddIns([]);
+    // setSelectionOption({ _id: null });
+    setTotal(0);
     message.success({
-      content: 'Order added successfully!',
+      content: 'Order added successfully! 🎉',
       duration: 3,
     });
-     playSuccessSound();
+    playSuccessSound();
   };
-
-  // const onClickBuyNow = () =>{
-  //   const deviceUuid = uuidv4();
-  //   const name =
-  //     item?.itemData?.variations?.length < 2
-  //       ? item?.itemData?.name || ''
-  //       : `${item?.itemData?.name || ''}${
-  //           selectedOption?.itemVariationData?.name
-  //             ? ` (${selectedOption.itemVariationData.name})`
-  //             : ''
-  //         }`.trim();
-  //   const myItem = {
-  //     ...item,
-  //     name,
-  //     modifiers: selectedAddIns,
-  //     id: deviceUuid,
-  //     selectedAddIns,
-  //     total,
-  //     quantity,
-  //     price: selectedOption?.itemVariationData?.priceMoney?.amount,
-  //     variation: selectedOption,
-  //   };
-  //   setCart([...cart, myItem]);
-  //   handleClick();
-  //   onClose();
-  //   if (query?.branch) {
-  //     router.push({
-  //       pathname: '/ecommerce/Checkout',
-  //       query: {
-  //         branch: query.branch,
-  //       },
-  //     });
-  //   }
-  // }
 
   return (
     <MultipleSkeletons loading={isFetching}>
@@ -239,20 +197,20 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                     </h6>
 
                     {/* Rating and Reviews */}
-                    {/* <div className="flex items-center gap-2 whitespace-nowrap">
-                      <Rate disabled defaultValue={4} className="text-yellow-400" />
+                    <div className="flex items-center gap-2 whitespace-nowrap">
+                      <Rate disabled defaultValue={4} className="text-yellow-400"/>
                       <span className="pl-2 font-normal leading-7 text-gray-500 text-sm">
                         1624 reviews
                       </span>
-                    </div> */}
+                    </div>
 
                     {/* Quantity Selector */}
                     <div className="flex items-center border border-violet-500 bg-violet-100 py-1 px-1 rounded-full dark:bg-slate-800 dark:border-slate-600">
                       <Button
                         shape="circle"
-                        className="flex items-center text-xl sm:text-2xl border-violet-500 text-violet-500 font-semibold justify-center w-8 h-8 sm:w-10 sm:h-10 dark:border-slate-600 dark:text-slate-300"
+                        className="flex items-center dark:hover:!border-slate-600 dark:border-slate-600 dark:hover:!text-white text-xl sm:text-2xl border-violet-500 text-violet-500 font-semibold justify-center w-8 h-8 sm:w-10 sm:h-10 dark:text-slate-300"
                         onClick={decreaseQuantity}
-                        disabled={quantity === 0}
+                        disabled={quantity <= 1}
                       >
                         -
                       </Button>
@@ -261,7 +219,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                       </h1>
                       <Button
                         shape="circle"
-                        className="flex items-center text-xl sm:text-2xl border-violet-500 bg-violet-500 text-white font-semibold hover:!text-white justify-center w-8 h-8 sm:w-10 sm:h-10 dark:border-slate-600 dark:text-slate-300"
+                        className="flex items-center dark:hover:!border-slate-600 dark:hover:!text-white text-xl sm:text-2xl border-violet-500 bg-violet-500 text-white font-semibold hover:!text-white justify-center w-8 h-8 sm:w-10 sm:h-10 dark:border-slate-600 dark:text-slate-300"
                         onClick={increaseQuantity}
                       >
                         +
@@ -290,11 +248,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                       type="primary"
                       size="large"
                       className={`w-full flex !text-xl !p-6 !rounded-full justify-center items-center${
-                        quantity <= 0 || total <= 0
+                        quantity < 1 || total <= 0
                           ? 'cursor-not-allowed opacity-60 flex justify-center items-center'
                           : ''
                       }`}
-                      disabled={quantity <= 0 || total <= 0}
+                      disabled={quantity < 1 || total <= 0}
                       onClick={onClickAddToCart}
                     >
                       <svg
@@ -314,38 +272,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item, onClose }
                           d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
                         />
                       </svg>
-                      Add to cart - {formatCurrency(total, currency)}
+                      Add to cart -  {`${formatCurrency(total, currency)}`}
                     </Button>
-                    {/* <Button
-                      type="primary"
-                      size="large"
-                      className={`w-full flex !text-lg !p-5 justify-center items-center${
-                        quantity <= 0 || total <= 0
-                          ? 'cursor-not-allowed opacity-60 flex justify-center items-center'
-                          : ''
-                      }`}
-                      disabled={quantity <= 0  || total <= 0}
-                      onClick={onClickBuyNow}
-                    >
-                      <svg
-                        className="-ms-2 me-2 h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
-                        />
-                      </svg>
-                      Buy Now
-                    </Button> */}
                   </div>
                 </div>
                 {/* Image Section with Swiper */}
