@@ -48,9 +48,9 @@ const Checkout = () => {
 
   const calculateTotal = () => {
     return cart
-      .filter((item: any) => item?.total > 0 && item?.status !== "cancel")
+      .filter((item: any) => item?.total > 0)
       .reduce((total: any, item: any) => total + (item?.total || 0), 0)
-      .toFixed(0);
+      .toFixed(2);
   };
 
   const total = calculateTotal();
@@ -204,7 +204,10 @@ const Checkout = () => {
       updatedCart.splice(index, 1);
       return updatedCart;
     });
-    message.error('You has been deleted 1 items!');
+    message.error({
+      content:'You has been deleted 1 items!',
+      duration:2
+    });
     playFailSound();
   };
   
@@ -444,7 +447,7 @@ const Checkout = () => {
             >
               <h2 className="text-xl">
                 <ShoppingCartOutlined /> Checkout {' - '}{' '}
-                {formatCurrency(total ?? 0, currency ?? 'USD')}
+                {formatCurrency(total, currency)}
               </h2>
             </button>
           </footer>

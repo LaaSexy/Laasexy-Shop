@@ -16,6 +16,7 @@ import CategoryPage from './CategoryPage';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { AppConfig } from '@/utils/AppConfig';
 export const deviceIdAtom = atom<string | null>(null);
 export const initializeDeviceUuidAtom = atom(null, (get, set) => {
   const currentDeviceId = get(deviceIdAtom);
@@ -141,6 +142,7 @@ const images = [
   '/assets/images/Banner 4.jpg',
   '/assets/images/Banner 5.jpg',
 ];
+
 const playFailSound = () => {
   const audio = new Audio('/assets/audio/error.mp3');
   audio.play().catch((error) => {
@@ -407,7 +409,7 @@ const Ecommerce = () => {
                         }`}
                         aria-pressed={selectedCategory === null}
                       >
-                        Home
+                        All
                       </Button>
                     </li>
                     {/* Subcategory Buttons */}
@@ -451,7 +453,7 @@ const Ecommerce = () => {
                     onClose(); 
                   }}
                 >
-                  Home
+                  All
                 </Menu.Item>
                 {/* Subcategory Options */}
                 {shopV2Data?.subCategories?.map((subCategory: any) => (
@@ -730,11 +732,13 @@ const Ecommerce = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-center text-sm text-gray-400 md:flex-row md:justify-between">
-                    <button>
-                      <p className="order-2 hover:text-white md:order-1 md:mt-0">
-                        &copy; Point hub POS.
-                      </p>
-                    </button>
+                    <p className="order-2 hover:text-white md:order-1 md:mt-0">
+                      © 2022 {AppConfig.title}.<br /> Powered with{' '}
+                      <span role="img" aria-label="Love">
+                        ♥
+                      </span>{' '}
+                      by <a href="https://www.pointhub.io">Point hub</a>
+                    </p>
                     <div className="order-1 md:order-2">
                       <span className="cursor-pointer px-2 transition-colors duration-300 hover:text-white">
                         About us

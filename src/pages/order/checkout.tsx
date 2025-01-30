@@ -79,7 +79,7 @@ const checkout = () => {
     return items
       .filter((item: any) => item?.total > 0 && item?.status !== "cancel")
       .reduce((total: any, item: any) => total + (item?.total || 0), 0)
-      .toFixed(0);
+      .toFixed(2);
   };
   
   const total = calculateTotal();

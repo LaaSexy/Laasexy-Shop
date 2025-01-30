@@ -217,7 +217,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             {optionRender(item?.itemData?.variations)}
             {/* Scrollable Modifiers Section */}
             <main
-              className="flex-1 flex max-h-56 overflow-y-auto"
+              className="flex-1 flex max-h-60 overflow-y-auto"
             >
               <div className="w-full">
                 {modifiers.length > 0 && (

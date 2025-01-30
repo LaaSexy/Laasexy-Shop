@@ -133,7 +133,7 @@ const Review = () => {
     return cart 
       .filter((item) => item?.total > 0)
       .reduce((total, item) => total + (item?.total || 0), 0)
-      .toFixed(0);
+      .toFixed(2);
   };
 
   const total: any = calculateTotal();
@@ -266,7 +266,7 @@ const Review = () => {
           <button
             type="button"
             onClick={handleCheckout}
-            className="w-full sm:w-auto px-24 mx-4 rounded-lg border flex justify-center border-gray-200 items-center p-2 !text-lg font-medium text-black hover:!text-slate-900 dark:text-white dark:hover:!text-white hover:opacity-95"
+            className="w-full sm:w-auto px-24 mx-4 rounded-lg border flex justify-center border-gray-200 items-center p-2 !text-lg font-medium text-black hover:!text-slate-900 dark:text-white dark:hover:!text-white dark:hover:bg-slate-900 hover:opacity-95"
           >
             <svg
               className="w-4 h-4 me-2"
@@ -290,7 +290,10 @@ const Review = () => {
       updatedCart.splice(index, 1);
       return updatedCart;
     });
-    message.error('You has been deleted 1 items!');
+    message.error({
+        content: 'You has been deleted 1 items!',
+        duration: 2,
+    });
   };
 
   return (

@@ -4,7 +4,7 @@ import {
   AppstoreOutlined,
   ShoppingCartOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, List } from 'antd';
+import { Avatar, Button,Image, List } from 'antd';
 import { atom, useAtom } from 'jotai';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -60,9 +60,7 @@ const NewPage: React.FC = () => {
   const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
   const [permissionState, setPermissionState] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
-  // const currentBranchId = shopV2Data?.shop?._id;
-  // const filteredCart = cart.filter((item) => item.branchId === currentBranchId);
-  
+
   useEffect(() => {
     const checkPermission = async () => {
       if (navigator.permissions) {
@@ -166,55 +164,49 @@ const NewPage: React.FC = () => {
   };
 
   const GridContent = () => (
-    <div className="mb-24 w-full overflow-hidden bg-white dark:bg-black">
+    <div className="w-full mb-20 overflow-hidden">
       <List
-        className="w-full bg-white py-1 dark:bg-black"
+        className="sm:px-10 pt-5"
         style={{ scrollBehavior: 'smooth' }}
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
-        grid={{
-          xs: 2,
-          sm: 2,
-          md: 3,
-          lg: 4,
-          xl: 4,
-          xxl: 4,
-          gutter: 16,
-        }}
+        grid={{ xs: 2, sm: 2, lg: 3, xl: 4, xxl: 4, gutter: 16 }}
         renderItem={(item: any) => (
           <List.Item>
             <div
-              onClick={() => onClickItem(item)}
-              className="mx-auto mb-3 w-48 rounded-lg border bg-white p-4 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-72 cursor-pointer"
+              className="mx-auto mb-3 w-30 rounded-lg border bg-white p-2 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-64 cursor-pointer"
             >
-              <img
-                alt={item?.itemData?.name || 'Unknow the product name'}
+              <Image
+                height={150}
+                alt={item.itemData.name}
+                className="max-h-80 w-48 max-w-xs object-contain rounded-md"
                 src={
                   item?.itemData?.imageUrl
                     ? `${imagePath}${item.itemData.imageUrl}`
                     : '/assets/images/default.png'
                 }
-                className="mx-auto mb-4 h-[160px] w-[280px] rounded-md object-cover sm:h-[210px] sm:w-[280px] transition duration-300 ease-in-out hover:scale-105"
               />
-              <h2 className="mb-2 text-start text-sm text-black dark:text-white">
-                {item?.itemData?.name || 'Unnamed Product'}
-              </h2>
-              <div className="flex items-center justify-between">
-                <h5 className="mt-2 text-lg font-bold text-violet-700 dark:text-white">
-                  {formatCurrency(
-                    item?.itemData?.variations?.[0]?.itemVariationData
-                      ?.priceMoney?.amount || 0,
-                    shopV2Data?.shop?.currency
-                  )}
-                </h5>
-                <Button className="mt-2 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
-                  <img
-                    src="/assets/images/add-to-cart.png"
-                    alt="Add to Cart Icon"
-                    className="size-4"
-                  />
-                </Button>
+              <div onClick={() => onClickItem(item)} className="mt-2">
+                <h2  className="mb-2 text-start text-sm text-black sm:mt-5 dark:text-white">
+                  {item?.itemData?.name || 'Unnamed Product'}
+                </h2>
+                <div className="flex items-center justify-between">
+                  <h5 className="mt-2 text-sm sm:text-lg font-bold text-violet-700 dark:text-white">
+                    {formatCurrency(
+                      item?.itemData?.variations?.[0]?.itemVariationData
+                        ?.priceMoney?.amount || 0,
+                      shopV2Data?.shop?.currency
+                    )}
+                  </h5>
+                  <Button className="mt-2 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
+                    <img
+                      src="/assets/images/add-to-cart.png"
+                      alt="Add to Cart Icon"
+                      className="sm:size-4 size-3"
+                    />
+                  </Button>
+                </div>
               </div>
             </div>
           </List.Item>
@@ -224,9 +216,9 @@ const NewPage: React.FC = () => {
   );
 
   const ListContent = () => (
-    <div className="mb-24 w-full bg-white dark:bg-black">
+    <div className="w-full mb-20">
       <List
-        className=" bg-white px-4 dark:bg-black sm:px-14"
+        className="px-2 pt-5 sm:px-6"
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
@@ -367,57 +359,62 @@ const NewPage: React.FC = () => {
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
-          <header className="fixed top-0 left-0 h-44 w-full items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-indigo-500/50 sm:h-44">
+          <header className="fixed top-0 left-0 h-44 w-full flex flex-col items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 sm:h-44">
             <div className="flex items-center justify-center">
-              {shopV2Data?.shop?.logoUrl && (
+              {shopV2Data?.shop?.logoUrl ? (
                 <img
-                  src={
-                    `https://api.pointhub.io${shopV2Data?.shop?.logoUrl}` ||
-                    'Default'
-                  }
+                  src={`https://api.pointhub.io${shopV2Data.shop.logoUrl}`}
                   alt="Logo"
-                  className="mx-4 mt-7 size-24 rounded-md sm:mt-4 sm:size-28"
+                  className="mx-4 mt-7 h-24 w-24 rounded-md sm:mt-4 sm:h-28 sm:w-28"
                 />
+              ) : (
+                <div className="mx-4 mt-7 h-24 w-24 bg-gray-300 rounded-md sm:mt-4 sm:h-28 sm:w-28 flex items-center justify-center">
+                  <span className="text-gray-500">Default</span>
+                </div>
               )}
             </div>
             <p className="my-3 text-center text-2xl text-white sm:my-2">
-              {shopV2Data?.shop?.name || 'Logo'}
+              {shopV2Data?.shop?.name || 'Shop Name'}
             </p>
+            <div className="flex absolute mt-32 justify-end w-full mr-2">
+              <Button
+                size="large"
+                onClick={() => setShowCart(!showCart)}
+                className="flex items-center justify-center bg-violet-500  text-xl text-white hover:!text-white hover:!border-white dark:!border-gray-300"
+                aria-label="Open Options"
+              >
+                {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
+              </Button>
+            </div>
           </header>
           {/* Main Content */}
-          <nav className="sticky top-0 mt-44 z-10 flex max-w-full flex-col gap-4 overflow-auto whitespace-nowrap bg-white pl-6 pr-14 dark:bg-black sm:flex-row sm:pl-5 sm:pr-14">
-            <div className="flex w-full min-w-full max-w-full items-start justify-start gap-4 overflow-x-auto whitespace-nowrap bg-white dark:bg-black  sm:pl-5 sm:pr-14">
-              <ul className="relative flex flex-row items-center justify-center space-x-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                {shopV2Data?.subCategories?.map((subCategory: any) => (
-                  <li key={subCategory._id} className="list-none">
-                    <Button
-                      size='large'
-                      onClick={() => onClickCategory(subCategory)}
-                      className={`my-3 rounded-md border flex justify-center items-center !p-5 border-[#DBD5D5] dark:hover:!border-violet-500 px-4 py-4 text-base dark:border-gray-700 sm:my-4 ${
-                        selectedCategory === subCategory._id
-                          ? ' bg-violet-500 text-white hover:!text-white dark:border-violet-500'
-                          : 'bg-transparent'
-                      }`}
-                      aria-pressed={selectedCategory === subCategory._id}
-                    >
-                      {subCategory.name}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-              <div className="absolute right-0 mt-3 sm:mt-4 flex h-[40px] w-[50px] items-center justify-center rounded-md bg-white dark:bg-black">
-                <Button
-                  size="large"
-                  onClick={() => setShowCart(!showCart)}
-                  className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white dark:border-none"
-                  aria-label="Open Options"
-                >
-                  {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-                </Button>
-              </div>
+          <div className="flex mt-44">
+            <List
+              className="sticky top-44 pb-20 mr-1 pt-2 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] px-2 sm:px-4 overflow-y-auto"
+              style={{ scrollBehavior: 'smooth' }}
+              dataSource={shopV2Data?.subCategories}
+              renderItem={(subCategory: any) => (
+                <List.Item key={subCategory._id} className="list-none">
+                  <Button
+                    size="large"
+                    onClick={() => onClickCategory(subCategory)}
+                    className={`w-20 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                      selectedCategory === subCategory._id
+                        ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
+                        : 'bg-transparent'
+                    }`}
+                    aria-pressed={selectedCategory === subCategory._id}
+                  >
+                    {subCategory.name}
+                  </Button>
+                </List.Item>
+              )}
+            />
+            {/* Right Content Area */}
+            <div className="flex-1 overflow-y-auto sticky top-44 max-h-[70vh]">
+              {showCart ? <GridContent /> : <ListContent />}
             </div>
-          </nav>
-          {showCart ? <GridContent /> : <ListContent />}
+          </div>
           {(cart.length > 0 || items.length > 0) && (
             <footer className="fixed bottom-0 flex w-full shrink-0 items-center justify-center bg-white dark:bg-black">
               <button
