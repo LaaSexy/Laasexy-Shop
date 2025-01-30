@@ -255,7 +255,7 @@ const Review = () => {
          <button
             type="button"
             onClick={handleAddMoreItems}
-            className="sm:w-auto px-24 mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-lg font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
+            className="px-24 sm:w-auto sm:px-24 sm:mx-4 rounded-lg border-none flex justify-center items-center bg-gradient-to-r from-violet-500 to-indigo-600 p-2 !text-md font-semibold text-white hover:!text-gray-400 shadow-md hover:opacity-95"
           >
            <img src="/assets/images/Back Arrow.png" alt="" className="size-6 mr-1" />
             Explore More
@@ -265,7 +265,7 @@ const Review = () => {
           <button
             type="button"
             onClick={handleCheckout}
-            className="sm:w-auto px-24 mx-4 rounded-lg border flex justify-center border-gray-200 items-center p-2 !text-lg font-medium text-black hover:!text-slate-900 dark:text-white dark:hover:!text-white dark:hover:bg-slate-900 hover:opacity-95"
+            className="px-24 sm:w-auto sm:px-24 sm:mx-4  rounded-lg border flex justify-center border-gray-200 items-center p-2 !text-md font-medium text-black hover:!text-slate-900 dark:text-white dark:hover:!text-white dark:hover:bg-slate-900 hover:opacity-95"
           >
             <svg
               className="w-4 h-4 me-2"
