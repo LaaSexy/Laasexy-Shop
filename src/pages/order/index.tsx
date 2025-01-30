@@ -392,24 +392,27 @@ const NewPage: React.FC = () => {
               className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[73vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
-              renderItem={(subCategory: any) => (
-                <List.Item key={subCategory._id} className="list-none">
-                  <Button
-                    size="large"
-                    onClick={() => onClickCategory(subCategory)}
-                    className={`w-[95px] mx-1 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
-                      selectedCategory === subCategory._id
-                        ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
-                        : 'bg-transparent'
-                    }`}
-                    aria-pressed={selectedCategory === subCategory._id}
-                  >
+              renderItem={(subCategory: any) => {
+                const isLongText = subCategory.name.length > 15;
+                return (
+                  <List.Item key={subCategory._id} className="list-none">
+                    <Button
+                      size="large"
+                      onClick={() => onClickCategory(subCategory)}
+                      className={`w-[95px] mx-1 md:w-32 lg:w-full truncate sm:px-0 sm:py-0 rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                        selectedCategory === subCategory._id
+                          ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
+                          : 'bg-transparent'
+                      } ${isLongText ? 'min-h-[68px] sm:min-h-0' : 'min-h-0'}`}
+                      aria-pressed={selectedCategory === subCategory._id}
+                    >
                       <span className="text-center whitespace-normal break-words">
                         {subCategory.name}
                       </span>
-                  </Button>
-                </List.Item>
-              )}
+                    </Button>
+                  </List.Item>
+                );
+              }}
             />
             {/* Right Content Area */}
             <div className="flex-1 overflow-y-auto max-h-[73vh]">
