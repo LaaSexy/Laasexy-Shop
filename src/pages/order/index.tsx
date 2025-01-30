@@ -166,7 +166,7 @@ const NewPage: React.FC = () => {
   const GridContent = () => (
     <div className="w-full mb-20 overflow-hidden">
       <List
-        className="sm:px-6 pt-3"
+        className="sm:px-6 px-1 pt-2"
         style={{ scrollBehavior: 'smooth' }}
         loading={isFetching}
         itemLayout="horizontal"
@@ -240,7 +240,7 @@ const NewPage: React.FC = () => {
                   <h3 className="mb-3 text-sm text-black dark:text-white">
                     {item?.itemData?.name || 'Unnamed Product'}
                   </h3>
-                  <p className="!w-5 text-lg font-bold text-violet-700 dark:text-white sm:w-4">
+                  <p className="!w-5 text-sm sm:text-lg font-bold text-violet-700 dark:text-white sm:w-4">
                     {formatCurrency(
                       item.itemData.variations[0]?.itemVariationData.priceMoney
                         .amount,
@@ -251,11 +251,11 @@ const NewPage: React.FC = () => {
               </div>
               <div className="mr-5 flex items-center gap-4">
                 <div>
-                  <Button className="mt-10 flex h-[30px] w-[50px] items-center justify-center rounded-md bg-violet-500  text-base font-bold text-violet-700 dark:border-none  dark:bg-violet-500 dark:text-white dark:hover:!text-white">
+                  <Button className="mt-2 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
                     <img
                       src="/assets/images/add-to-cart.png"
                       alt="Add to Cart Icon"
-                      className="size-4"
+                      className="sm:size-4 size-3"
                     />
                   </Button>
                 </div>
@@ -389,15 +389,15 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex mt-44">
             <List
-              className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[70vh] sm:px-4"
+              className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[73vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => (
-                <List.Item key={subCategory._id} className="list-none ml-2 sm:ml-0">
+                <List.Item key={subCategory._id} className="list-none">
                   <Button
                     size="large"
                     onClick={() => onClickCategory(subCategory)}
-                    className={`w-[100px] md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                    className={`w-[100px] ml-2 sm:ml-0 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                       selectedCategory === subCategory._id
                         ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                         : 'bg-transparent'
@@ -412,7 +412,7 @@ const NewPage: React.FC = () => {
               )}
             />
             {/* Right Content Area */}
-            <div className="flex-1 overflow-y-auto max-h-[70vh]">
+            <div className="flex-1 overflow-y-auto max-h-[73vh]">
               {showCart ? <GridContent /> : <ListContent />}
             </div>
           </div>
