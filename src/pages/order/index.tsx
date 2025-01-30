@@ -389,7 +389,7 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex mt-44">
             <List
-              className="sticky top-44 pb-20 mr-1 pt-0 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] px-2 sm:px-4 overflow-y-auto"
+              className="sticky top-44 pb-20 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] sm:px-4 overflow-y-auto"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => (
@@ -397,14 +397,16 @@ const NewPage: React.FC = () => {
                   <Button
                     size="large"
                     onClick={() => onClickCategory(subCategory)}
-                    className={`w-20 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                    className={`w-24 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                       selectedCategory === subCategory._id
                         ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                         : 'bg-transparent'
                     }`}
                     aria-pressed={selectedCategory === subCategory._id}
                   >
-                    {subCategory.name}
+                      <span className="text-center whitespace-normal break-words">
+                        {subCategory.name}
+                      </span>
                   </Button>
                 </List.Item>
               )}

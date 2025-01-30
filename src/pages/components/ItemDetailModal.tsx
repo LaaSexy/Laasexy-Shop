@@ -35,12 +35,6 @@ interface ItemDetailModalProps {
   item: any;
 }
 export const cartAtom = atomWithStorage<CartItem[]>('cart', []);
-const playSuccessSound = () => {
-  const audio = new Audio('/assets/audio/orderSucess.mp3');
-  audio.play().catch((error) => {
-    console.error('Failed to play sound:', error);
-  });
-};
 
 const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   currency,
@@ -155,7 +149,6 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       content: 'Order added successfully! 🎉',
       duration: 3,
     });
-    playSuccessSound();
   };
   return (
     <div

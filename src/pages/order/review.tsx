@@ -35,8 +35,6 @@ const Review = () => {
   const [,setOrderSuccess] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error' | 'info' | 'warning', content: string } | null>(null);
-  // const currentBranchId = shopV2Data?.shop?._id;
-  // const filteredCart = cart.filter((item) => item?.branchId === currentBranchId);
 
   useEffect(() =>{
     console.log(cart);
