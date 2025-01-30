@@ -166,7 +166,7 @@ const NewPage: React.FC = () => {
   const GridContent = () => (
     <div className="w-full mb-20 overflow-hidden">
       <List
-        className="sm:px-10 pt-3"
+        className="sm:px-6 pt-3"
         style={{ scrollBehavior: 'smooth' }}
         loading={isFetching}
         itemLayout="horizontal"
@@ -217,7 +217,7 @@ const NewPage: React.FC = () => {
   const ListContent = () => (
     <div className="w-full mb-20">
       <List
-        className="px-2 pt-3 sm:px-6"
+        className="px-1 sm:px-6"
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
@@ -397,7 +397,7 @@ const NewPage: React.FC = () => {
                   <Button
                     size="large"
                     onClick={() => onClickCategory(subCategory)}
-                    className={`w-24 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                    className={`w-28 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                       selectedCategory === subCategory._id
                         ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                         : 'bg-transparent'
@@ -412,7 +412,7 @@ const NewPage: React.FC = () => {
               )}
             />
             {/* Right Content Area */}
-            <div className="flex-1 overflow-y-auto max-h-[70vh] px-2">
+            <div className="flex-1 overflow-y-auto max-h-[70vh]">
               {showCart ? <GridContent /> : <ListContent />}
             </div>
           </div>
