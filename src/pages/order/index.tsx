@@ -389,7 +389,7 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex mt-44">
             <List
-              className="sticky top-44 pb-20 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] sm:px-4 overflow-y-auto"
+              className="sticky top-44 pb-20 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => (
@@ -397,7 +397,7 @@ const NewPage: React.FC = () => {
                   <Button
                     size="large"
                     onClick={() => onClickCategory(subCategory)}
-                    className={`w-28 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                    className={`w-28 mx-1 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                       selectedCategory === subCategory._id
                         ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                         : 'bg-transparent'
