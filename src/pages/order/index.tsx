@@ -166,7 +166,7 @@ const NewPage: React.FC = () => {
   const GridContent = () => (
     <div className="w-full mb-20 overflow-hidden">
       <List
-        className="sm:px-10 pt-5"
+        className="sm:px-10 pt-3"
         style={{ scrollBehavior: 'smooth' }}
         loading={isFetching}
         itemLayout="horizontal"
@@ -178,7 +178,6 @@ const NewPage: React.FC = () => {
               className="mx-auto mb-3 w-30 rounded-lg border bg-white p-2 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-64 cursor-pointer"
             >
               <Image
-                height={150}
                 alt={item.itemData.name}
                 className="max-h-80 w-48 max-w-xs object-contain rounded-md"
                 src={
@@ -218,7 +217,7 @@ const NewPage: React.FC = () => {
   const ListContent = () => (
     <div className="w-full mb-20">
       <List
-        className="px-2 pt-5 sm:px-6"
+        className="px-2 pt-3 sm:px-6"
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
@@ -359,13 +358,13 @@ const NewPage: React.FC = () => {
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
-          <header className="fixed top-0 left-0 h-44 w-full flex flex-col items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 sm:h-44">
+          <header className="fixed top-0 left-0 h-44 z-50 w-full flex flex-col items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 sm:h-44">
             <div className="flex items-center justify-center">
               {shopV2Data?.shop?.logoUrl ? (
                 <img
                   src={`https://api.pointhub.io${shopV2Data.shop.logoUrl}`}
                   alt="Logo"
-                  className="mx-4 mt-7 h-24 w-24 rounded-md sm:mt-4 sm:h-28 sm:w-28"
+                  className="mx-4 mt-4 h-20 w-20 rounded-md sm:mt-4 sm:h-28 sm:w-28"
                 />
               ) : (
                 <div className="mx-4 mt-7 h-24 w-24 bg-gray-300 rounded-md sm:mt-4 sm:h-28 sm:w-28 flex items-center justify-center">
@@ -376,7 +375,7 @@ const NewPage: React.FC = () => {
             <p className="my-3 text-center text-2xl text-white sm:my-2">
               {shopV2Data?.shop?.name || 'Shop Name'}
             </p>
-            <div className="flex absolute mt-32 justify-end w-full mr-2">
+            <div className="flex absolute mt-28 justify-end w-full mr-2">
               <Button
                 size="large"
                 onClick={() => setShowCart(!showCart)}
@@ -390,7 +389,7 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex mt-44">
             <List
-              className="sticky top-44 pb-20 mr-1 pt-2 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] px-2 sm:px-4 overflow-y-auto"
+              className="sticky top-44 pb-20 mr-1 pt-0 sm:pt-4 hide-x-scroll sm:mr-0 max-h-[70vh] px-2 sm:px-4 overflow-y-auto"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => (
@@ -411,7 +410,7 @@ const NewPage: React.FC = () => {
               )}
             />
             {/* Right Content Area */}
-            <div className="flex-1 overflow-y-auto sticky top-44 max-h-[70vh]">
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-2">
               {showCart ? <GridContent /> : <ListContent />}
             </div>
           </div>
