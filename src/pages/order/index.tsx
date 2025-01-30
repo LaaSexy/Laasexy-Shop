@@ -397,7 +397,7 @@ const NewPage: React.FC = () => {
                   <Button
                     size="large"
                     onClick={() => onClickCategory(subCategory)}
-                    className={`w-[100px] ml-2 sm:ml-0 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                    className={`w-[95px] mx-1 md:w-32 lg:w-full truncate rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                       selectedCategory === subCategory._id
                         ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                         : 'bg-transparent'
