@@ -201,7 +201,7 @@ const NewPage: React.FC = () => {
                       shopV2Data?.shop?.currency
                     )}
                   </h5>
-                  <Button className="mt-2 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
+                  <Button className="mt-1 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
                     <img
                       src="/assets/images/add-to-cart.png"
                       alt="Add to Cart Icon"
@@ -254,7 +254,7 @@ const NewPage: React.FC = () => {
               </div>
               <div className="mr-5 flex items-center gap-4">
                 <div>
-                  <Button className="mt-2 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
+                  <Button className="mt-8 flex sm:h-[30px] sm:w-[50px] w-[40px] h-[25px] items-center justify-center rounded-md bg-violet-500 font-bold text-violet-700 dark:border-none dark:bg-violet-500 dark:text-white dark:hover:!text-white">
                     <img
                       src="/assets/images/add-to-cart.png"
                       alt="Add to Cart Icon"
