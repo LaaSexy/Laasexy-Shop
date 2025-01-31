@@ -395,9 +395,9 @@ const NewPage: React.FC = () => {
             </div>
           </header>
           {/* Main Content */}
-          <div className="flex mt-20">
+          <div className="flex">
             <List
-              className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
+              className="sticky top-20 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
@@ -430,7 +430,7 @@ const NewPage: React.FC = () => {
               }}
             />
             {/* Right Content Area */}
-            <div className="flex-1 overflow-y-auto max-h-[83vh]">
+            <div className="flex-1 mt-20">
               {showCart ? <GridContent /> : <ListContent />}
             </div>
           </div>
