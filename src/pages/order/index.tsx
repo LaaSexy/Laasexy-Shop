@@ -167,7 +167,7 @@ const NewPage: React.FC = () => {
   const GridContent = () => (
     <div className="w-full mb-28 overflow-hidden">
       <List
-        className="sm:px-6 px-1 pt-2"
+        className="sm:px-1 px-1 pt-2"
         style={{ scrollBehavior: 'smooth' }}
         loading={isFetching}
         itemLayout="horizontal"
@@ -220,7 +220,7 @@ const NewPage: React.FC = () => {
   const ListContent = () => (
     <div className="w-full mb-28">
       <List
-        className="px-1 sm:px-6"
+        className="px-1 sm:px-1"
         loading={isFetching}
         itemLayout="horizontal"
         dataSource={filteredItems}
@@ -397,7 +397,7 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex">
             <List
-              className="sticky top-20 mt-20 pb-20 hide-x-scroll sm:mr-0 max-h-[calc(100vh-10rem)] sm:px-4 bg-gray-200 dark:bg-slate-950"
+              className="sticky top-20 mt-20 pb-20 hide-x-scroll sm:mr-0 max-h-[calc(100vh-10rem)] sm:px-4 bg-[#f8fcfc] dark:bg-slate-950"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
