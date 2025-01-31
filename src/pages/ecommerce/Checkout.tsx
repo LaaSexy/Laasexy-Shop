@@ -437,7 +437,7 @@ const Checkout = () => {
               </div>
             </div>
           </main>
-          <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-slate-800 sm:py-6">
+          <footer className="fixed bottom-0 left-0 flex w-full items-center justify-center rounded-t-2xl bg-white py-4 shadow-[0px_-4px_6px_rgba(0,_0,_0,_0.1)] dark:shadow-[0_-4px_6px_rgba(255,255,255,0.1)] dark:bg-black sm:py-6">
             <button
               onClick={handleCheckOut}
               className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border-none bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-center text-white transition-colors duration-300 shadow-lg sm:mx-24 ${
