@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, Image, message } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +7,7 @@ import { formatCurrency } from '@/utils/numeral';
 import { IMAGE_PATH } from './left_menu_style/menu_list';
 import Modifiers from './modifier';
 import { SendOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/router';
 interface SelectedOption {
   _id: string | null;
   itemVariationData?: {
@@ -50,6 +51,8 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   });
   const modifiers = item?.modifiers || [];
   const [total, setTotal] = useState(0);
+  const router = useRouter();
+  const { query } = router;
 
   useEffect(() => {
     if (item?.itemData?.variations) {
@@ -143,6 +146,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       quantity,
       price: selectedOption?.itemVariationData?.priceMoney?.amount,
       variation: selectedOption,
+      branchId: query.branch,
     };
     setCart([...cart, myItem]);
     message.success({
@@ -170,16 +174,20 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
         <div className="max-h-screen rounded-t-xl">
           <div className="relative bg-stone-100 shadow-xl dark:bg-black">
             <div className="mb-4 flex items-center bg-white py-4 dark:bg-black">
-              <img
-                src={
-                  IMAGE_PATH +
-                  (item && item.itemData
-                    ? item.itemData.imageUrl
-                    : 'default-image')
-                }
-                alt={item?.itemData?.name || 'Item'}
-                className="mx-4 size-20 rounded-md sm:size-20"
-              />
+              <div className="mx-4">
+                <Image
+                  width={80}
+                  height={80}
+                  src={
+                    IMAGE_PATH +
+                    (item && item.itemData
+                      ? item.itemData.imageUrl
+                      : 'default-image')
+                  }
+                  alt={item?.itemData?.name || 'Item'}
+                  className="rounded-md"
+                />
+              </div>
               <div className="flex flex-col grow">
                 {item?.itemData?.variations?.length < 2 ? (
                   <h2 className="text-lg font-bold dark:text-white sm:text-lg">

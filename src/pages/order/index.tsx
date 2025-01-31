@@ -60,6 +60,7 @@ const NewPage: React.FC = () => {
   const { mutateSession: createSession } = useSession();
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
   const [permissionState, setPermissionState] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
+  const filteredCartItems = cart.filter((item:any) => item.branchId === query.branch);
 
   useEffect(() => {
     const checkPermission = async () => {
@@ -175,9 +176,11 @@ const NewPage: React.FC = () => {
         renderItem={(item: any) => (
           <List.Item>
             <div
+              onClick={() => onClickItem(item)} 
               className="mx-auto mb-3 w-30 rounded-lg border bg-white p-2 text-center shadow-sm dark:border-gray-700 dark:bg-slate-900 sm:w-64 cursor-pointer"
             >
               <Image
+                preview={false}
                 alt={item.itemData.name}
                 className="max-h-80 w-48 max-w-xs object-contain rounded-md"
                 src={
@@ -186,7 +189,7 @@ const NewPage: React.FC = () => {
                     : '/assets/images/default.png'
                 }
               />
-              <div onClick={() => onClickItem(item)} className="mt-2">
+              <div className="mt-2">
                 <h2  className="mb-2 text-start text-sm text-black sm:mt-5 dark:text-white">
                   {item?.itemData?.name || 'Unnamed Product'}
                 </h2>
@@ -358,24 +361,29 @@ const NewPage: React.FC = () => {
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
           {/* Sticky Header */}
-          <header className="fixed top-0 left-0 h-44 z-50 w-full flex flex-col items-center justify-center bg-gradient-to-r from-violet-500 to-fuchsia-500 sm:h-44">
-            <div className="flex items-center justify-center">
-              {shopV2Data?.shop?.logoUrl ? (
-                <img
-                  src={`https://api.pointhub.io${shopV2Data.shop.logoUrl}`}
-                  alt="Logo"
-                  className="mx-4 mt-4 h-20 w-20 rounded-md sm:mt-4 sm:h-28 sm:w-28"
-                />
-              ) : (
-                <div className="mx-4 mt-7 h-24 w-24 bg-gray-300 rounded-md sm:mt-4 sm:h-28 sm:w-28 flex items-center justify-center">
-                  <span className="text-gray-500">Default</span>
-                </div>
-              )}
+          <header className="fixed top-0 left-0 z-50 w-full flex items-center justify-between bg-gradient-to-r from-violet-500 to-fuchsia-500 px-2 sm:px-4">
+            <div className="flex items-center justify-start">
+              <div className='mr-2 mt-2'>
+                {shopV2Data?.shop?.logoUrl ? (
+                  <Image
+                    height={60}
+                    width={60}
+                    src={`https://api.pointhub.io${shopV2Data.shop.logoUrl}`}
+                    alt="Logo"
+                    className="rounded-md"
+                    preview={false}
+                  />
+                ) : (
+                  <div className="mx-4 bg-gray-300 rounded-md flex items-center justify-center">
+                    <span className="text-gray-500">Default</span>
+                  </div>
+                )}
+              </div>
+              <p className="my-3 text-center text-xl sm:text-2xl text-white sm:my-2">
+                {shopV2Data?.shop?.name || 'Shop Name'}
+              </p>
             </div>
-            <p className="my-3 text-center text-2xl text-white sm:my-2">
-              {shopV2Data?.shop?.name || 'Shop Name'}
-            </p>
-            <div className="flex absolute mt-28 justify-end w-full mr-2">
+            <div>
               <Button
                 size="large"
                 onClick={() => setShowCart(!showCart)}
@@ -387,15 +395,16 @@ const NewPage: React.FC = () => {
             </div>
           </header>
           {/* Main Content */}
-          <div className="flex mt-44">
+          <div className="flex mt-20">
             <List
-              className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[73vh] sm:px-4"
+              className="sticky top-44 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
-                const isLongText = subCategory.name.length > 15;
+                const isLongText = subCategory.name.length > 11;
+                const isLongestText = subCategory.name.length > 15;
                 return (
-                  <List.Item key={subCategory._id} className="list-none">
+                  <List.Item key={subCategory._id} className="list-none !border-none">
                     <Button
                       size="large"
                       onClick={() => onClickCategory(subCategory)}
@@ -403,7 +412,13 @@ const NewPage: React.FC = () => {
                         selectedCategory === subCategory._id
                           ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                           : 'bg-transparent'
-                      } ${isLongText ? 'min-h-[68px] sm:min-h-0' : 'min-h-0'}`}
+                      } ${
+                        isLongestText
+                          ? 'min-h-[120px] px-6 py-4 sm:min-h-[130px] md:min-h-[100px] lg:min-h-[0px] sm:px-8 sm:py-6' // Styles for the longest text
+                          : isLongText
+                          ? 'min-h-[50px] px-4 py-3 sm:min-h-[50px] md:min-h-[0px] lg:min-h-[0px] sm:px-6 sm:py-4' // Styles for long text
+                          : 'min-h-[40px] px-3 py-2 sm:min-h-[50px] md:min-h-[0px] lg:min-h-[0px] sm:px-4 sm:py-3' // Styles for short text
+                      }`}
                       aria-pressed={selectedCategory === subCategory._id}
                     >
                       <span className="text-center whitespace-normal break-words">
@@ -415,21 +430,21 @@ const NewPage: React.FC = () => {
               }}
             />
             {/* Right Content Area */}
-            <div className="flex-1 overflow-y-auto max-h-[73vh]">
+            <div className="flex-1 overflow-y-auto max-h-[83vh]">
               {showCart ? <GridContent /> : <ListContent />}
             </div>
           </div>
-          {(cart.length > 0 || items.length > 0) && (
+          {(filteredCartItems.length > 0 || items.length > 0) && (
             <footer className="fixed bottom-0 flex w-full shrink-0 items-center justify-center bg-white dark:bg-black">
               <button
-                onClick={cart.length > 0 ? reviewOrder : proceedPayment}
+                onClick={filteredCartItems.length > 0 ? reviewOrder : proceedPayment}
                 className="mx-6 my-4 w-full rounded-3xl border border-white bg-gradient-to-r from-violet-500 to-indigo-600 p-2 text-center text-white hover:opacity-95 sm:mx-24"
               >
                 <h2 className="text-lg font-semibold">
                   <ShoppingCartOutlined />
-                  {cart.length > 0
-                    ? ` Review Order - (${cart.length} ${
-                      cart.length === 1 ? 'item' : 'items'
+                  {filteredCartItems.length > 0
+                    ? ` Review Order - (${filteredCartItems.length} ${
+                      filteredCartItems.length === 1 ? 'item' : 'items'
                       })`
                     : ` Proceed to checkout - (${items.length} ${
                         items.length === 1 ? 'item' : 'items'

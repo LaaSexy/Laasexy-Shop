@@ -35,12 +35,8 @@ const Review = () => {
   const [,setOrderSuccess] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error' | 'info' | 'warning', content: string } | null>(null);
+  const filteredCartItems = cart.filter((item:any) => item.branchId === query.branch);
 
-
-  useEffect(() =>{
-    console.log(cart);
-  },[cart]) 
-  
   useEffect(() => {
     if (!session?._id) {
       setAlertMessage({ type: 'warning', content: 'You cannot order because you do not stay within 500 meters of the shop.' });
@@ -129,7 +125,7 @@ const Review = () => {
   };
 
   const calculateTotal = () => {
-    return cart 
+    return filteredCartItems 
       .filter((item) => item?.total > 0)
       .reduce((total, item) => total + (item?.total || 0), 0)
       .toFixed(2);
@@ -147,11 +143,11 @@ const Review = () => {
       setAlertMessage({ type: 'error', content: 'You cannot send the order because location access is denied.' });
       return;
     }
-    if (cart.length === 0) {
+    if (filteredCartItems.length === 0) {
       setAlertMessage({ type: 'error', content: 'Your cart is empty. Please add items to your cart before placing an order.' });
       return;
     }
-    const orderItems = cart.map((item: any) => ({
+    const orderItems = filteredCartItems.map((item: any) => ({
       id: item.id,
       name: item?.name,
       itemId: item?._id,
@@ -297,7 +293,7 @@ const Review = () => {
 
   return (
     <MultipleSkeletons loading={isFetching}>
-      {orderPlaced  && cart.length <= 0 ? (
+      {orderPlaced  && filteredCartItems.length <= 0 ? (
         <OrderSuccessPage />
       ) : (
         <div className="flex min-h-screen flex-col">
@@ -338,7 +334,7 @@ const Review = () => {
                 </div>
                 <List
                   className="rounded-md"
-                  dataSource={cart}
+                  dataSource={filteredCartItems}
                   itemLayout="horizontal"
                   renderItem={(item: any, index: any) => (
                     <List.Item>
@@ -418,9 +414,9 @@ const Review = () => {
               <button
                 onClick={handleOrder}
                 className={`mx-4 w-11/12 rounded-3xl bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-lg font-semibold text-white shadow-md sm:w-3/5 sm:p-3 ${
-                  cart.length <= 0 || !session?._id || total <= 0 ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
+                  filteredCartItems.length <= 0 || !session?._id || total <= 0 ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
                 }`}
-                disabled={cart.length <= 0 || !session?._id || total <= 0}
+                disabled={filteredCartItems.length <= 0 || !session?._id || total <= 0}
               >
                 <span className="flex items-center justify-center">
                   <SendOutlined className="mr-2" /> Send Order{' - '}

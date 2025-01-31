@@ -69,6 +69,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
     console.log(`item: ${JSON.stringify(item)}`);
   }, [item]);
 
+
   useEffect(() => {
     if (item?.itemData?.variations) {
       setSelectionOption(item.itemData.variations[0]);
@@ -150,6 +151,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
       quantity,
       price: selectedOption?.itemVariationData?.priceMoney?.amount,
       variation: selectedOption,
+      branchId: query.branch,
     };
     setCart([...cart, myItem]);
     setQuantity(0);

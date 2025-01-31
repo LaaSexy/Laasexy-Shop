@@ -39,7 +39,7 @@ const Checkout = () => {
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
-
+  const filteredCartItems = cart.filter((item:any) => item.branchId === query.branch);
   useEffect(() => {
     if (deviceId === null) {
       initializeDeviceUuid();
@@ -47,7 +47,7 @@ const Checkout = () => {
   }, [deviceId]);
 
   const calculateTotal = () => {
-    return cart
+    return filteredCartItems
       .filter((item: any) => item?.total > 0)
       .reduce((total: any, item: any) => total + (item?.total || 0), 0)
       .toFixed(2);
@@ -93,7 +93,7 @@ const Checkout = () => {
   }, [address, phone]);
 
   const handleCheckOut = () => {
-    if (cart.length === 0) {
+    if (filteredCartItems.length === 0) {
       message.error('Your cart is empty');
       playFailSound();
       return;
@@ -360,7 +360,7 @@ const Checkout = () => {
                 <h3 className="text-xl font-bold dark:text-white mb-2">Order</h3>
                 <List
                   className="rounded-md"
-                  dataSource={cart}
+                  dataSource={filteredCartItems}
                   itemLayout="horizontal"
                   renderItem={(item: any, index: any) => (
                     <List.Item>
@@ -441,9 +441,9 @@ const Checkout = () => {
             <button
               onClick={handleCheckOut}
               className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border-none bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-center text-white transition-colors duration-300 shadow-lg sm:mx-24 ${
-              cart.length <= 0 || !address || !isValid || !paymentMethod ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
+                filteredCartItems.length <= 0 || !address || !isValid || !paymentMethod ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
               }`}
-              disabled={cart.length <= 0 || !address || !isValid || !paymentMethod}
+              disabled={filteredCartItems.length <= 0 || !address || !isValid || !paymentMethod}
             >
               <h2 className="text-xl">
                 <ShoppingCartOutlined /> Checkout {' - '}{' '}

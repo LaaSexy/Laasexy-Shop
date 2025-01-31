@@ -9,9 +9,7 @@ import _ from 'lodash';
 import { MenuOutlined } from '@ant-design/icons';
 import ProductDetail, { cartAtom } from './ProductDetail';
 import { atom, useAtom } from 'jotai';
-import useSession, { sessionAtom } from '@/hooks/useSession';
 import useAuthications from '@/hooks/useAuth';
-import useOrderSessionId from '@/hooks/useCheckOut';
 import CategoryPage from './CategoryPage';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation, Thumbs } from 'swiper/modules';
@@ -151,7 +149,6 @@ const playFailSound = () => {
 };
 
 const Ecommerce = () => {
-  const [session] = useAtom(sessionAtom);
   const [cart] = useAtom(cartAtom);
   const [deviceId] = useAtom(deviceIdAtom);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -159,24 +156,17 @@ const Ecommerce = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [thumbsSwiper] = useState<SwiperType | null>(null);
   const [groupedItems, setGroupedItems] = useState<Record<string, Item[]>>({});
-  const { mutate, data } = useOrderSessionId();
-  const { mutate: loginDevice, isSuccess } = useAuthications();
-  const { mutateSession: createSession } = useSession();
+  const { mutate: loginDevice } = useAuthications();
   const router = useRouter();
   const { query } = router;
   const { data: shopV2Data, isFetching = true } = useV2Items(query?.branch);
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [, setItems] = useState([]);
   const [isSubcategorySelected, setIsSubcategorySelected] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [, initializeDeviceUuid] = useAtom(initializeDeviceUuidAtom);
 
-  useEffect(() => {
-    console.log('Session Id: ' + session?._id);
-    console.log('Device Id: ' + deviceId);
-  }, [session?._id, deviceId]);
-
+  const filteredCartItems = cart.filter((item:any) => item.branchId === query.branch);
   useEffect(() => {
     if (query?.branch) {
       loginDevice({
@@ -218,22 +208,6 @@ const Ecommerce = () => {
     }
   }, [shopV2Data]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      createSession();
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      mutate({ sessionId: session?._id || '' });
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    const item = data?.flatMap((value: any) => value.items) || [];
-    setItems(item);
-  }, [data]);
 
   const onClickCategory = (category: any) => {
     if (!category?._id) {
@@ -377,7 +351,7 @@ const Ecommerce = () => {
                       />
                     </svg>
                     <div className="absolute -end-1 -top-0 sm:-end-0 sm:-top-1 inline-flex size-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-white">
-                      {cart.length || 0}
+                      {filteredCartItems.length || 0}
                     </div>
                   </button>
                   <div className="flex items-center justify-end pr-3">
