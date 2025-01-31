@@ -165,7 +165,7 @@ const NewPage: React.FC = () => {
   };
 
   const GridContent = () => (
-    <div className="w-full mb-20 overflow-hidden">
+    <div className="w-full mb-28 overflow-hidden">
       <List
         className="sm:px-6 px-1 pt-2"
         style={{ scrollBehavior: 'smooth' }}
@@ -218,7 +218,7 @@ const NewPage: React.FC = () => {
   );
 
   const ListContent = () => (
-    <div className="w-full mb-20">
+    <div className="w-full mb-28">
       <List
         className="px-1 sm:px-6"
         loading={isFetching}
@@ -397,8 +397,8 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex">
             <List
-              className="sticky top-20 mt-20 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
-              style={{ scrollBehavior: 'smooth' }}
+              className="sticky top-20 mt-20 pb-16 hide-x-scroll sm:mr-0 max-h-[79vh] sm:px-4"
+              style={{ WebkitOverflowScrolling: "touch" }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
                 const isLongText = subCategory.name.length > 11;
