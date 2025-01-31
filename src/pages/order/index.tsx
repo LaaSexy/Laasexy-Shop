@@ -397,7 +397,7 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex">
             <List
-              className="sticky top-20 mt-20 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
+              className="sticky top-20 mt-20 pb-30 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
