@@ -404,7 +404,7 @@ const NewPage: React.FC = () => {
                 const isLongText = subCategory.name.length > 11;
                 const isLongestText = subCategory.name.length > 15;
                 return (
-                  <List.Item key={subCategory._id} className="list-none !border-none">
+                  <List.Item key={subCategory._id} className="list-none !border-none !p-1">
                     <Button
                       size="large"
                       onClick={() => onClickCategory(subCategory)}
