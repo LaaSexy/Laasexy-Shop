@@ -397,18 +397,18 @@ const NewPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex">
             <List
-              className="sticky top-20 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
+              className="sticky top-20 mt-20 pb-20 hide-x-scroll sm:mr-0 max-h-[83vh] sm:px-4"
               style={{ scrollBehavior: 'smooth' }}
               dataSource={shopV2Data?.subCategories}
               renderItem={(subCategory: any) => {
                 const isLongText = subCategory.name.length > 11;
                 const isLongestText = subCategory.name.length > 15;
                 return (
-                  <List.Item key={subCategory._id} className="list-none !border-none !p-1">
+                  <List.Item key={subCategory._id} className="list-none !border-none !p-1 ">
                     <Button
                       size="large"
                       onClick={() => onClickCategory(subCategory)}
-                      className={`w-[95px] mx-1 md:w-32 lg:w-full truncate sm:px-0 sm:py-0 rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
+                      className={`w-[95px] mx-1 md:w-32 pr-2 lg:w-full truncate sm:px-0 sm:py-0 rounded-md border flex justify-center items-center border-[#DBD5D5] dark:hover:!border-violet-500 sm:!text-base !text-sm dark:border-gray-700 ${
                         selectedCategory === subCategory._id
                           ? 'bg-violet-500 text-white hover:!text-white dark:border-violet-500'
                           : 'bg-transparent'
