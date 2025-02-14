@@ -19,6 +19,7 @@ interface CategoryPageProps {
   filterItems: any;
   selectedItem?: any;
   onItemClick?: (item: any) => void;
+  onClose: () => void;
 }
 
 const CategoryPage: React.FC<CategoryPageProps> = ({
@@ -26,6 +27,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
   filterItems = [],
   selectedItem,
   onItemClick,
+  onClose,
 }) => {
   const [, setSelectedCategory] = useState<number | null>(null);
   const [showCart, setShowCart] = useState<boolean>(() => {
@@ -77,7 +79,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
                   ? `${imagePath}${item.itemData.imageUrl}`
                   : '/placeholder-image.jpg'
               }
-              className="mx-auto mb-4 mt-1 h-[160px] w-[210px] rounded-md object-cover sm:h-[205px] sm:w-[270px] transition duration-300 ease-in-out hover:scale-105"
+              className="mx-auto mb-4 mt-1 h-[160px] w-[210px] rounded-md object-cover sm:h-[205px] sm:w-[260px] transition duration-300 ease-in-out hover:scale-105"
             />
             <div className="mx-5 mb-4">
               <h2 className="mb-2 text-start text-sm text-black dark:text-white">
@@ -122,7 +124,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
           <List.Item>
             <div
               onClick={() => onClickItem(item)}
-              className="flex w-full justify-between rounded-md border shadow-sm  dark:border-gray-700 dark:bg-slate-900"
+              className="flex w-full justify-between rounded-md border shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:border-gray-700 dark:bg-slate-900"
             >
               <div className="flex w-full items-center sm:w-auto">
                 <Avatar
@@ -131,7 +133,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
                       ? `${imagePath}${item.itemData.imageUrl}`
                       : '/placeholder-image.jpg'
                   }
-                  className="m-2 size-20 rounded-md sm:size-28"
+                  className="m-2 size-20 rounded-md sm:size-28 transition duration-300 ease-in-out hover:scale-105"
                 />
                 <div>
                   <h3 className="mb-3 text-sm text-black dark:text-white">
@@ -168,22 +170,23 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
     <MultipleSkeletons loading={isFetching}>
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
-          {/* Navigation */}
-          <div className="flex justify-end items-center pr-4 mt-4">
-            <Button
-              size="large"
-              onClick={() => setShowCart(!showCart)}
-              className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white dark:border-none"
-              aria-label="Open Options"
-            >
-              {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-            </Button>
-          </div>
+            {/* Navigation */}
+            <div className="flex justify-end items-center pr-4 mt-5">
+              <Button
+                size="large"
+                onClick={() => setShowCart(!showCart)}
+                className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white dark:border-none"
+                aria-label="Open Options"
+              >
+                {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
+              </Button>
+            </div>
           {/* Main Content */}
           {selectedItem ? (
             <ProductDetail
               currency={currency}
               item={selectedItem}
+              onClose={onClose}
             />
           ) : filterItems.length === 0 ? (
             <Empty className="mt-10" description="No items found" />

@@ -40,6 +40,7 @@ interface CartItem {
 interface ProductDetailProps {
   currency: string;
   item: any;
+  onClose: () => void;
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>('cart', []);
@@ -50,7 +51,7 @@ const playSuccessSound = () => {
   });
 };
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item,  onClose }) => {
   const [cart, setCart] = useAtom(cartAtom);
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedAddIns, setSelectedAddIns] = useState<Modifier[]>([]);
@@ -130,7 +131,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
       </div>
     );
   };
-
+  const handleExploreMore =() =>{
+    onClose();
+  }
   const onClickAddToCart = () => {
     const deviceUuid = uuidv4();
     const name =
@@ -232,7 +235,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
                     Description
                   </p>
                   <p className="text-gray-800 dark:text-white text-base font-normal mb-6">
-                    {item?.itemData?.description || 'Product description goes here.'}
+                    {item?.itemData?.description || 'Product description will be goes here soon.'}
                   </p>
                   {optionRender(item?.itemData?.variations)}
                   {/* Modifiers Section */}
@@ -245,7 +248,30 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item }) => {
                       />
                     )}
                   </div>
-                  <div className="flex items-center justify-center gap-3 mt-3">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-3">
+                    <Button
+                      type='primary'
+                      size="large"
+                      onClick={handleExploreMore}
+                      className="w-full flex !text-xl !p-6 !rounded-full justify-center items-center"
+                    >
+                      <svg 
+                        className="w-6 h-6 text-white dark:text-white mr-2" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" 
+                        height="24" 
+                        fill="none" 
+                        viewBox="0 0 24 24"
+                      >
+                      <path 
+                        stroke="currentColor" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        stroke-width="2" d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"
+                      />
+                      </svg>
+                        Explore More
+                    </Button>
                     <Button
                       type="primary"
                       size="large"

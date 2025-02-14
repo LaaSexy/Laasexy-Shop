@@ -156,13 +156,13 @@ const Checkout = () => {
           Your order is made! 🎉
         </h1>
         <div className="w-full sm:w-[500px] mb-5">
-          <p className="text-gray-600 text-center mt-3 dark:text-white">
+          <p className="text-gray-600 text-center mt-3 mb-3 dark:text-white">
             Congratulation! Your order has been successfully proceed, we will pick up your order soon as possible!
           </p>
           <div className="space-y-4">
             <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
               <p className="text-gray-600 dark:text-white">
-                <span className="font-semibold">Order ID:</span> <strong>54222</strong>
+                <span className="font-semibold">Order ID:</span> <strong>5422</strong>
               </p>
             </div>
             <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">

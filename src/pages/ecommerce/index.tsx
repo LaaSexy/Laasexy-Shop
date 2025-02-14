@@ -208,7 +208,6 @@ const Ecommerce = () => {
     }
   }, [shopV2Data]);
 
-
   const onClickCategory = (category: any) => {
     if (!category?._id) {
       message.error("Unknown category", category?._id);
@@ -277,6 +276,10 @@ const Ecommerce = () => {
     }
   };
 
+  const onCancel = () => {
+    setSelectedItem(null);
+  };
+
   return (
     <MultipleSkeletons loading={isFetching}>
       {shopV2Data?.subCategories?.length <= 0 ? (
@@ -287,7 +290,7 @@ const Ecommerce = () => {
         <div className="flex min-h-screen flex-col">
           <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
             {/* Sticky Header */}
-            <header className="sticky left-0 top-0 z-50 h-28 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
+            <header className="left-0  top-0 z-50 h-28 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   {shopV2Data?.shop?.logoUrl && (
@@ -364,7 +367,7 @@ const Ecommerce = () => {
                   </div>
                 </div>
               </div>
-              <nav className="hidden max-w-full flex-col gap-4 overflow-auto whitespace-nowrap px-4 sm:flex sm:flex-row sm:pl-5">
+              <nav className="hidden max-w-full flex-col gap-4 overflow-auto whitespace-nowrap px-5 sm:flex sm:flex-row sm:pl-5">
                 <div className="flex w-full min-w-full max-w-full items-start justify-start gap-4 overflow-x-auto whitespace-nowrap sm:pl-5 sm:pr-8">
                   <ul className="relative flex flex-row items-center justify-center space-x-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                     {/* Home Button */}
@@ -448,6 +451,7 @@ const Ecommerce = () => {
               <ProductDetail
                 currency={shopV2Data?.shop?.currency}
                 item={selectedItem}
+                onClose={onCancel}
               />
             ) : (
               <>
@@ -545,6 +549,7 @@ const Ecommerce = () => {
                     filterItems={filteredItems}
                     selectedItem={selectedItem}
                     onItemClick={onClickItem}
+                    onClose={onCancel}
                   />
                 ) : (
                   <>
@@ -558,7 +563,10 @@ const Ecommerce = () => {
                               'Uncategorized'}
                           </h3>
                           <button
-                            onClick={() => onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId))}
+                            onClick={() => {
+                              onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId));
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
                             className="group relative text-lg font-bold text-violet-600 dark:text-white"
                           >
                             See All
@@ -570,24 +578,36 @@ const Ecommerce = () => {
                             <Swiper
                               modules={[Navigation, Thumbs]}
                               loop={true}
-                              spaceBetween={32}
+                              spaceBetween={16}
                               navigation={true}
                               thumbs={{ swiper: thumbsSwiper }}
                               className="product-prev"
                               breakpoints={{
                                 320: {
                                   slidesPerView: 2,
-                                  spaceBetween: 16,
+                                  spaceBetween: 8,
                                 },
                                 768: {
                                   slidesPerView: 3,
-                                  spaceBetween: 24,
+                                  spaceBetween: 16,
                                 },
                                 1024: {
                                   slidesPerView: 4,
-                                  spaceBetween: 32,
+                                  spaceBetween: 16,
                                 },
                                 1280: {
+                                  slidesPerView: 5,
+                                  spaceBetween: 16,
+                                },
+                                1440: {
+                                  slidesPerView: 5,
+                                  spaceBetween: 20,
+                                },
+                                1600: {
+                                  slidesPerView: 5,
+                                  spaceBetween: 24,
+                                },
+                                1920: {
                                   slidesPerView: 5,
                                   spaceBetween: 32,
                                 },
@@ -646,7 +666,29 @@ const Ecommerce = () => {
                 )}
               </>
             )} 
-
+            <div className="absolute bottom-80 right-4 flex items-center">
+              <Button 
+                onClick={() => {window.scrollTo({ top: 0, behavior: 'smooth' });}} 
+                type="primary" className="h-10 w-10 sm:h-14 sm:w-14 flex !justify-center !items-center rounded-full bg-violet-600 hover:bg-violet-700" 
+                shape='circle'
+              >
+                <svg 
+                  className="w-6 h-6 text-white dark:text-white" 
+                  aria-hidden="true" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="24" 
+                  height="24" 
+                  fill="none" 
+                  viewBox="0 0 24 24">
+                  <path 
+                    stroke="currentColor" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth="2" d="m5 15 7-7 7 7"
+                  />
+                </svg>
+              </Button>
+            </div>
             {/* footer Content */}
             <footer>
               <div className="bg-gray-900">
