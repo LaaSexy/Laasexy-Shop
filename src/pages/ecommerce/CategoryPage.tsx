@@ -7,7 +7,6 @@ import { useV2Items } from '@/hooks/useItems';
 import { formatCurrency } from '@/utils/numeral';
 import MultipleSkeletons from '../components/MultipleSkeletons';
 import ProductDetail from './ProductDetail';
-
 export const imagePath = 'https://api.pointhub.io';
 
 export const generateDeviceId = () => {
@@ -18,6 +17,7 @@ interface CategoryPageProps {
   currency: string;
   filterItems: any;
   selectedItem?: any;
+  seeAll:any;
   onItemClick?: (item: any) => void;
   onClose: () => void;
 }
@@ -28,6 +28,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
   selectedItem,
   onItemClick,
   onClose,
+  seeAll,
 }) => {
   const [, setSelectedCategory] = useState<number | null>(null);
   const [showCart, setShowCart] = useState<boolean>(() => {
@@ -79,7 +80,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
                   ? `${imagePath}${item.itemData.imageUrl}`
                   : '/placeholder-image.jpg'
               }
-              className="mx-auto mb-4 mt-1 h-[160px] w-[210px] rounded-md object-cover sm:h-[205px] sm:w-[260px] transition duration-300 ease-in-out hover:scale-105"
+              className="mx-auto mb-4 mt-1 h-[160px] w-[175px] rounded-md object-cover sm:h-[205px] sm:w-[260px] transition duration-300 ease-in-out hover:scale-105"
             />
             <div className="mx-5 mb-4">
               <h2 className="mb-2 text-start text-sm text-black dark:text-white">
@@ -170,17 +171,24 @@ const CategoryPage: React.FC<CategoryPageProps> = ({
     <MultipleSkeletons loading={isFetching}>
       <div className="container mx-auto flex min-h-screen max-w-full flex-col">
         <div className="flex min-h-screen flex-col bg-white dark:bg-black">
-            {/* Navigation */}
-            <div className="flex justify-end items-center pr-4 mt-5">
+          {/* Navigation */}
+          <div className='flex justify-between items-center'>
+            <div className='flex justify-start items-center pl-4 mt-3'>
+              <Button onClick={seeAll} size="large" className='flex items-center justify-center bg-violet-500 !text-base text-white hover:!text-white dark:border-none'>
+                <img src="/assets/images/Back Arrow.png" alt="" className="size-5 mr-1" />
+                Back
+              </Button>
+            </div>
+            <div className="flex justify-end items-center pr-4 mt-3">
               <Button
                 size="large"
                 onClick={() => setShowCart(!showCart)}
                 className="flex items-center justify-center bg-violet-500 text-xl text-white hover:!text-white dark:border-none"
-                aria-label="Open Options"
               >
                 {showCart ? <UnorderedListOutlined /> : <AppstoreOutlined />}
               </Button>
             </div>
+          </div>
           {/* Main Content */}
           {selectedItem ? (
             <ProductDetail

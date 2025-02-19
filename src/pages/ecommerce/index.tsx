@@ -6,7 +6,7 @@ import MultipleSkeletons from '../components/MultipleSkeletons';
 import { imagePath } from '../order/index';
 import { formatCurrency } from '@/utils/numeral';
 import _ from 'lodash';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import ProductDetail, { cartAtom } from './ProductDetail';
 import { atom, useAtom } from 'jotai';
 import useAuthications from '@/hooks/useAuth';
@@ -31,7 +31,6 @@ export const initializeDeviceUuidAtom = atom(null, (get, set) => {
 export const generateDeviceId = () => {
   return Math.floor(Math.random() * 100000) + '-' + Date.now();
 };
-const { Search } = Input;
 const LanguageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('KH');
@@ -262,23 +261,29 @@ const Ecommerce = () => {
     });
   };
 
-  const onSearch = (value: string) => {
-    setSearchQuery(value);
-    if (value) {
-      const filtered = shopV2Data?.items.filter((item: Item) =>
-        item.itemData.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredItems(filtered);
-      setIsSubcategorySelected(true);
-    } else {
-      setFilteredItems(shopV2Data?.items || []);
-      setIsSubcategorySelected(false);
-    }
-  };
+  // const onSearch = (value: string) => {
+  //   setSearchQuery(value);
+  //   if (value) {
+  //     const filtered = shopV2Data?.items.filter((item: Item) =>
+  //       item.itemData.name.toLowerCase().includes(value.toLowerCase())
+  //     );
+  //     setFilteredItems(filtered);
+  //     setIsSubcategorySelected(true);
+  //   } else {
+  //     setFilteredItems(shopV2Data?.items || []);
+  //     setIsSubcategorySelected(false);
+  //   }
+  // };
 
   const onCancel = () => {
     setSelectedItem(null);
   };
+
+  const handleAllitem = () =>{
+    setSelectedCategory(null);
+    setIsSubcategorySelected(false);
+    setSelectedItem(null);
+  }
 
   return (
     <MultipleSkeletons loading={isFetching}>
@@ -291,7 +296,7 @@ const Ecommerce = () => {
           <div className="relative flex min-h-screen max-w-full flex-col bg-white dark:bg-black">
             {/* Sticky Header */}
             <header className="left-0  top-0 z-50 h-28 w-full items-center justify-between bg-violet-500 shadow-lg shadow-indigo-500/50 sm:h-48">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between sm:mt-0 mt-2">
                 <div className="flex items-center">
                   {shopV2Data?.shop?.logoUrl && (
                     <img
@@ -308,26 +313,28 @@ const Ecommerce = () => {
                   </p>
                 </div>
                 <div className="absolute inset-x-0 top-0 mt-16 flex items-center justify-center px-4 sm:hidden">
-                  <Search
+                  <Input
                     placeholder="Type your keyword..."
                     allowClear
-                    size="large"
-                    onSearch={onSearch}
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-full max-w-[400px]"
+                    className="w-full max-w-[400px] text-base pl-4"
+                    suffix={
+                      <SearchOutlined className="cursor-pointer text-xl"/>
+                    }
                   />
                 </div>
                 {/* Search Bar for Larger Screens */}
                 <div className="hidden sm:flex items-center justify-center flex-1 mx-4">
-                  <Search
+                  <Input
                     placeholder="Type your keyword..."
                     allowClear
-                    size="large"
-                    onSearch={onSearch}
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-full max-w-[700px]"
+                    className="w-full max-w-[700px] text-lg pl-4"
+                    suffix={
+                      <SearchOutlined className="cursor-pointer text-xl"/>
+                    }
                   />
                 </div>
                  {/* Language Dropdown, Cart, and Menu Button */}
@@ -374,11 +381,9 @@ const Ecommerce = () => {
                     <li key="home" className="list-none">
                       <Button
                         size="large"
-                        onClick={() => {
-                          setSelectedCategory(null);
-                          setIsSubcategorySelected(false);
-                          setSelectedItem(null);
-                        }}
+                        onClick={
+                          handleAllitem
+                        }
                         className={`my-3 flex items-center justify-center rounded-md border border-[#DBD5D5] !p-5 text-base text-white hover:!border-white hover:bg-violet-700 hover:!text-white sm:my-4 ${
                           selectedCategory === null
                             ? ' bg-violet-700 text-white hover:!text-white'
@@ -393,7 +398,7 @@ const Ecommerce = () => {
                     {shopV2Data?.subCategories?.map((subCategory: any) => (
                       <li key={subCategory._id} className="list-none">
                         <Button
-                          size="large"
+                          size="large" 
                           onClick={() => {
                             onClickCategory(subCategory);
                             setSelectedItem(null);
@@ -541,6 +546,9 @@ const Ecommerce = () => {
                     </span>
                   </button>
                 </div>
+                <div className='flex justify-center items-center'>
+
+                </div>
 
                 {/* Render CategoryPage if isSubcategorySelected is true */}
                 {isSubcategorySelected ? (
@@ -550,6 +558,7 @@ const Ecommerce = () => {
                     selectedItem={selectedItem}
                     onItemClick={onClickItem}
                     onClose={onCancel}
+                    seeAll={handleAllitem}
                   />
                 ) : (
                   <>
@@ -567,7 +576,7 @@ const Ecommerce = () => {
                               onClickCategory(shopV2Data?.subCategories?.find((cat: any) => cat._id === categoryId));
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className="group relative text-lg font-bold text-violet-600 dark:text-white"
+                            className="group relative text-lg font-bold text-violet-600 dark:text-white mr-1"
                           >
                             See All
                             <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-violet-600 transition-all duration-300 group-hover:w-full dark:bg-white"></span>
@@ -585,7 +594,7 @@ const Ecommerce = () => {
                               breakpoints={{
                                 320: {
                                   slidesPerView: 2,
-                                  spaceBetween: 8,
+                                  spaceBetween: 4,
                                 },
                                 768: {
                                   slidesPerView: 3,
@@ -616,8 +625,8 @@ const Ecommerce = () => {
                               {items.map((item: Item) => (
                                 <SwiperSlide key={item._id}>
                                   <div
-                                    onClick={() => onClickItem(item)}
-                                    className="w-[190px] ml-5 flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer"
+                                    onClick={() => { onClickItem(item); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                    className="w-[170px] ml-5 flex-none rounded-lg no-underline hover:no-underline hover:border-transparent bg-white text-center shadow-[0_3px_10px_rgb(0,0,0,0.2)] dark:bg-slate-900 sm:w-[250px] cursor-pointer"
                                   >
                                     <img
                                       alt={item?.itemData?.name || 'Product Image'}
@@ -626,7 +635,7 @@ const Ecommerce = () => {
                                           ? `${imagePath}${item.itemData.imageUrl}`
                                           : '/placeholder-image.jpg'
                                       }
-                                      className="mx-auto mb-4 mt-1 h-[160px] w-[180px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
+                                      className="mx-auto mb-4 h-[155px] w-[165px] rounded-md object-cover sm:h-[210px] sm:w-[240px] transition duration-300 ease-in-out hover:scale-105"
                                     />
                                     <div className="mx-2 mb-5">
                                       <h2 className="mb-2 text-start text-sm text-black dark:text-white">
@@ -666,10 +675,10 @@ const Ecommerce = () => {
                 )}
               </>
             )} 
-            <div className="absolute bottom-80 right-4 flex items-center">
+            <div className="absolute bottom-96 sm:bottom-72 right-4 flex items-center">
               <Button 
                 onClick={() => {window.scrollTo({ top: 0, behavior: 'smooth' });}} 
-                type="primary" className="h-10 w-10 sm:h-14 sm:w-14 flex !justify-center !items-center rounded-full bg-violet-600 hover:bg-violet-700" 
+                type="primary" className="h-10 w-10 sm:mt-5 mt-0 sm:h-12 sm:w-12 flex !justify-center !items-center rounded-full bg-violet-600 hover:bg-violet-700" 
                 shape='circle'
               >
                 <svg 

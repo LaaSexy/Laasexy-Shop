@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, message, Rate  } from 'antd';
+import { Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -202,12 +202,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item,  onClose 
                     </h6>
 
                     {/* Rating and Reviews */}
-                    <div className="flex items-center gap-2 whitespace-nowrap">
+                    {/* <div className="flex items-center gap-2 whitespace-nowrap">
                       <Rate disabled defaultValue={4} className="text-yellow-400"/>
                       <span className="pl-2 font-normal leading-7 text-gray-500 text-sm">
                         1624 reviews
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* Quantity Selector */}
                     <div className="flex items-center border border-violet-500 bg-violet-100 py-1 px-1 rounded-full dark:bg-slate-800 dark:border-slate-600">
@@ -276,11 +276,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ currency, item,  onClose 
                       type="primary"
                       size="large"
                       className={`w-full flex !text-xl !p-6 !rounded-full justify-center items-center${
-                        quantity < 1 || total <= 0
+                        quantity < 1
                           ? 'cursor-not-allowed opacity-60 flex justify-center items-center'
                           : ''
                       }`}
-                      disabled={quantity < 1 || total <= 0}
+                      disabled={quantity < 1}
                       onClick={onClickAddToCart}
                     >
                       <svg

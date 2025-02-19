@@ -75,7 +75,6 @@ const Checkout = () => {
     } else {
       setAddressError('');
     }
-
     if (!phone.trim()) {
       setPhoneError('Phone number is required');
       isValid = false;
@@ -94,7 +93,6 @@ const Checkout = () => {
 
   const handleCheckOut = () => {
     if (filteredCartItems.length === 0) {
-      message.error('Your cart is empty');
       playFailSound();
       return;
     }
@@ -102,12 +100,27 @@ const Checkout = () => {
       return;
     }
     if (!paymentMethod) {
-      message.error('Please select a payment method');
       playFailSound();
       return;
     }
-    setIsCheckoutSuccess(true);
+    setIsCheckoutSuccess(false);
+    if(paymentMethod === 'aba_bank'){
+      onClickCheckout();
+    } else {
+      setIsCheckoutSuccess(true);
+    }
   };
+
+  const onClickCheckout = () =>{
+    if (query?.branch) {
+      router.push({
+        pathname: '/ecommerce/Payment',
+        query: {
+          branch: query.branch,
+        },
+      });
+    }
+  }
 
   const onClickToShowData = () => {
     if (query?.branch) {
@@ -120,9 +133,9 @@ const Checkout = () => {
     }
   };
 
-  const PaymentOption: React.FC<PaymentOptionProps> = ({ src, title, description, value }) => {
+  const PaymentOption: React.FC<PaymentOptionProps> = ({  src, title, description, value}) => {
     return (
-      <div className="w-full sm:flex-1 bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] py-4 px-4 rounded-lg mb-3 sm:mb-0 cursor-pointer hover:shadow-lg transition-shadow duration-300 dark:bg-slate-800">
+      <div className="w-full sm:flex-1 bg-white border dark:border-gray-600 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)] py-4 px-4 rounded-lg mb-3 sm:mb-0 cursor-pointer transition-shadow duration-300 dark:bg-slate-800">
         <label htmlFor={`radio-${value}`} className="flex justify-between items-center w-full h-full">
           <img src={src} alt={title} className="w-12 h-12 object-cover rounded-lg" />
           <div className="flex-1 mx-4">
@@ -162,7 +175,7 @@ const Checkout = () => {
           <div className="space-y-4">
             <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
               <p className="text-gray-600 dark:text-white">
-                <span className="font-semibold">Order ID:</span> <strong>5422</strong>
+                <span className="font-semibold">Order ID:</span><strong> 102121</strong>
               </p>
             </div>
             <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
@@ -338,22 +351,34 @@ const Checkout = () => {
                   </div>
                 </div>
                 <h3 className="text-xl font-bold dark:text-white mt-6">Payment Method</h3>
-                <Radio.Group name="paymentMethod" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} defaultValue="cash" className="w-full">
-                  <div className="flex flex-col gap-4">
-                    <PaymentOption
-                      src="/assets/images/cash on delivery.png"
-                      title="Cash On Delivery"
-                      description="Checked Automatically"
-                      value="cash"
-                    />
-                    <PaymentOption
-                      src="/assets/images/ABA.png"
-                      title="ABA Bank"
-                      description="Checked Automatically"
-                      value="aba"
-                    />
-                  </div>
-                </Radio.Group>
+                  <Radio.Group
+                    name="paymentMethod"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    defaultValue="cash"
+                    className="w-full"
+                  >
+                    <div className="flex flex-col gap-4">
+                      <PaymentOption
+                        src="/assets/images/pay_now.png"
+                        title="Pay now"
+                        description="Checked Automatically"
+                        value="pay_now"
+                      />
+                      <PaymentOption
+                        src="/assets/images/cash on delivery.png"
+                        title="Cash On Delivery"
+                        description="Checked Automatically"
+                        value="cash_on_delivery"
+                      />
+                      <PaymentOption
+                        src="/assets/images/ABA.png"
+                        title="ABA Bank"
+                        description="Checked Automatically"
+                        value="aba_bank"
+                      />
+                    </div>
+                  </Radio.Group>
               </div>
               {/* Right Column: Your Order */}
               <div className="borer bg-white rounded-md dark:bg-black sm:px-4 sm:py-4 px-1 py-1 dark:border-gray-800 dark:border shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
@@ -364,7 +389,7 @@ const Checkout = () => {
                   itemLayout="horizontal"
                   renderItem={(item: any, index: any) => (
                     <List.Item>
-                      <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-700  hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)] transition-shadow duration-300 dark:bg-slate-900">
+                      <div className="flex items-center w-full justify-between rounded-lg border bg-white p-1 shadow-sm dark:border-gray-600  hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)] transition-shadow duration-300 dark:bg-slate-900">
                         <div className="flex items-start">
                           <Avatar
                             src={
@@ -443,7 +468,7 @@ const Checkout = () => {
               className={`mb-2 flex w-11/12 items-center justify-center rounded-3xl border-none bg-gradient-to-r from-violet-500 to-indigo-600 p-3 text-center text-white transition-colors duration-300 shadow-lg sm:mx-24 ${
                 filteredCartItems.length <= 0 || !address || !isValid || !paymentMethod ? 'opacity-50 hover:opacity-none cursor-not-allowed' : ''
               }`}
-              disabled={filteredCartItems.length <= 0 || !address || !isValid || !paymentMethod}
+              disabled={filteredCartItems.length <= 0 || !address || !isValid || !paymentMethod} 
             >
               <h2 className="text-xl">
                 <ShoppingCartOutlined /> Checkout {' - '}{' '}
