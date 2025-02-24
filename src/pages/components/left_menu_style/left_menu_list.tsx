@@ -3,8 +3,6 @@ import { List, Skeleton, Image, Tag, Card } from 'antd';
 import { Item } from '@/types/Item';
 import { formatCurrency } from '@/utils/numeral';
 import ItemDetailModal from '../ItemDetailModal';
-import ProductDetail from '@/pages/ecommerce/ProductDetail';
-
 const imagePath = 'https://api.pointhub.io';
 
 const ItemRender = (props: any) => {
@@ -93,15 +91,6 @@ const MenuList = (props: any) => {
               isVisible={!!selectedItem}
               onClose={onCancel}
               item={selectedItem}
-            />
-          </div>
-
-          {/* ProductDetail for larger screens */}
-          <div className="hidden lg:block">
-            <ProductDetail
-              currency={currency}
-              item={selectedItem}
-              onClose={onCancel}
             />
           </div>
         </>
