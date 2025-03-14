@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, Typography, Image, Row, Col } from 'antd';
-import { QRCode } from 'antd';
+import { Card, Typography, Image, Row, Col, Button } from 'antd';
 import AppHeader from './Header';
-import Footer from './Footer';
+import { useRouter } from 'next/router';
 const { Title, Text } = Typography;
 
 const AboutUs = () => {
+  const router = useRouter();
   const services = [
     {
       title: 'បុកលុយហ្គេម',
@@ -42,33 +42,55 @@ const AboutUs = () => {
     },
   ];
 
+  const handleBack = () => {  
+    router.push({
+      pathname: '/Laa.Shop/Index',
+    });
+  };
+
   return (
     <div className='sticky top-0'>
       <AppHeader/>
       <div className="bg-[url('/assets/images/Background1.jpg')] bg-cover bg-center min-h-screen text-white p-5">
-        <div className="max-w-6xl mx-auto">
+        <div className='flex justify-start items-center mt-5'>
+          <Button size="large" onClick={handleBack} className='border-none !text-white bg-gray-800 !text-lg flex justify-center items-center'>⬅️ Back</Button>
+        </div>
+        <div className="max-w-6xl mx-auto mt-10">
           {/* About Us Section */}
           <Card className="mb-6 bg-gray-800 shadow-lg" bordered={false}>
-            <Title level={2} className="text-gold">អំពីពួកយើង</Title>
-            <Text>
+            <Title level={3} className="!text-yellow-400">អំពីពួកយើង</Title>
+            <Text className='text-base text-white'>
               Laa.shop គឺជាវេបសាយលក់ទំនិញក្នុងហ្គេមនិងសេវាកម្មឌីជីថលដែលបានចាប់ផ្តើមដំណើរការនៅតាំងពីដើម
-              <span className="text-gold"> ឆ្នាំ២០២៥ </span>។ យើងបានចាប់ផ្ដើមដំបូងតាមរយៈ{' '}
-              <span className="text-gold">Telegram Bot</span>។ គោលបំណងចម្បងរបស់យើងគឺផ្តល់ជូនអតិថិជននូវសេវាកម្មដែលមានគុណភាពខ្ពស់
-              ងាយស្រួលប្រើប្រាស់ និងមានតម្លៃសមរម្យ។
+              <span className="text-yellow-400 cursor-pointer"> ឆ្នាំ២០២៥ </span>។ យើងបានចាប់ផ្ដើមដំបូងតាមរយៈ{' '}
+              <span className="text-yellow-400 cursor-pointer">Telegram Bot</span>។ គោលបំណងចម្បងរបស់យើងគឺផ្តល់ជូនអតិថិជននូវសេវាកម្មដែលមានគុណភាពខ្ពស់
+              ងាយស្រួលប្រើប្រាស់ និងមានតម្លៃសមរម្យ។.
             </Text>
           </Card>
 
           {/* Our Services Section */}
-          <Card className="mb-6 bg-gray-800 shadow-lg" bordered={false}>
-            <Title level={2} className="text-gold">សេវាកម្មរបស់យើង</Title>
+          <Card className="mb-6 bg-gray-800 shadow-lg " bordered={false}>
+            <Title level={3} className="!text-yellow-400">សេវាកម្មរបស់យើង</Title>
             <Row gutter={[16, 16]}>
               {services.map((service, index) => (
                 <Col xs={24} sm={12} md={8} key={index}>
-                  <Card hoverable className="bg-gray-700" cover={<Image src={service.image} alt={service.title} width={80} height={80}/>}>
-                    <Title level={4} className="text-white">
+                  <Card
+                    hoverable
+                    className="bg-gray-700 flex border-none hover:bg-gray-600 flex-col transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl justify-center items-center "
+                  >
+                    <div className='flex justify-center items-center'>
+                      <Image
+                        className="rounded-xl object-cover"
+                        src={service.image}
+                        alt={service.title}
+                        height={90}
+                        width={90}
+                        preview={false}
+                      />
+                    </div>
+                    <Title level={4} className="!text-white text-center mt-4">
                       {service.title}
                     </Title>
-                    <Text>{service.description}</Text>
+                    <Text className="text-white flex justify-center items-center">{service.description}</Text>
                   </Card>
                 </Col>
               ))}
@@ -77,24 +99,48 @@ const AboutUs = () => {
 
           {/* Payment Methods Section */}
           <Card className="mb-6 bg-gray-800 shadow-lg" bordered={false}>
-            <Title level={2} className="text-gold">វិធីបង់ប្រាក់</Title>
-            <Text>យើងទទួលការបង់ប្រាក់តាមរយៈ KHQR ដែលអាចស្កេនបានពីគ្រប់ធនាគារនៅកម្ពុជា។</Text>
-            <div className="flex justify-center mt-4">
-              <QRCode value="https://laa.shop" size={150} />
+            <Title level={3} className="!text-yellow-400">វិធីបង់ប្រាក់</Title>
+            <Text className='text-base text-center mb-6 text-white'>
+              យើងទទួលការបង់ប្រាក់តាមរយៈ KHQR ដែលអាចស្កេនបានពីគ្រប់ធនាគារនៅកម្ពុជា។
+            </Text>
+            <div className="flex justify-center items-center">
+              <Col xs={24} sm={12} md={8} className="flex justify-center items-center">
+                <Card hoverable className="bg-gray-700 mt-5 border-none hover:bg-gray-600 flex flex-col transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl justify-center items-center ">
+                  <div className='flex justify-center items-center'>
+                    <Image src='/assets/images/QR.webp'  
+                      height={90}
+                      width={90} 
+                      preview={false} 
+                      className='object-cover rounded-xl'
+                    />
+                  </div>
+                  <Title level={4} className='!text-white text-center mt-4'>បាគង​ QR CODE</Title>
+                </Card>
+              </Col>
             </div>
           </Card>
 
+
           {/* Why Choose Us Section */}
-          <Card className="mb-6 bg-gray-800 shadow-lg" bordered={false}>
-            <Title level={2} className="text-gold">ហេតុអ្វីជ្រើសរើសយើង?</Title>
+          <Card className=" bg-gray-800 shadow-lg" bordered={false}>
+            <Title level={3} className="!text-yellow-400">ហេតុអ្វីជ្រើសរើសយើង?</Title>
             <Row gutter={[16, 16]}>
               {whyChooseUs.map((item, index) => (
                 <Col xs={24} sm={12} md={8} key={index}>
-                  <Card hoverable className="bg-gray-700" cover={<Image src={item.image} alt={item.title} width={80} height={80} />}>
-                    <Title level={4} className="text-white">
+                  <Card hoverable className="bg-gray-700  border-none hover:bg-gray-600 flex flex-col justify-center items-center h-full transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                    <div className='flex justify-center items-center'>
+                      <Image 
+                        src={item.image} 
+                        alt={item.title}  
+                        preview={false}
+                        width={90} 
+                        height={90}
+                      />
+                    </div>
+                    <Title level={4} className="!text-white text-center mt-4">
                       {item.title}
                     </Title>
-                    <Text>{item.description}</Text>
+                    <Text className='text-white flex justify-center items-center'>{item.description}</Text>
                   </Card>
                 </Col>
               ))}
@@ -102,7 +148,6 @@ const AboutUs = () => {
           </Card>
         </div>
       </div>
-      <Footer/>
     </div>
   );
 }

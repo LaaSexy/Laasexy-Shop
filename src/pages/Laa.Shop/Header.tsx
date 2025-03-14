@@ -10,7 +10,7 @@ const AppHeader = () => {
   };
 
   return (
-    <Header className="bg-gray-800 flex items-center justify-between px-4 h-20">
+    <Header className="bg-gray-800 flex sticky top-0 z-10 items-center justify-between px-4 h-20">
       <div className="flex items-center gap-4">
         <Button
           type="link"
@@ -30,8 +30,8 @@ const AppHeader = () => {
           Laa.shop
         </Text>
       </div>
-      <Text strong className="text-white text-xl sm:mr-20 mr-0">
-        ទិញសេវាកម្មផ្សេងៗតម្លៃសមរម្យ
+      <Text strong className="text-white text-xl ">
+        សេវាកម្មមានតម្លៃសមរម្យបំផុត
       </Text>
     </Header>
   );

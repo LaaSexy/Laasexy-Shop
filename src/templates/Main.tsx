@@ -15,11 +15,11 @@ const Main = (props: IMainProps) => (
       {/* For globle menu */}
       <div className="content  text-xl">{props.children}</div>
       <div className="border-t border-gray-300 py-8 text-center text-sm">
-        © 2022 {AppConfig.title}.<br /> Powered with{' '}
+        © 2025 {AppConfig.title}.<br /> Powered with{' '}
         <span role="img" aria-label="Love">
           ♥
         </span>{' '}
-        by <a href="https://www.pointhub.io">Point hub</a>
+        by <a href="https://laasexy.github.io/LaaSexy-Portfolio/">Laasexy</a>
       </div>
     </div>
   </div>
