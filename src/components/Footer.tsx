@@ -24,7 +24,7 @@ const Footer = () => {
       id: '2',
       title: 'ហ្វេសបុក-ផេក',
       image: '/assets/images/Facebook.webp',
-      link: 'https://www.facebook.com/people/Teng-Chantola/pfbid0358gbhVxKbiL74bkFkeqfdGVmdhfjzMhkCfmPfg2pavt2Q6RHFg7yJxayoojqZHiHl/?mibextid=LQQJ4d',
+      link: 'https://web.facebook.com/profile.php?id=100083222271530',
     },
     {
       id: '3',

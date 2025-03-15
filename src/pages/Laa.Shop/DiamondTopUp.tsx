@@ -144,9 +144,14 @@ const DiamondTopUpApp = () => {
         <Button
           size="large"
           onClick={handleBack}
-          className="border-none !text-white bg-gray-800"
+          className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center ml-4 mt-5"
         >
-          ⬅️ Back
+          <img
+            src="/assets/images/Back Arrow.png"
+            alt=""
+            className="size-5 mr-1"
+          />
+          Back
         </Button>
       </div>
       <div className="max-w-3xl mx-auto p-6 rounded-2xl shadow-lg">
