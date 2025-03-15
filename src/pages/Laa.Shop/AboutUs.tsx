@@ -44,7 +44,7 @@ const AboutUs = () => {
 
   const handleBack = () => {  
     router.push({
-      pathname: '/Laa.Shop/Index',
+      pathname: '/Index',
     });
   };
 

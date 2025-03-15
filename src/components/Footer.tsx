@@ -48,13 +48,13 @@ const Footer = () => {
       id: '6',
       title: 'អំពីពួកយើង',
       image: '/assets/images/about.gif',
-      link: '/Laa.Shop/AboutUs',
+      link: '/Laa.Shop/aboutUs',
     },
   ];
 
   const handleAboutus = () => {
     router.push({
-      pathname: '/Laa.Shop/AboutUs',
+      pathname: '/Laa.Shop/aboutUs',
     });
   };
   return (

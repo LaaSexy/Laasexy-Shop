@@ -107,9 +107,13 @@ const DiamondTopUpApp = () => {
 
   const handleBack = () => {
     router.push({
-      pathname: "/Laa.Shop/Index",
+      pathname: "/Index",
     });
   };
+
+  const handlePayment = () =>{
+
+  }
 
   return (
     <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover bg-gray-900 text-white p-6">
@@ -168,6 +172,7 @@ const DiamondTopUpApp = () => {
           {selectedGame.services.map((service, index) => (
             <div
               key={index}
+              onClick={handlePayment}
               className="flex flex-col items-center p-4 bg-gray-700 rounded-lg hover:bg-[#403c3c] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(255,_255,_255,_0.7)]
               cursor-pointer"
             >
