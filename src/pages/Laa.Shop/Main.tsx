@@ -32,7 +32,7 @@ const Main = () => {
 
   const handleTopUp = (gameTitle:any) => {
     router.push({
-      pathname: '/Laa.Shop/DiamondTopUp',
+      pathname: '/Laa.Shop/diamondTopUp',
       query: { game: gameTitle },
     });
   };

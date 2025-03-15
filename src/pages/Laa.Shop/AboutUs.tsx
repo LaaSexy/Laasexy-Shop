@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Typography, Image, Row, Col, Button } from 'antd';
-import AppHeader from './Header';
+import AppHeader from '../../components/Header';
 import { useRouter } from 'next/router';
 const { Title, Text } = Typography;
 
@@ -44,7 +44,7 @@ const AboutUs = () => {
 
   const handleBack = () => {  
     router.push({
-      pathname: '/Laa.Shop/Index',
+      pathname: '/Index',
     });
   };
 
@@ -53,7 +53,18 @@ const AboutUs = () => {
       <AppHeader/>
       <div className="bg-[url('/assets/images/Background1.jpg')] bg-cover bg-center min-h-screen text-white p-5">
         <div className='flex justify-start items-center mt-5'>
-          <Button size="large" onClick={handleBack} className='border-none !text-white bg-gray-800 !text-lg flex justify-center items-center'>⬅️ Back</Button>
+          <Button
+            size="large"
+            onClick={handleBack}
+            className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center"
+          >
+            <img
+              src="/assets/images/Back Arrow.png"
+              alt=""
+              className="size-5 mr-1"
+            />
+            Back
+          </Button>
         </div>
         <div className="max-w-6xl mx-auto mt-10">
           {/* About Us Section */}

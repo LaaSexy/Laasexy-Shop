@@ -90,6 +90,7 @@ const DiamondTopUpApp = () => {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [serverId, setServerId] = useState<string>("");
+  const [paymentAttempted, setPaymentAttempted] = useState<boolean>(false);
 
   useEffect(() => {
     const gameName = typeof game === "string" ? game : undefined;
@@ -107,7 +108,33 @@ const DiamondTopUpApp = () => {
 
   const handleBack = () => {
     router.push({
-      pathname: "/Laa.Shop/Index",
+      pathname: "/Index",
+    });
+  };
+
+  const isFormValid = () => {
+    if (selectedGame.name === "Mobile Legends") {
+      return userId.trim() !== "" && serverId.trim() !== "";
+    }
+    return userId.trim() !== "";
+  };
+
+  const handlePayment = (service: Service) => {
+    const priceMatch = service.title.match(/(\d+\.?\d*)\$$/);
+    const price = priceMatch ? priceMatch[1] : "0";
+    if (!isFormValid()) {
+      setPaymentAttempted(true);
+      return;
+    }
+    setPaymentAttempted(false);
+    router.push({
+      pathname: "/Laa.Shop/payment",
+      query: {
+        game: selectedGame.name,
+        price,
+        userId,
+        serverId: selectedGame.name === "Mobile Legends" ? serverId : undefined,
+      },
     });
   };
 
@@ -117,9 +144,14 @@ const DiamondTopUpApp = () => {
         <Button
           size="large"
           onClick={handleBack}
-          className="border-none !text-white bg-gray-800"
+          className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center ml-4 mt-5"
         >
-          ⬅️ Back
+          <img
+            src="/assets/images/Back Arrow.png"
+            alt=""
+            className="size-5 mr-1"
+          />
+          Back
         </Button>
       </div>
       <div className="max-w-3xl mx-auto p-6 rounded-2xl shadow-lg">
@@ -130,22 +162,38 @@ const DiamondTopUpApp = () => {
               : "grid-cols-1"
           }`}
         >
-          <input
-            type="number"
-            placeholder="Enter ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full p-2 bg-gray-700  text-white rounded-md"
-          />
-          {selectedGame.name === "Mobile Legends" && (
+          <div className="flex flex-col">
             <input
               type="number"
-              placeholder="Enter Server ID"
-              value={serverId}
-              onChange={(e) => setServerId(e.target.value)}
-              className="w-full p-2 bg-gray-700 rounded-md text-white"
+              placeholder="Enter ID"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              className="w-full p-2 bg-gray-700 text-white rounded-md"
+              required
             />
+            {paymentAttempted && userId.trim() === "" && (
+              <p className="text-red-500 text-sm mt-1 ">User ID is required</p>
+            )}
+          </div>
+          <div className="flex flex-col">
+          {selectedGame.name === "Mobile Legends" && (
+            <div>
+              <input
+                type="number"
+                placeholder="Enter Server ID"
+                value={serverId}
+                onChange={(e) => setServerId(e.target.value)}
+                className="w-full p-2 bg-gray-700 rounded-md text-white"
+                required
+              />
+              {paymentAttempted && serverId.trim() === "" && (
+                <p className="text-red-500 text-sm mt-1">
+                  Server ID is required
+                </p>
+              )}
+            </div>
           )}
+          </div>
         </div>
 
         <div className="mb-6">
@@ -168,6 +216,7 @@ const DiamondTopUpApp = () => {
           {selectedGame.services.map((service, index) => (
             <div
               key={index}
+              onClick={() => handlePayment(service)}
               className="flex flex-col items-center p-4 bg-gray-700 rounded-lg hover:bg-[#403c3c] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(255,_255,_255,_0.7)]
               cursor-pointer"
             >
