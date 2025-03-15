@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Typography, Image, Row, Col, Button } from 'antd';
-import AppHeader from '../components/Header';
+import AppHeader from '../../components/Header';
 import { useRouter } from 'next/router';
 const { Title, Text } = Typography;
 
