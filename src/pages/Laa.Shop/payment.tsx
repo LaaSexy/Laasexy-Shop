@@ -31,7 +31,7 @@ const Payment = () => {
         <div className="flex flex-col lg:flex-row justify-between items-center min-h-[calc(100vh-80px)]">
           {/* Left Content */}
           <div className="w-full lg:w-1/2 mb-8 mt-10 sm:mt-0 lg:mb-0 sm:pb-20 sm:pl-32">
-            <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto w-full">
+            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 max-w-md mx-auto w-full">
               <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
                 Payment Details
               </h2>

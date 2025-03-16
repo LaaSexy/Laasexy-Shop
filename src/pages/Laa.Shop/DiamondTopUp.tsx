@@ -139,12 +139,13 @@ const DiamondTopUpApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover bg-gray-900 text-white">
-      <div className="flex justify-start items-center"> 
+    <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover bg-gray-900 dark:bg-gray-950 text-white">
+      <div className="flex justify-start items-center">
         <Button
           size="large"
           onClick={handleBack}
-          className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center sm:ml-4 ml-6 mt-5 mb-5"
+          className="bg-blue-500 hover:!bg-blue-400 dark:bg-blue-600 
+            dark:hover:!bg-blue-700 !text-white hover:!text-white flex justify-center items-center sm:ml-4 ml-6 mt-5 mb-5"
         >
           <img
             src="/assets/images/Back Arrow.png"
@@ -168,31 +169,34 @@ const DiamondTopUpApp = () => {
               placeholder="Enter ID"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              className="w-full p-2 bg-gray-700 text-white rounded-md"
+              className="w-full p-2 bg-gray-700 dark:bg-gray-800 focus:outline-none 
+                focus:ring-2 
+                focus:ring-blue-500 text-white rounded-md"
               required
             />
             {paymentAttempted && userId.trim() === "" && (
-              <p className="text-red-500 text-sm mt-1 ">User ID is required</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1 ">User ID is required</p>
             )}
           </div>
           <div className="flex flex-col">
-          {selectedGame.name === "Mobile Legends" && (
-            <div>
-              <input
-                type="number"
-                placeholder="Enter Server ID"
-                value={serverId}
-                onChange={(e) => setServerId(e.target.value)}
-                className="w-full p-2 bg-gray-700 rounded-md text-white"
-                required
-              />
-              {paymentAttempted && serverId.trim() === "" && (
-                <p className="text-red-500 text-sm mt-1">
-                  Server ID is required
-                </p>
-              )}
-            </div>
-          )}
+            {selectedGame.name === "Mobile Legends" && (
+              <div>
+                <input
+                  type="number"
+                  placeholder="Enter Server ID"
+                  value={serverId}
+                  onChange={(e) => setServerId(e.target.value)}
+                  className="w-full p-2 bg-gray-700 rounded-md text-white dark:bg-gray-800 focus:outline-none focus:ring-2 
+                  focus:ring-blue-500"
+                  required
+                />
+                {paymentAttempted && serverId.trim() === "" && (
+                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
+                    Server ID is required
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -203,7 +207,7 @@ const DiamondTopUpApp = () => {
               alt="Thunder"
               className="w-10 h-10"
             />
-            <span className="text-xl font-semibold">{selectedGame.name}</span>
+            <span className="text-xl font-semibold dark:text-gray-100">{selectedGame.name}</span>
             <img
               src={selectedGame.image}
               alt={selectedGame.name}
@@ -217,7 +221,7 @@ const DiamondTopUpApp = () => {
             <div
               key={index}
               onClick={() => handlePayment(service)}
-              className="flex flex-col items-center p-4 bg-gray-700 rounded-lg hover:bg-[#403c3c] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(255,_255,_255,_0.7)]
+              className="flex flex-col items-center p-4 bg-gray-700 dark:bg-gray-800 rounded-lg hover:bg-[#403c3c] dark:hover:bg-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(255,_255,_255,_0.7)]
               cursor-pointer"
             >
               <img

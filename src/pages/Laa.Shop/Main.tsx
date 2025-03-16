@@ -52,7 +52,7 @@ const Main = () => {
               src={item.src}
               alt={item.alt}
               preview={false}
-              className="w-full h-full object-cover sm:rounded-3xl rounded-xl"
+              className="w-full h-full object-cover sm:rounded-3xl rounded-xl dark:brightness-90"
             />
           </div>
         ))}
@@ -73,7 +73,7 @@ const Main = () => {
           className="w-full max-w-7xl"
           renderItem={(item) => (
             <List.Item className="flex justify-center items-center">
-              <div className="w-full bg-gray-800 hover:bg-gray-700 rounded-xl shadow-lg mb-5 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+              <div className="w-full bg-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 hover:bg-gray-700 rounded-xl shadow-lg mb-5 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                 <div
                   onClick={() => {
                     if (item.link) {

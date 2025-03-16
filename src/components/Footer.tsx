@@ -64,8 +64,8 @@ const Footer = () => {
   };
 
   return (
-    <div className="bg-[#303434] min-h-[200px] py-6">
-      <Text className="text-white text-2xl text-center flex justify-center items-center mb-8">
+    <div className="bg-[#303434] dark:bg-[#252727] min-h-[200px] py-6">
+      <Text className="text-white dark:text-gray-100 text-2xl text-center flex justify-center items-center mb-8">
         តាមដានពួកយើង:
       </Text>
       <List
@@ -80,7 +80,7 @@ const Footer = () => {
         className="sm:mx-60 mx-3"
         dataSource={footerData}
         renderItem={(item) => (
-          <List.Item className="bg-[#504f51] transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl rounded-md mx-auto max-w-[300px] hover:bg-[#6f6f70]">
+          <List.Item className="bg-[#504f51] dark:bg-[#3a3c3c] dark:hover:bg-[#555757] transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl rounded-md mx-auto max-w-[300px] hover:bg-[#6f6f70]">
             <Button
               type="text"
               onClick={() => handleClick(item.id, item.link)}
@@ -109,7 +109,7 @@ const Footer = () => {
         dataSource={[
           {
             content: (
-              <div className="mt-3 flex justify-center cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl items-center bg-[#504f51] py-2 px-5 hover:bg-[#6f6f70] rounded-lg">
+              <div className="mt-3 flex justify-center dark:bg-[#3a3c3c] dark:hover:bg-[#555757] cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl items-center bg-[#504f51] py-2 px-5 hover:bg-[#6f6f70] rounded-lg">
                 <Text className="text-white text-center flex items-center text-base mr-4">
                   បង់ប្រាក់តាមរយះ
                 </Text>
