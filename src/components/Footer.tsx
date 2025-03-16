@@ -77,7 +77,7 @@ const Footer = () => {
           lg: 4,
           xl: 4,
         }}
-        className="sm:mx-60 mx-5"
+        className="sm:mx-60 mx-3"
         dataSource={footerData}
         renderItem={(item) => (
           <List.Item className="bg-[#504f51] transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl rounded-md mx-auto max-w-[300px] hover:bg-[#6f6f70]">

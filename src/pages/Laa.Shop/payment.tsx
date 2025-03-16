@@ -1,12 +1,9 @@
 import { Button } from "antd";
 import { useRouter } from "next/router";
-import React from "react";
 
 const Payment = () => {
   const router = useRouter();
   const { game, price, userId, serverId } = router.query;
-
-  console.log(game, userId, serverId);
 
   const handleBack = () => {
     router.push({
@@ -15,8 +12,8 @@ const Payment = () => {
   };
 
   return (
-    <div className=" min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover flex flex-col dark:bg-black">
-      <header className=" ">
+    <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover flex flex-col dark:bg-black">
+      <header className="">
         <Button
           size="large"
           onClick={handleBack}
@@ -30,11 +27,11 @@ const Payment = () => {
           Back
         </Button>
       </header>
-      <div className="container mx-auto pt-4 flex-1">
+      <div className="container mx-auto flex-1">
         <div className="flex flex-col lg:flex-row justify-between items-center min-h-[calc(100vh-80px)]">
           {/* Left Content */}
           <div className="w-full lg:w-1/2 mb-8 mt-10 sm:mt-0 lg:mb-0 sm:pb-20 sm:pl-32">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md mx-auto w-full">
+            <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto w-full">
               <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
                 Payment Details
               </h2>
