@@ -2,23 +2,15 @@ import Head from "next/head";
 
 interface ShopHelmetProps {
   shopName?: string;
-  slug: string;
   logoUrl: string;
   twitterHandle?: string;
 }
 
 const Meta = ({
   shopName,
-  slug,
   logoUrl,
-  twitterHandle = "@YourTwitterHandle",
-   
+  twitterHandle = "@BestTopupWebsite",
 }: ShopHelmetProps) => {
-  const fullLogoUrl = logoUrl?.startsWith("http") ? logoUrl : `${logoUrl}`;
-
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://pointhang.com";
-  const fullUrl = `${baseUrl}/${slug}`;
-
 
   return (
     <Head>
@@ -29,7 +21,7 @@ const Meta = ({
       <meta name="keywords" content={shopName}/>
       {/* <link rel="canonical" href={fullUrl} /> */}
       <title>{shopName}</title>
-      <link rel="icon" href={fullLogoUrl} type="image/png" />
+      <link rel="icon" href={logoUrl} type="image/png" />
       
       {/* Apple Touch Icons */}
       {[57, 60, 72, 76, 114, 120, 144, 152, 180].map((size) => (
@@ -37,7 +29,7 @@ const Meta = ({
           key={size}
           rel="apple-touch-icon"
           sizes={`${size}x${size}`}
-          href={`${fullLogoUrl}`}
+          href={`${logoUrl}`}
         />
       ))}
       
@@ -48,21 +40,21 @@ const Meta = ({
           rel="icon"
           type="image/png"
           sizes={size}
-          href={fullLogoUrl}
+          href={logoUrl}
         />
       ))}
       
       <link rel="manifest" href="/manifest.json" />
       <meta name="msapplication-TileColor" content="#ffffff" />
-      <meta name="msapplication-TileImage" content={fullLogoUrl} />
+      <meta name="msapplication-TileImage" content={logoUrl} />
       <meta name="theme-color" content="#ffffff" />
       
       {/* Open Graph */}
       <meta property="og:title" content={shopName} />
       <meta property="og:description" content={shopName} />
-      <meta property="og:url" content={fullUrl} />
+      <meta property="og:url" content={logoUrl} />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content={fullLogoUrl} />
+      <meta property="og:image" content={logoUrl} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={shopName} />
@@ -75,7 +67,7 @@ const Meta = ({
       <meta name="twitter:creator" content={twitterHandle} />
       <meta name="twitter:title" content={shopName} />
       <meta name="twitter:description" content={shopName}/>
-      <meta name="twitter:image" content={fullLogoUrl} />
+      <meta name="twitter:image" content={logoUrl} />
       
       {/* Mobile Web App */}
       <meta name="apple-mobile-web-app-capable" content="yes" />

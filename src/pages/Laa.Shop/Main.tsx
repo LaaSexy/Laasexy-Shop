@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Typography, Image, List } from 'antd';
 import { useRouter } from 'next/router';
+import Meta from '@/layout/Meta';
 const { Text } = Typography;
 
 const carouselData = [
@@ -38,6 +39,16 @@ const Main = () => {
   };
 
   return (
+    <>
+      <Meta
+        shopName={"Laasexy.Shop"}
+        logoUrl={
+          "/assets/images/laasexys.png"
+        }
+        twitterHandle={
+          "@BestTopupWebsite"
+        }
+      />
     <div className="bg-[url('/assets/images/Background1.jpg')] bg-cover bg-center min-h-screen flex flex-col">
       {/* Carousel */}
       <div className="relative w-full max-w-7xl mx-auto px-4 pt-7 pb-12 sm:mt-10 mt-8 sm:mb-52 mb-16">
@@ -112,6 +123,7 @@ const Main = () => {
         />
       </div>
     </div>
+    </>
   );
 };
 
