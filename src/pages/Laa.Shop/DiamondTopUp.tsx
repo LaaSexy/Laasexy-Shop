@@ -139,12 +139,12 @@ const DiamondTopUpApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover bg-gray-900 text-white p-6">
-      <div className="flex justify-start items-center ">
+    <div className="min-h-screen bg-[url('/assets/images/Background1.jpg')] bg-cover bg-gray-900 text-white">
+      <div className="flex justify-start items-center"> 
         <Button
           size="large"
           onClick={handleBack}
-          className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center ml-4 mt-5"
+          className="bg-blue-500 hover:!bg-blue-400 !text-white hover:!text-white flex justify-center items-center sm:ml-4 ml-6 mt-5 mb-5"
         >
           <img
             src="/assets/images/Back Arrow.png"
@@ -156,7 +156,7 @@ const DiamondTopUpApp = () => {
       </div>
       <div className="max-w-3xl mx-auto p-6 rounded-2xl shadow-lg">
         <div
-          className={`grid gap-4 mb-4 ${
+          className={`grid gap-4 sm:mb-4 ${
             selectedGame.name === "Mobile Legends"
               ? "grid-cols-2"
               : "grid-cols-1"

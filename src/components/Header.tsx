@@ -23,14 +23,14 @@ const AppHeader = () => {
             preview={false}
             width={48}
             height={48}
-            className="rounded-full border border-yellow-400 object-cover"
+            className="rounded-full border border-yellow-400 object-cover "
           />
         </Button>
-        <Text strong className="text-yellow-400 m-0 text-xl">
+        <Text strong className="text-yellow-400 m-0 sm:text-xl text-lg">
           Laa.shop
         </Text>
       </div>
-      <Text strong className="text-white text-xl ">
+      <Text strong className="text-white sm:text-xl text-lg">
         សេវាកម្មមានតម្លៃសមរម្យបំផុត
       </Text>
     </Header>
